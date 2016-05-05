@@ -265,7 +265,7 @@
                         <a data-id="'+ data.id + '" class="btn btn-danger btn-xs btn-delete-sales" href="master/sales/delete-sales/'+ data.id + '" ><i class="fa fa-trash" ></i></a>\n\
                     </td>\n\
                     </tr>';
-            $('#table-datatable tbody tr:last').after(newrow);
+            $('#table-datatable tbody tr:first').before(newrow);
             //reorder row number
             tableRowReorder();
             //close form add

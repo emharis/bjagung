@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 class SalesController extends Controller {
 
     public function index() {
-        $data = \DB::table('sales')->get();
+        $data = \DB::table('sales')->orderBy('created_at','desc')->get();
 
         return view('master.sales.index', [
             'data' => $data
