@@ -9,7 +9,8 @@ use App\Http\Controllers\Controller;
 class BarangController extends Controller {
 
     public function index() {
-        $data = \DB::table('barang')
+        $data = \DB::table('VIEW_BARANG')
+                ->orderBy('kategori', 'asc')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -39,15 +40,37 @@ class BarangController extends Controller {
 
     //insert new data barang
     public function insert(Request $request) {
-        $id = \DB::table('barang')->insertGetId([
-            'nama' => $request->input('nama')
-        ]);
+
+        \DB::transaction(function()use($request) {
+            //insert data barang
+            $id = \DB::table('barang')->insertGetId([
+                'nama' => $request->input('nama'),
+                'kategori_id' => $request->input('kategori'),
+                'satuan_beli_id' => $request->input('satuan_beli'),
+            ]);
+
+            //insert satuan jual
+            if (count($request->input('satuan_jual'))) {
+                foreach ($request->input('satuan_jual') as $dt) {
+                    \DB::table('satuan_jual_barang')->insert([
+                        'barang_id' => $id,
+                        'satuan_id' => $dt,
+                        'konversi' => $request->input('konversi_satuan_' . $dt),
+                    ]);
+                }
+            }
+
+            if ($request->ajax()) {
+                echo json_encode(\DB::table('VIEW_BARANG')->find($id));
+            }
+        });
 
         if (!$request->ajax()) {
             return redirect('master/barang');
-        } else {
-            return json_encode(\DB::table('barang')->find($id));
         }
+//        else {
+//            return json_encode(\DB::table('barang')->find($id));
+//        }
     }
 
     //get data barang

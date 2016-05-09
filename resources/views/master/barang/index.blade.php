@@ -47,17 +47,21 @@
                         <tr>
                             <td>Satuan Jual</td>
                             <td>
-                                <div class="row" >
+                                <div class="row">
                                     @foreach($satuan as $dt)
-                                    <div class="col-sm-2 col-md-2 col-lg-2" >
-                                        <label>
-                                            <input class="satuan_jual" type="checkbox" name="satuan_jual[]" value="{{$dt->id}}" required />        
-                                            {{ucwords(strtolower($dt->nama))}}
-                                        </label>
+                                    <div class="col-sm-3 col-md-3 col-lg-3" >
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <label>
+                                                    <input  class="satuan_jual" type="checkbox" name="satuan_jual[]" value="{{$dt->id}}" > 
+                                                    {{$dt->nama}}
+                                                </label>
+                                            </span>
+                                            <input type="text" class="form-control" name="konversi_satuan_{{$dt->id}}" >
+                                        </div>
                                     </div>
                                     @endforeach
                                 </div>
-
                             </td>
                         </tr>
                         <tr>
@@ -76,9 +80,41 @@
                 <table class="table table-bordered table-condensed" >
                     <tbody>
                         <tr>
-                            <td>Nama</td>
+                            <td class="col-sm-2 col-md-2 col-lg-2" >Nama</td>
                             <td>
-                                <input type="text" name="nama" class="form-control" autocomplete="OFF" />
+                                <input autocomplete="off" required type="text" class="form-control" name="nama" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-sm-2 col-md-2 col-lg-2" >Kategori</td>
+                            <td>
+                                {!! Form::select('kategori',$slc_kategori,null,['class'=>'form-control']) !!}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-sm-2 col-md-2 col-lg-2" >Satuan Beli</td>
+                            <td>
+                                {!! Form::select('satuan_beli',$slc_satuan_beli,null,['class'=>'form-control']) !!}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Satuan Jual</td>
+                            <td>
+                                <div class="row">
+                                    @foreach($satuan as $dt)
+                                    <div class="col-sm-3 col-md-3 col-lg-3" >
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <label>
+                                                    <input  class="satuan_jual" type="checkbox" name="satuan_jual[]" value="{{$dt->id}}" > 
+                                                    {{$dt->nama}}
+                                                </label>
+                                            </span>
+                                            <input type="text" class="form-control" name="konversi_satuan_{{$dt->id}}" >
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -98,7 +134,8 @@
                     <thead>
                         <tr>
                             <th class="col-sm-1 col-md-1 col-lg-1" >No</th>
-                            <th>Nama</th>
+                            <th   >Kategori</th>
+                            <th   >Barang</th>
                             <th class="col-sm-1 col-md-1 col-lg-1" ></th>
                         </tr>
                     </thead>
@@ -107,6 +144,7 @@
                         @foreach($data as $dt)
                         <tr>
                             <td class="text-right" >{{$rownum++}}</td>
+                            <td class="col-sm-2 col-md-2 col-lg-2 text-right" >{{$dt->kategori}}</td>
                             <td>{{$dt->nama}}</td>
                             <td class="text-center" >
                                 <a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-barang" href="master/barang/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
@@ -167,15 +205,18 @@
 (function ($) {
     //required checkbox
     var requiredCheckboxes = $('.satuan_jual');
-    requiredCheckboxes.change(function(){
-        if(requiredCheckboxes.is(':checked')) {
+    requiredCheckboxes.change(function () {
+        if (requiredCheckboxes.is(':checked')) {
             requiredCheckboxes.removeAttr('required');
         } else {
             requiredCheckboxes.attr('required', 'required');
         }
     });
-    
-    
+
+    //kosongkan selectbox
+    $('#form-add select').val([]);
+
+
     //reorder row number
     function tableRowReorder() {
         var rownum = 1;
@@ -226,10 +267,11 @@
             //tambahkan new row
             var newrow = '<tr>\n\\n\
                     <td class="text-right" ></td>\n\
+                    <td class="text-right" >' + data.kategori + '</td>\n\
                     <td>' + data.nama + '</td>\n\
                     <td class="text-center" >\n\
-                        <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-sales" href="master/sales/edit/' + data.id + '" ><i class="fa fa-edit" ></i></a>\n\
-                        <a data-id="' + data.id + '" class="btn btn-danger btn-xs btn-delete-sales" href="master/sales/delete-sales/' + data.id + '" ><i class="fa fa-trash" ></i></a>\n\
+                        <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-barang" href="master/barang/edit/' + data.id + '" ><i class="fa fa-edit" ></i></a>\n\
+                        <a data-id="' + data.id + '" class="btn btn-danger btn-xs btn-delete-barang" href="master/barang/delete-barang/' + data.id + '" ><i class="fa fa-trash" ></i></a>\n\
                     </td>\n\
                     </tr>';
             $('#table-datatable tbody tr:first').before(newrow);
@@ -308,8 +350,8 @@
     });
 
     //delete barang
-    $('.btn-delete-barang').click(function () {
-        var id = $(this).data('id');
+    $(document).on('click','.btn-delete-barang',function () {
+//        var id = $(this).data('id');
         var url = $(this).attr('href');
         var row = $(this).parent().parent();
         if (confirm('Anda akan menghapus data ini..?')) {
