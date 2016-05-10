@@ -71,15 +71,16 @@
                         <tr>
                             <th class="col-sm-1 col-md-1 col-lg-1" >No</th>
                             <th>Nama</th>
+                            <th class="col-sm-2 col-md-2 col-lg-2" >Date</th>
                             <th class="col-sm-1 col-md-1 col-lg-1" ></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $rownum = 1; ?>
                         @foreach($data as $dt)
                         <tr>
-                            <td class="text-right" >{{$rownum++}}</td>
+                            <td class="text-right" ></td>
                             <td>{{$dt->nama}}</td>
+                            <td>{{$dt->created_at}}</td>
                             <td class="text-center" >
                                 <a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-kategori" href="master/kategori/get-kategori/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
                                 <a data-id="{{$dt->id}}" class="btn btn-danger btn-xs btn-delete-kategori" href="master/kategori/delete-kategori/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
@@ -92,40 +93,6 @@
 
         </div><!-- /.box-body -->
     </div><!-- /.box -->
-
-    <!--    <div class="modal" id="modal-edit-kategori" data-keyboard="false" data-backdrop="static">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Edit Kategori</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="master/kategori/update-kategori" name="form-edit-kategori" >
-                            <input type="hidden" name="id" />
-                            <table class="table table-bordered table-condensed" >
-                                <tbody>
-                                    <tr>
-                                        <td>Nama</td>
-                                        <td>
-                                            <input type="text" name="nama" class="form-control" autocomplete="OFF" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>
-                                            <button type="submit" class="btn btn-primary btm-sm">Save</button>
-                                            <a data-dismiss="modal" class="btn btn-danger btn-sm" >Cancel</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </form>
-                    </div>
-                </div> 
-            </div> 
-        </div>-->
-
 </section><!-- /.content -->
 @stop
 
@@ -136,17 +103,21 @@
 
 <script type="text/javascript">
 (function ($) {
-    //reorder row number
-    function tableRowReorder() {
-        var rownum = 1;
-        $('#table-datatable tbody tr').each(function (i, data) {
-            $(this).children('td:first').text(rownum++);
-
-        });
-    }
-
     //format datatable
-    $('#table-datatable').dataTable();
+    var tableData = $('#table-datatable').DataTable({
+        "aaSorting": [[2, "desc"]],
+        "columns": [
+            {className: "text-right"},
+            null,
+            null,
+            {className: "text-center"}
+        ],
+        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            var index = iDisplayIndex + 1;
+            $('td:eq(0)', nRow).html(index);
+            return nRow;
+        }
+    });
 
     //tampilkan form new kategori
     $('#btn-add-kategori').click(function () {
@@ -160,7 +131,7 @@
 
         //sembunyikan table data
         $('#table-data').fadeOut(200);
-        
+
         //disable btn add
         $('#btn-add-kategori').addClass('disabled');
     });
@@ -177,7 +148,7 @@
 
         //clear input
         $('#form-add-kategori input').val('');
-        
+
         //enable btn add
         $('#btn-add-kategori').removeClass('disabled');
 
@@ -187,22 +158,21 @@
     //submit add new
     $('#form-add-kategori').ajaxForm({
         success: function (datares) {
-            alert(datares);
             var data = JSON.parse(datares);
+
+            //add new row
+            tableData.row.add([
+                '',
+                data.nama,
+                data.created_at,
+                '<td class="text-center" >\n\
+                        <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-kategori" href="master/kategori/edit/' + data.id + '" ><i class="fa fa-edit" ></i></a>\n\
+                        <a data-id="' + data.id + '" class="btn btn-danger btn-xs btn-delete-kategori" href="master/kategori/delete-kategori/' + data.id + '" ><i class="fa fa-trash" ></i></a>\n\
+                    </td>'
+            ]).draw(false);
+
             //tutup form add
             $('#btn-cancel-add-kategori').click();
-            //add new row
-            var newrow = '<tr>\n\\n\
-                    <td class="text-right" ></td>\n\
-                    <td>' + data.nama + '</td>\n\
-                    <td class="text-center" >\n\
-                        <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-sales" href="master/sales/edit/' + data.id + '" ><i class="fa fa-edit" ></i></a>\n\
-                        <a data-id="' + data.id + '" class="btn btn-danger btn-xs btn-delete-sales" href="master/sales/delete-sales/' + data.id + '" ><i class="fa fa-trash" ></i></a>\n\
-                    </td>\n\
-                    </tr>';
-            $('#table-datatable tbody tr:first').before(newrow);
-            //reorder row number
-            tableRowReorder();
         }
     });
 
@@ -219,62 +189,65 @@
             //tampilkan data ke modal edit
             $('#form-edit-kategori input[name=id]').val(dataKategori.id);
             $('#form-edit-kategori input[name=nama]').val(dataKategori.nama);
-            
+
             //tampilkan form edit
             $('#form-edit-kategori').hide();
             $('#form-edit-kategori').removeClass('hide');
-            $('#form-edit-kategori').slideDown(250,null,function(){
+            $('#form-edit-kategori').slideDown(250, null, function () {
                 //focuskan 
                 $('#form-edit-kategori input[name=nama]').focus();
             });
-            
+
             //sembunyikan table data
             $('#table-data').fadeOut(200);
         });
-        
+
         //disable btn add
         $('#btn-add-kategori').addClass('disabled');
 
         return false;
     });
-    
+
     //cancel edit
-    $('#btn-cancel-edit').click(function(){
+    $('#btn-cancel-edit').click(function () {
         $('#form-edit-kategori').slideUp(250);
         $('#table-data').fadeIn(200);
         //enable btn add
         $('#btn-add-kategori').removeClass('disabled');
     });
-    
+
     //submit edit
     $('#form-edit-kategori').ajaxForm({
-        success:function(datares){
+        success: function (datares) {
             var data = JSON.parse(datares);
             //update row
             var btnEdit = $('#table-datatable tbody tr td a.btn-edit-kategori[data-id="' + data.id + '"]');
             var tdOpsi = btnEdit.parent();
             //update data row
-            tdOpsi.prev().html(data.nama);
-            
+            tdOpsi.prev().prev().html(data.nama);
+            tdOpsi.prev().html(data.created_at);
+
             //tutup form edit
             $('#btn-cancel-edit').click();
         }
     });
 
     //delete kategori
-    $('.btn-delete-kategori').click(function () {        
+    $(document).on('click', '.btn-delete-kategori', function () {
         var id = $(this).data('id');
         var url = $(this).attr('href');
         var row = $(this).parent().parent();
         if (confirm('Anda akan menghapus data ini..?')) {
-                //delete by ajax
-                $.get(url,null,function(){
-                    //delete row
-                    row.fadeOut(250,null,function(){
-                        row.remove();
-                        tableRowReorder();
-                    });
+            //delete by ajax
+            $.get(url, null, function () {
+                //delete row
+                row.fadeOut(250, null, function () {
+                    tableData
+                            .row(row)
+                            .remove()
+                            .draw();
                 });
+            });
         }
 
         return false;

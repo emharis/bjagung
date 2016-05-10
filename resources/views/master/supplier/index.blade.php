@@ -125,21 +125,22 @@
                             <th>Kontak</th>
                             <th>Telp</th>
                             <th>Alamat</th>
+                            <th>Date</th>
                             <th class="col-sm-1 col-md-1 col-lg-1" ></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $rownum = 1; ?>
                         @foreach($data as $dt)
                         <tr>
-                            <td class="text-right" >{{$rownum++}}</td>
+                            <td class="text-right" ></td>
                             <td>{{$dt->nama}}</td>
                             <td>{{$dt->nama_kontak}}</td>
                             <td>{!! $dt->telp . '<br/>' .$dt->telp_2 !!}</td>
                             <td>{{$dt->alamat}}</td>
+                            <td>{{$dt->created_at}}</td>
                             <td class="text-center" >
-                                <a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-supplier" href="master/supplier/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
-                                <a data-id="{{$dt->id}}" class="btn btn-danger btn-xs btn-delete-supplier" href="master/supplier/delete-supplier/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
+                                <a title="edit data" data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-supplier" href="master/supplier/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
+                                <a title="delete data" data-id="{{$dt->id}}" class="btn btn-danger btn-xs btn-delete-supplier" href="master/supplier/delete-supplier/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
                             </td>
                         </tr>
                         @endforeach
@@ -150,63 +151,6 @@
 
         </div><!-- /.box-body -->
     </div><!-- /.box -->
-
-    <!--    <div class="modal" id="modal-edit-supplier" data-keyboard="false" data-backdrop="static">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Edit Supplier</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="master/supplier/update-supplier" name="form-edit-supplier" >
-                            <input type="hidden" name="id" />
-                            <table class="table table-bordered table-condensed" >
-                                <tbody>
-                                    <tr>
-                                        <td>Nama</td>
-                                        <td>
-                                            <input required type="text" name="nama" class="form-control" autocomplete="OFF" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Kontak</td>
-                                        <td>
-                                            <input autocomplete="off" type="text" class="form-control" name="nama_kontak" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Telp</td>
-                                        <td>
-                                            <input autocomplete="off" type="text" class="form-control" name="telp" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>
-                                            <input autocomplete="off" type="text" class="form-control" name="telp_2" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Alamat</td>
-                                        <td>
-                                            <input autocomplete="off" type="text" class="form-control" name="alamat" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>
-                                            <button type="submit" class="btn btn-primary btm-sm">Save</button>
-                                            <a data-dismiss="modal" class="btn btn-danger btn-sm" >Cancel</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </form>
-                    </div>
-                </div> 
-            </div> 
-        </div>-->
 
 </section><!-- /.content -->
 @stop
@@ -220,16 +164,23 @@
 <script type="text/javascript">
 (function ($) {
     //format datatable
-    $('#table-datatable').dataTable();
-
-    //reorder row number
-    function tableRowReorder() {
-        var rownum = 1;
-        $('#table-datatable tbody tr').each(function (i, data) {
-            $(this).children('td:first').text(rownum++);
-
-        });
-    }
+    var tableData = $('#table-datatable').DataTable({
+        "aaSorting": [[5, "desc"]],
+        "columns": [
+            {className: "text-right"},
+            null,
+            null,
+            null,
+            null,
+            null,
+            {className: "text-center"}
+        ],
+        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            var index = iDisplayIndex + 1;
+            $('td:eq(0)', nRow).html(index);
+            return nRow;
+        }
+    });
 
     //tampilkan form new supplier
     $('#btn-add-supplier').click(function () {
@@ -267,28 +218,33 @@
     $('form[name=form-add-supplier]').ajaxForm({
         success: function (datares) {
             var data = JSON.parse(datares);
-            //tambahkan new row
-            var newrow = '<tr>\n\
-                            <td class="text-right" ></td>\n\
-                            <td>' + data.nama + '</td>\n\
-                            <td>' + data.nama_kontak + '</td>\n\
-                            <td>' + data.telp + '/' + data.telp_2 + '</td>\n\
-                            <td>' + data.alamat + '</td>\n\
-                            <td class="text-center" >\n\
-                                <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-supplier" href="master/supplier/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>\n\
-                                <a data-id="' + data.id + '" class="btn btn-danger btn-xs btn-delete-supplier" href="master/supplier/delete-supplier/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>\n\
-                            </td>\n\
-                        </tr>';
-            $('#table-datatable tbody tr:first').before(newrow);
-            //reorder row number
-            tableRowReorder();
+            //tambahkan new row            
+            var telp = data.telp;
+            if (data.telp_2 !== '') {
+                telp = data.telp + '  |  ' + data.telp_2;
+            }
+            
+            //add new row
+            tableData.row.add([
+                '',
+                data.nama,
+                data.nama_kontak,
+                telp,
+                data.alamat,
+                data.created_at,
+                '<td class="text-center" >\n\
+                        <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-supplier" href="master/supplier/edit/' + data.id + '" ><i class="fa fa-edit" ></i></a>\n\
+                        <a data-id="' + data.id + '" class="btn btn-danger btn-xs btn-delete-supplier" href="master/supplier/delete-supplier/' + data.id + '" ><i class="fa fa-trash" ></i></a>\n\
+                    </td>'
+            ]).draw(false);
+
             //close form add
-//            afterInsert = true;
             $('#btn-cancel-add-supplier').click();
             //clear input form
             $('form[name=form-add-supplier] input').val('');
         }
     });
+
 
     //edit supplier
     $(document).on('click', '.btn-edit-supplier', function () {
@@ -320,19 +276,6 @@
 
             //disable button add
             $('#btn-add-supplier').addClass('disabled');
-
-
-//            //tampilkan data ke modal edit
-//            $('#modal-edit-supplier input[name=id]').val(dataSupplier.id);
-//            $('#modal-edit-supplier input[name=nama]').val(dataSupplier.nama);
-//            $('#modal-edit-supplier input[name=nama_kontak]').val(dataSupplier.nama_kontak);
-//            $('#modal-edit-supplier input[name=telp]').val(dataSupplier.telp);
-//            $('#modal-edit-supplier input[name=telp_2]').val(dataSupplier.telp_2);
-//            $('#modal-edit-supplier input[name=alamat]').val(dataSupplier.alamat);
-//            
-//            //fokuskan & tampilkan modal                
-//            $('#modal-edit-supplier').modal('show');
-//            $('#modal-edit-supplier input[name=nama]').focus();
         });
 
         return false;
@@ -358,31 +301,32 @@
             var btnEdit = $('#table-datatable tbody tr td a.btn-edit-supplier[data-id="' + data.id + '"]');
             var tdOpsi = btnEdit.parent();
             //update data row
-            tdOpsi.prev().html(data.alamat);
-            tdOpsi.prev().prev().html(data.telp + '<br/>' + data.telp_2);
-            tdOpsi.prev().prev().prev().html(data.nama_kontak);
-            tdOpsi.prev().prev().prev().prev().html(data.nama);
-            //reorder row number
-            tableRowReorder();
+            tdOpsi.prev().html(data.created_at);
+            tdOpsi.prev().prev().html(data.alamat);
+            tdOpsi.prev().prev().prev().html(data.telp + '<br/>' + data.telp_2);
+            tdOpsi.prev().prev().prev().prev().html(data.nama_kontak);
+            tdOpsi.prev().prev().prev().prev().prev().html(data.nama);
             //close form add
-//            afterInsert = true;
             $('#btn-cancel-edit').click();
         }
     });
 
     //delete supplier
-    $('.btn-delete-supplier').click(function () {
+    $(document).on('click', '.btn-delete-supplier', function () {
         var id = $(this).data('id');
         var url = $(this).attr('href');
         var row = $(this).parent().parent();
         if (confirm('Anda akan menghapus data ini..?')) {
 //            location.href = url;
             $.get(url, null, function () {
-                row.fadeOut(250,null,function(){
-                    //remove
-                    row.remove();
-                    //reorder number
-                    tableRowReorder();
+                //delete row
+                row.fadeOut(250, null, function () {
+                    //delete row dari jquery datatable
+                    tableData
+                            .row(row)
+                            .remove()
+                            .draw();
+
                 });
             });
 

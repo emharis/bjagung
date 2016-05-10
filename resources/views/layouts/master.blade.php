@@ -28,7 +28,7 @@
         
         @yield('styles')
     </head>
-    <body class="hold-transition skin-blue sidebar-mini">
+    <body class="hold-transition skin-blue sidebar-mini {{$sidebar_collapse->value == '1' ? 'sidebar-collapse' : ''}}">
         <!-- Site wrapper -->
         <div class="wrapper">
 
@@ -67,6 +67,15 @@
         <script src="js/app.min.js"></script>
         <!-- AdminLTE for demo purposes -->
         <!--<script src="js/demo.js"></script>-->
+        <script>
+            (function ($) {
+                $('a.sidebar-toggle').click(function(){
+                    //update status sidebar toggle
+                    $.get('sidebar-update');
+                });
+            })(jQuery);
+        </script>
         @yield('scripts')
+        
     </body>
 </html>

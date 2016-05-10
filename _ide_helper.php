@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.2.30 on 2016-05-07.
+ * Generated for Laravel 5.2.31 on 2016-05-10.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -7130,6 +7130,17 @@ namespace {
         }
         
         /**
+         * Determine if a header is set on the request.
+         *
+         * @param string $key
+         * @return bool 
+         * @static 
+         */
+        public static function hasHeader($key){
+            return \Illuminate\Http\Request::hasHeader($key);
+        }
+        
+        /**
          * Retrieve a header from the request.
          *
          * @param string $key
@@ -7722,7 +7733,7 @@ namespace {
          * Order of precedence: PATH (routing placeholders or custom attributes), GET, BODY
          *
          * @param string $key the key
-         * @param mixed $default the default value
+         * @param mixed $default the default value if the parameter key does not exist
          * @return mixed 
          * @static 
          */
@@ -8174,7 +8185,7 @@ namespace {
          * Here is the process to determine the format:
          * 
          *  * format defined by the user (with setRequestFormat())
-         *  * _format request parameter
+         *  * _format request attribute
          *  * $default
          *
          * @param string $default The default format

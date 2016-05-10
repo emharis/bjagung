@@ -71,15 +71,16 @@
                         <tr>
                             <th class="col-sm-1 col-md-1 col-lg-1" >No</th>
                             <th>Nama</th>
+                            <th class="col-sm-2 col-md-2 col-lg-2" >Date</th>
                             <th class="col-sm-1 col-md-1 col-lg-1" ></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $rownum = 1; ?>
                         @foreach($data as $dt)
                         <tr>
-                            <td class="text-right" >{{$rownum++}}</td>
+                            <td class="text-right" ></td>
                             <td>{{$dt->nama}}</td>
+                            <td>{{$dt->created_at}}</td>
                             <td class="text-center" >
                                 <a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-satuan" href="master/satuan/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
                                 <a data-id="{{$dt->id}}" class="btn btn-danger btn-xs btn-delete-satuan" href="master/satuan/delete-satuan/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
@@ -94,39 +95,6 @@
         </div><!-- /.box-body -->
     </div><!-- /.box -->
 
-    <!--    <div class="modal" id="modal-edit-satuan" data-keyboard="false" data-backdrop="static">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Edit Satuan</h4>
-                    </div>
-                    <div class="modal-body">
-                            <form method="POST" action="master/satuan/update-satuan" name="form-edit-satuan" >
-                                <input type="hidden" name="id" />
-                                <table class="table table-bordered table-condensed" >
-                                    <tbody>
-                                        <tr>
-                                            <td>Nama</td>
-                                            <td>
-                                                <input type="text" name="nama" class="form-control" autocomplete="OFF" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>
-                                                <button type="submit" class="btn btn-primary btm-sm">Save</button>
-                                                <a data-dismiss="modal" class="btn btn-danger btn-sm" >Cancel</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </form>
-                    </div>
-                </div> 
-            </div> 
-        </div>-->
-
 </section><!-- /.content -->
 @stop
 
@@ -137,16 +105,22 @@
 
 <script type="text/javascript">
 (function ($) {
-    //reorder row number
-    function tableRowReorder() {
-        var rownum = 1;
-        $('#table-datatable tbody tr').each(function (i, data) {
-            $(this).children('td:first').text(rownum++);
 
-        });
-    }
     //format datatable
-    $('#table-datatable').dataTable();
+    var tableData = $('#table-datatable').DataTable({
+        "aaSorting": [[2, "desc"]],
+        "columns": [
+            {className: "text-right"},
+            null,
+            null,
+            {className: "text-center"}
+        ],
+        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            var index = iDisplayIndex + 1;
+            $('td:eq(0)', nRow).html(index);
+            return nRow;
+        }
+    });
 
     //tampilkan form new satuan
     $('#btn-add').click(function () {
@@ -185,19 +159,17 @@
         success: function (datares) {
             var data = JSON.parse(datares);
             //tambahkan new row
-            var newrow = '<tr>\n\\n\
-                    <td class="text-right" ></td>\n\
-                    <td>' + data.nama + '</td>\n\
-                    <td class="text-center" >\n\
-                        <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-sales" href="master/sales/edit/' + data.id + '" ><i class="fa fa-edit" ></i></a>\n\
-                        <a data-id="' + data.id + '" class="btn btn-danger btn-xs btn-delete-sales" href="master/sales/delete-sales/' + data.id + '" ><i class="fa fa-trash" ></i></a>\n\
-                    </td>\n\
-                    </tr>';
-            $('#table-datatable tbody tr:first').before(newrow);
-            //reorder row number
-            tableRowReorder();
+            tableData.row.add([
+                '',
+                data.nama,
+                data.created_at,
+                '<td class="text-center" >\n\
+                        <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-satuan" href="master/satuan/edit/' + data.id + '" ><i class="fa fa-edit" ></i></a>\n\
+                        <a data-id="' + data.id + '" class="btn btn-danger btn-xs btn-delete-satuan" href="master/satuan/delete-satuan/' + data.id + '" ><i class="fa fa-trash" ></i></a>\n\
+                    </td>'
+            ]).draw(false);
+
             //close form add
-//            afterInsert = true;
             $('#btn-cancel-add').click();
         }
     });
@@ -260,7 +232,8 @@
             var btnEdit = $('#table-datatable tbody tr td a.btn-edit-satuan[data-id="' + data.id + '"]');
             var tdOpsi = btnEdit.parent();
             //update data row
-            tdOpsi.prev().html(data.nama);
+            tdOpsi.prev().html(data.created_at);
+            tdOpsi.prev().prev().html(data.nama);
 
             //tutup form edit
             $('#btn-cancel-edit').click();
@@ -269,7 +242,7 @@
     });
 
     //delete satuan
-    $('.btn-delete-satuan').click(function () {
+    $(document).on('click', '.btn-delete-satuan', function () {
         var id = $(this).data('id');
         var url = $(this).attr('href');
         var row = $(this).parent().parent();
@@ -279,8 +252,10 @@
             $.get(url, null, function () {
                 //delete row
                 row.fadeOut(250, null, function () {
-                    row.remove();
-                    tableRowReorder();
+                    tableData
+                            .row(row)
+                            .remove()
+                            .draw();
                 });
             });
         }

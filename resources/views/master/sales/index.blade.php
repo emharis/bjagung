@@ -62,8 +62,6 @@
                     </table>
                 </form>
             </div>
-
-
             <div id="form-edit-salesman" class="hide" >
                 <form method="POST" action="master/sales/update-sales" name="form-edit-sales" >
                     <input type="hidden" name="id" />
@@ -114,6 +112,7 @@
                             <th>Nama</th>
                             <th>Telp</th>
                             <th>Alamat</th>
+                            <th class="col-sm-2 col-md-2 col-lg-2" >Date</th>
                             <th class="col-sm-1 col-md-1 col-lg-1" ></th>
                         </tr>
                     </thead>
@@ -121,75 +120,22 @@
                         <?php $rownum = 1; ?>
                         @foreach($data as $dt)
                         <tr>
-                            <td class="text-right" >{{$rownum++}}</td>
-                            <td>{{$dt->nama}}</td>
-                            <td>{!! $dt->telp . '<br/>' .$dt->telp_2 !!}</td>
+                            <td class="text-right" ></td>
+                            <td>{{$dt->nama}}</td>                            
+                            <td>{!! $dt->telp !!} {!!$dt->telp_2 != '' ? '&nbsp;|&nbsp;' . $dt->telp_2 : '' !!} </td>
                             <td>{{$dt->alamat}}</td>
+                            <td>{{$dt->created_at}}</td>
                             <td class="text-center" >
-                                <a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-sales" href="master/sales/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
-                                <a data-id="{{$dt->id}}" class="btn btn-danger btn-xs btn-delete-sales" href="master/sales/delete-sales/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
+                                <a title="edit data" data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-sales" href="master/sales/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
+                                <a title="delete data" data-id="{{$dt->id}}" class="btn btn-danger btn-xs btn-delete-sales" href="master/sales/delete-sales/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
                             </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
-
-
-
         </div><!-- /.box-body -->
     </div><!-- /.box -->
-
-    <!--    <div class="modal" id="modal-edit-sales" data-keyboard="false" data-backdrop="static">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Edit Sales</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="master/sales/update-sales" name="form-edit-sales" >
-                            <input type="hidden" name="id" />
-                            <table class="table table-bordered table-condensed" >
-                                <tbody>
-                                    <tr>
-                                        <td>Nama</td>
-                                        <td>
-                                            <input required type="text" name="nama" class="form-control" autocomplete="OFF" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Telp</td>
-                                        <td>
-                                            <input autocomplete="off" type="text" class="form-control" name="telp" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>
-                                            <input autocomplete="off" type="text" class="form-control" name="telp_2" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Alamat</td>
-                                        <td>
-                                            <input autocomplete="off" type="text" class="form-control" name="alamat" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>
-                                            <button type="submit" class="btn btn-primary btm-sm">Save</button>
-                                            <a data-dismiss="modal" class="btn btn-danger btn-sm" >Cancel</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </form>
-                    </div>
-                </div> 
-            </div> 
-        </div>-->
 
 </section><!-- /.content -->
 @stop
@@ -202,25 +148,32 @@
 
 <script type="text/javascript">
 (function ($) {
-    var afterInsert = false;
-    
-    //reorder row number
-    function tableRowReorder(){
-        var rownum=1;
-        $('#table-datatable tbody tr').each(function(i,data){
-            $(this).children('td:first').text(rownum++);
-            
-        });
-    }
-    
+
+    //format datatable
+    var tableData = $('#table-datatable').DataTable({
+        "aaSorting": [[4, "desc"]],
+        "columns": [
+            {className: "text-right"},
+            null,
+            null,
+            null,
+            null,
+            {className: "text-center"}
+        ],
+        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            var index = iDisplayIndex + 1;
+            $('td:eq(0)', nRow).html(index);
+            return nRow;
+        }
+    });
+
     //clear input
-    function clearInput(){
+    function clearInput() {
         $('form[name=form-add-sales] input').val('');
 //        $('form[name=form-edit-sales] input').val('');
     }
-    
-    //format datatable
-    $('#table-datatable').dataTable();
+
+
     //tampilkan form new sales
     $('#btn-add-sales').click(function () {
         //tampilkan form new sales
@@ -241,7 +194,7 @@
         $('#form-add-salesman').slideUp(250, null, function () {
             //clear input
             clearInput();
-            
+
         });
         $('#table-salesman').fadeIn(300);
 
@@ -249,33 +202,35 @@
         $('#btn-add-sales').removeClass('disabled');
         return false;
     });
-    
+
     //submit add new salesman
     $('form[name=form-add-sales]').ajaxForm({
-        success:function(datares){
+        success: function (datares) {
             var data = JSON.parse(datares);
             //tambahkan new row
-            var newrow = '<tr>\n\\n\
-                    <td class="text-right" ></td>\n\
-                    <td>'+ data.nama + '</td>\n\
-                    <td>'+ data.telp + '<br/>' + data.telp_2 + '</td>\n\
-                    <td>' + data.alamat + '</td>\n\
-                    <td class="text-center" >\n\
-                        <a data-id="'+ data.id + '" class="btn btn-success btn-xs btn-edit-sales" href="master/sales/edit/'+ data.id + '" ><i class="fa fa-edit" ></i></a>\n\
-                        <a data-id="'+ data.id + '" class="btn btn-danger btn-xs btn-delete-sales" href="master/sales/delete-sales/'+ data.id + '" ><i class="fa fa-trash" ></i></a>\n\
-                    </td>\n\
-                    </tr>';
-            $('#table-datatable tbody tr:first').before(newrow);
-            //reorder row number
-            tableRowReorder();
+            var telp = data.telp;
+            if(data.telp_2 !== ''){
+                telp = data.telp + '  |  ' + data.telp_2;
+            }
+            tableData.row.add([
+                '',
+                data.nama,
+                telp,
+                data.alamat,
+                data.created_at,
+                '<td class="text-center" >\n\
+                        <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-sales" href="master/sales/edit/' + data.id + '" ><i class="fa fa-edit" ></i></a>\n\
+                        <a data-id="' + data.id + '" class="btn btn-danger btn-xs btn-delete-sales" href="master/sales/delete-sales/' + data.id + '" ><i class="fa fa-trash" ></i></a>\n\
+                    </td>'
+            ]).draw(false);
+//            
             //close form add
-//            afterInsert = true;
             $('#btn-cancel-add-sales').click();
         }
-    });    
+    });
 
     //edit sales
-    $(document).on('click','.btn-edit-sales',function () {
+    $(document).on('click', '.btn-edit-sales', function () {
         var url = $(this).attr('href');
         var id = $(this).data('id');
 
@@ -289,9 +244,6 @@
             $('#form-edit-salesman input[name=telp]').val(dataSales.telp);
             $('#form-edit-salesman input[name=telp_2]').val(dataSales.telp_2);
             $('#form-edit-salesman input[name=alamat]').val(dataSales.alamat);
-            //fokuskan & tampilkan modal                
-//            $('#modal-edit-sales').modal('show');
-//            $('#modal-edit-sales input[name=nama]').focus();
 
             $('#form-edit-salesman').removeClass('hide');
             $('#form-edit-salesman').hide();
@@ -312,27 +264,26 @@
     $('#btn-cancel-edit-salesman').click(function () {
         $('#form-edit-salesman').slideUp(250);
         $('#table-salesman').fadeIn(300);
-        //clear input
-//        clearInput();
 
         //enable btn add
         $('#btn-add-sales').removeClass('disabled');
 
         return false;
     });
-    
+
     //submit edit
     $('form[name=form-edit-sales]').ajaxForm({
-        success:function(datares){
+        success: function (datares) {
             var data = JSON.parse(datares);
             //update row
             var btnEdit = $('#table-datatable tbody tr td a.btn-edit-sales[data-id="' + data.id + '"]');
             var tdOpsi = btnEdit.parent();
             //update data row
-            tdOpsi.prev().html(data.alamat);
-            tdOpsi.prev().prev().html(data.telp + '<br/>' + data.telp_2);
-            tdOpsi.prev().prev().prev().html(data.nama);
-            
+            tdOpsi.prev().html(data.created_at);
+            tdOpsi.prev().prev().html(data.alamat);
+            tdOpsi.prev().prev().prev().html(data.telp + '<br/>' + data.telp_2);
+            tdOpsi.prev().prev().prev().prev().html(data.nama);
+
             //tutup form edit
             $('#btn-cancel-edit-salesman').click();
 //            alert('Update sukses');
@@ -340,20 +291,23 @@
     });
 
     //delete sales
-    $(document).on('click','.btn-delete-sales',function () {
+    $(document).on('click', '.btn-delete-sales', function () {
         var id = $(this).data('id');
         var url = $(this).attr('href');
         var row = $(this).parent().parent();
         if (confirm('Anda akan menghapus data ini..?')) {
-//            location.href = url;
-                //delete by ajax
-                $.get(url,null,function(){
-                    //delete row
-                    row.fadeOut(250,null,function(){
-                        row.remove();
-                        tableRowReorder();
-                    });
+            //delete by ajax
+            $.get(url, null, function () {
+                //delete row
+                row.fadeOut(250, null, function () {
+                    //delete row dari jquery datatable
+                    tableData
+                            .row(row)
+                            .remove()
+                            .draw();
+
                 });
+            });
         }
 
         return false;
