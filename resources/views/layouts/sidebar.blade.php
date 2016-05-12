@@ -31,7 +31,7 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="{{Request::is('setbar/stok*') ? 'active':''}}" ><a href="setbar/stok"><i class="fa fa-circle-o"></i> Stok</a></li>
+                    <li class="{{Request::is('setbar/manstok*') ? 'active':''}}" ><a href="setbar/manstok"><i class="fa fa-circle-o"></i> Manual Stok</a></li>
                     <li class="{{Request::is('setbar/harga*') ? 'active':''}}" ><a href="setbar/harga"><i class="fa fa-circle-o"></i> Harga Barang</a></li>
                     
                 </ul>

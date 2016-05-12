@@ -62,9 +62,14 @@ Route::group(['middleware' => ['web']], function () {
     });
 
     Route::group(['prefix' => 'setbar'], function () {
-        //kategori
-        Route::get('stok', ['as' => 'setbar.stok', 'uses' => 'StokController@index']);
-        Route::get('stok/set-stok/{id}', ['as' => 'setbar.stok.set-stok', 'uses' => 'StokController@setStok']);
+//        //stok
+//        Route::get('stok', ['as' => 'setbar.stok', 'uses' => 'StokController@index']);
+//        Route::get('stok/set-stok/{id}', ['as' => 'setbar.stok.set-stok', 'uses' => 'StokController@setStok']);
+        
+        //Manual Stok
+        Route::get('manstok', ['as' => 'setbar.manstok', 'uses' => 'ManstokController@index']);
+        Route::get('manstok/set-stok/{id}', ['as' => 'setbar.manstok.set-stok', 'uses' => 'ManstokController@setStok']);
+        Route::post('manstok/insert', ['as' => 'setbar.manstok.insert', 'uses' => 'ManstokController@insert']);
     });
     
     

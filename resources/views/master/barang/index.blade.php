@@ -42,11 +42,23 @@
                             <td class="col-sm-2 col-md-2 col-lg-2" >Kategori</td>
                             <td>
                                 @foreach($kategori as $dt)
-                                <label>
-                                    <input type="radio" name="kategori" value="{{$dt->id}}">
-                                    {{$dt->nama}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                </label>
+                                <div class="radio " >
+                                    <label>
+                                        <input type="radio" name="kategori" value="{{$dt->id}}">
+                                        {{$dt->nama}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </label>
+                                </div>
                                 @endforeach
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-sm-2 col-md-2 col-lg-2" >Reorder Level</td>
+                            <td>
+                                <div class="row" >
+                                    <div class="col-sm-2 col-md-2 col-lg-2" >
+                                        <input autocomplete="off" required type="text" class="form-control text-right" name="rol" />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -81,11 +93,23 @@
                             <td class="col-sm-2 col-md-2 col-lg-2" >Kategori</td>
                             <td>
                                 @foreach($kategori as $dt)
-                                <label>
-                                    <input type="radio" name="kategori" value="{{$dt->id}}">
-                                    {{$dt->nama}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                </label>
+                                <div class="radio " >
+                                    <label>
+                                        <input type="radio" name="kategori" value="{{$dt->id}}">
+                                        {{$dt->nama}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </label>
+                                </div>
                                 @endforeach
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-sm-2 col-md-2 col-lg-2" >Reorder Level</td>
+                            <td>
+                                <div class="row" >
+                                    <div class="col-sm-2 col-md-2 col-lg-2" >
+                                        <input autocomplete="off" required type="text" class="form-control text-right" name="rol" />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
 
@@ -264,12 +288,13 @@
                 $('#form-edit input[name=id]').val(dataBarang.id);
                 $('#form-edit input[name=kode]').val(dataBarang.kode);
                 $('#form-edit input[name=nama]').val(dataBarang.nama);
-                $('#form-edit input[type=radio][value='+dataBarang.kategori_id+']').prop('checked',true);                
+                $('#form-edit input[name=rol]').val(dataBarang.rol);
+                $('#form-edit input[type=radio][value=' + dataBarang.kategori_id + ']').prop('checked', true);
 
                 //focuskan
                 $('#form-edit input[name=nama]').focus();
             });
-            
+
             //disable btn add
             $('#btn-add').addClass('disabled');
 

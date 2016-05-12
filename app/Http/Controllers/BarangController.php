@@ -32,6 +32,7 @@ class BarangController extends Controller {
             'nama' => $request->input('nama'),
             'kode' => $request->input('kode'),
             'kategori_id' => $request->input('kategori'),
+            'rol' => $request->input('rol'),
         ]);
 
         if (!$request->ajax()) {
@@ -61,6 +62,7 @@ class BarangController extends Controller {
                     'nama' => $request->input('nama'),
                     'kode' => $request->input('kode'),
                     'kategori_id' => $request->input('kategori'),
+                    'rol' => $request->input('rol'),
         ]);
 
         if (!$request->ajax()) {

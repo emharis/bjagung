@@ -36,10 +36,12 @@
                             <td class="col-sm-2 col-md-2 col-lg-2" >Satuan</td>
                             <td>
                                 @foreach($satuan as $dt)
-                                <label>
-                                    <input type="radio" name="satuan" value="{{$dt->id}}" >
-                                    {{$dt->nama}}
-                                </label>&nbsp;&nbsp;&nbsp;
+                                <div class="radio" >
+                                    <label>
+                                        <input type="radio" name="satuan" value="{{$dt->id}}" >
+                                        {{$dt->nama}}
+                                    </label>
+                                </div>
                                 @endforeach
                             </td>
                         </tr>
@@ -68,10 +70,12 @@
                             <td class="col-sm-2 col-md-2 col-lg-2" >Satuan</td>
                             <td>
                                 @foreach($satuan as $dt)
-                                <label>
-                                    <input type="radio" name="satuan" value="{{$dt->id}}" >
-                                    {{$dt->nama}}
-                                </label>&nbsp;&nbsp;&nbsp;
+                                <div class="radio" >
+                                    <label>
+                                        <input type="radio" name="satuan" value="{{$dt->id}}" >
+                                        {{$dt->nama}}
+                                    </label>
+                                </div>
                                 @endforeach
                             </td>
                         </tr>
@@ -228,17 +232,17 @@
             //tampilkan form edit
             $('#form-edit-kategori').hide();
             $('#form-edit-kategori').removeClass('hide');
-            
+
             //sembunyikan table data
             $('#table-data').fadeOut(200);
-            
+
             //tampilkan form edit
             $('#form-edit-kategori').slideDown(250, null, function () {
                 //focuskan 
                 $('#form-edit-kategori input[name=nama]').focus();
             });
 
-            
+
         });
 
         //disable btn add
