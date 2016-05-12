@@ -18,6 +18,8 @@
         <!-- AdminLTE Skins. Choose a skin from the css/skins
              folder instead of downloading all of them to reduce the load. -->
         <link rel="stylesheet" href="css/skins/_all-skins.min.css">
+        <!-- FAVICON -->
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -25,7 +27,7 @@
             <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
             <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
-        
+
         @yield('styles')
     </head>
     <body class="hold-transition skin-blue sidebar-mini {{$sidebar_collapse->value == '1' ? 'sidebar-collapse' : ''}}">
@@ -52,7 +54,7 @@
                 </div>
                 <strong>Copyright &copy; 2016 <a href="">Baja Agung</a>.</strong> All rights reserved.
             </footer>
-            
+
         </div><!-- ./wrapper -->
 
         <!-- jQuery 2.1.4 -->
@@ -68,14 +70,14 @@
         <!-- AdminLTE for demo purposes -->
         <!--<script src="js/demo.js"></script>-->
         <script>
-            (function ($) {
-                $('a.sidebar-toggle').click(function(){
-                    //update status sidebar toggle
-                    $.get('sidebar-update');
-                });
-            })(jQuery);
+(function ($) {
+    $('a.sidebar-toggle').click(function () {
+        //update status sidebar toggle
+        $.get('sidebar-update');
+    });
+})(jQuery);
         </script>
         @yield('scripts')
-        
+
     </body>
 </html>
