@@ -17,8 +17,8 @@
                 <ul class="treeview-menu">
                     <li class="{{Request::is('master/sales*') ? 'active':''}}" ><a href="master/sales"><i class="fa fa-circle-o"></i> Salesman</a></li>
                     <li class="{{Request::is('master/supplier*') ? 'active':''}}" ><a href="master/supplier"><i class="fa fa-circle-o"></i> Supplier</a></li>
-                    <li class="{{Request::is('master/kategori*') ? 'active':''}}" ><a href="master/kategori"><i class="fa fa-circle-o"></i> Kategori Barang</a></li>
                     <li class="{{Request::is('master/satuan*') ? 'active':''}}" ><a href="master/satuan"><i class="fa fa-circle-o"></i> Satuan Barang</a></li>
+                    <li class="{{Request::is('master/kategori*') ? 'active':''}}" ><a href="master/kategori"><i class="fa fa-circle-o"></i> Kategori Barang</a></li>
                     <li class="{{Request::is('master/barang*') ? 'active':''}}" ><a href="master/barang"><i class="fa fa-circle-o"></i> Barang</a></li>                    
                     <li class="{{Request::is('master/customer*') ? 'active':''}}" ><a href="master/customer"><i class="fa fa-circle-o"></i> Customer</a></li>                   
                     

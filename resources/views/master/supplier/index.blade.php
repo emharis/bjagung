@@ -23,7 +23,7 @@
             <div class="clearfix" ></div>
             <br/>
             <!-- Form add supplier -->
-            <form class="hide" name="form-add-supplier" method="POST" action="master/supplier/insert" >
+            <form class="hide" id="form-add-supplier" name="form-add-supplier" method="POST" action="master/supplier/insert" >
                 <table class="table table-bordered table-condensed" >
                     <tbody>
                         <tr>
@@ -41,19 +41,40 @@
                         <tr>
                             <td>Telp</td>
                             <td>
-                                <input autocomplete="off" type="text" class="form-control" name="telp" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <input autocomplete="off" type="text" class="form-control" name="telp_2" />
+                                <div class="row" >
+                                    <div class="col-sm-6 col-md-6 col-lg-6" >
+                                        <input autocomplete="off" type="text" class="form-control" name="telp" />
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6" >
+                                        <input autocomplete="off" type="text" class="form-control" name="telp_2" />
+                                    </div>
+                                </div>
+
                             </td>
                         </tr>
                         <tr>
                             <td>Alamat</td>
                             <td>
                                 <input autocomplete="off" type="text" class="form-control" name="alamat" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Rekening</td>
+                            <td>
+                                <input autocomplete="off" type="text" class="form-control" name="rek" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Jatuh Tempo/Minggu</td>
+                            <td>
+                                <div class="row" >
+                                    <div class="col-sm-8 col-md-8 col-lg-8" >
+                                        <input autocomplete="off" type="range" min="0" max="10" step="1" value="1"  name="jatuh_tempo" />
+                                        <small id="jatuh_tempo_label_add" >1</small>
+                                    </div>
+
+                                </div>
+
                             </td>
                         </tr>
                         <tr>
@@ -88,19 +109,40 @@
                         <tr>
                             <td>Telp</td>
                             <td>
-                                <input autocomplete="off" type="text" class="form-control" name="telp" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <input autocomplete="off" type="text" class="form-control" name="telp_2" />
+                                <div class="row" >
+                                    <div class="col-sm-6 col-md-6 col-lg-6" >
+                                        <input autocomplete="off" type="text" class="form-control" name="telp" />
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6" >
+                                        <input autocomplete="off" type="text" class="form-control" name="telp_2" />
+                                    </div>
+                                </div>
+
                             </td>
                         </tr>
                         <tr>
                             <td>Alamat</td>
                             <td>
                                 <input autocomplete="off" type="text" class="form-control" name="alamat" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Rekening</td>
+                            <td>
+                                <input autocomplete="off" type="text" class="form-control" name="rek" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Jatuh Tempo/Minggu</td>
+                            <td>
+                                <div class="row" >
+                                    <div class="col-sm-8 col-md-8 col-lg-8" >
+                                        <input autocomplete="off" type="range" min="0" max="10" step="1" value="1"  name="jatuh_tempo" />
+                                        <small id="jatuh_tempo_label_edit" >1</small>
+                                    </div>
+
+                                </div>
+
                             </td>
                         </tr>
                         <tr>
@@ -182,6 +224,11 @@
         }
     });
 
+    //jatuh tempo add
+    $('#form-add-supplier input[name=jatuh_tempo]').change(function () {
+        $('#jatuh_tempo_label_add').text($(this).val());
+    });
+
     //tampilkan form new supplier
     $('#btn-add-supplier').click(function () {
         //tampilkan form new supplier
@@ -223,7 +270,7 @@
             if (data.telp_2 !== '') {
                 telp = data.telp + '  |  ' + data.telp_2;
             }
-            
+
             //add new row
             tableData.row.add([
                 '',
@@ -244,6 +291,13 @@
             $('form[name=form-add-supplier] input').val('');
         }
     });
+    
+    //=============================================================================
+    
+    //jatuh tempo edit
+    $('#form-edit-supplier input[name=jatuh_tempo]').change(function () {
+        $('#jatuh_tempo_label_edit').text($(this).val());
+    });
 
 
     //edit supplier
@@ -262,6 +316,9 @@
             $('#form-edit-supplier input[name=telp]').val(dataSupplier.telp);
             $('#form-edit-supplier input[name=telp_2]').val(dataSupplier.telp_2);
             $('#form-edit-supplier input[name=alamat]').val(dataSupplier.alamat);
+            $('#form-edit-supplier input[name=rek]').val(dataSupplier.rek);
+            $('#form-edit-supplier input[name=jatuh_tempo]').val(dataSupplier.jatuh_tempo);
+            $('#form-edit-supplier #jatuh_tempo_label_edit').text(dataSupplier.jatuh_tempo);
 
             //tampilkan form edit
             $('#form-edit-supplier').removeClass('hide');

@@ -19,7 +19,9 @@ class SalesController extends Controller {
     //insert new data sales
     public function insert(Request $request) {
         $id = \DB::table('sales')->insertGetId([
+            'kode' => $request->input('kode'),
             'nama' => $request->input('nama'),
+            'ktp' => $request->input('ktp'),
             'telp' => $request->input('telp'),
             'telp_2' => $request->input('telp_2'),
             'alamat' => $request->input('alamat'),
@@ -44,7 +46,9 @@ class SalesController extends Controller {
         \DB::table('sales')
                 ->whereId($request->input('id'))
                 ->update([
+                    'kode' => $request->input('kode'),
                     'nama' => $request->input('nama'),
+                    'ktp' => $request->input('ktp'),
                     'telp' => $request->input('telp'),
                     'telp_2' => $request->input('telp_2'),
                     'alamat' => $request->input('alamat'),

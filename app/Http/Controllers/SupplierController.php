@@ -24,6 +24,8 @@ class SupplierController extends Controller {
             'telp' => $request->input('telp'),
             'telp_2' => $request->input('telp_2'),
             'alamat' => $request->input('alamat'),
+            'jatuh_tempo' => $request->input('jatuh_tempo'),
+            'rek' => $request->input('rek'),
         ]);
 
         if (!$request->ajax()) {
@@ -50,6 +52,8 @@ class SupplierController extends Controller {
                     'telp' => $request->input('telp'),
                     'telp_2' => $request->input('telp_2'),
                     'alamat' => $request->input('alamat'),
+                    'jatuh_tempo' => $request->input('jatuh_tempo'),
+                    'rek' => $request->input('rek'),
         ]);
 
         if (!$request->ajax()) {

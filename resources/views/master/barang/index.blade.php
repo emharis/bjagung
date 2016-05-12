@@ -33,35 +33,20 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="col-sm-2 col-md-2 col-lg-2" >Kode</td>
+                            <td>
+                                <input autocomplete="off" required type="text" class="form-control" name="kode" />
+                            </td>
+                        </tr>
+                        <tr>
                             <td class="col-sm-2 col-md-2 col-lg-2" >Kategori</td>
                             <td>
-                                {!! Form::select('kategori',$slc_kategori,null,['class'=>'form-control']) !!}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="col-sm-2 col-md-2 col-lg-2" >Satuan Beli</td>
-                            <td>
-                                {!! Form::select('satuan_beli',$slc_satuan_beli,null,['class'=>'form-control']) !!}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Satuan Jual</td>
-                            <td>
-                                <div class="row">
-                                    @foreach($satuan as $dt)
-                                    <div class="col-sm-3 col-md-3 col-lg-3" >
-                                        <div class="input-group">
-                                            <span class="input-group-addon">
-                                                <label>
-                                                    <input  class="satuan_jual" type="checkbox" name="satuan_jual[]" value="{{$dt->id}}" > 
-                                                    {{$dt->nama}}
-                                                </label>
-                                            </span>
-                                            <input type="text" class="form-control" name="konversi_satuan_{{$dt->id}}" >
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                </div>
+                                @foreach($kategori as $dt)
+                                <label>
+                                    <input type="radio" name="kategori" value="{{$dt->id}}">
+                                    {{$dt->nama}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                </label>
+                                @endforeach
                             </td>
                         </tr>
                         <tr>
@@ -75,6 +60,7 @@
                 </table>
             </form>
 
+            <!--Form Edit Barang-->
             <form method="POST" action="master/barang/update-barang" name="form-edit" id="form-edit" class="hide" >
                 <input type="hidden" name="id" />
                 <table class="table table-bordered table-condensed" >
@@ -86,37 +72,23 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="col-sm-2 col-md-2 col-lg-2" >Kode</td>
+                            <td>
+                                <input autocomplete="off" required type="text" class="form-control" name="kode" />
+                            </td>
+                        </tr>
+                        <tr>
                             <td class="col-sm-2 col-md-2 col-lg-2" >Kategori</td>
                             <td>
-                                {!! Form::select('kategori',$slc_kategori,null,['class'=>'form-control']) !!}
+                                @foreach($kategori as $dt)
+                                <label>
+                                    <input type="radio" name="kategori" value="{{$dt->id}}">
+                                    {{$dt->nama}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                </label>
+                                @endforeach
                             </td>
                         </tr>
-                        <tr>
-                            <td class="col-sm-2 col-md-2 col-lg-2" >Satuan Beli</td>
-                            <td>
-                                {!! Form::select('satuan_beli',$slc_satuan_beli,null,['class'=>'form-control']) !!}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Satuan Jual</td>
-                            <td>
-                                <div class="row">
-                                    @foreach($satuan as $dt)
-                                    <div class="col-sm-3 col-md-3 col-lg-3" >
-                                        <div class="input-group">
-                                            <span class="input-group-addon">
-                                                <label>
-                                                    <input  class="satuan_jual" type="checkbox" name="satuan_jual[]" value="{{$dt->id}}" > 
-                                                    {{$dt->nama}}
-                                                </label>
-                                            </span>
-                                            <input type="text" class="form-control" name="konversi_satuan_{{$dt->id}}" >
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                </div>
-                            </td>
-                        </tr>
+
                         <tr>
                             <td></td>
                             <td>
@@ -134,18 +106,21 @@
                     <thead>
                         <tr>
                             <th class="col-sm-1 col-md-1 col-lg-1" >No</th>
-                            <th   >Kategori</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1" >Kode</th>
+                            <th class="col-sm-3 col-md-3 col-lg-3" >Kategori</th>
                             <th   >Barang</th>
+                            <th class="col-sm-2 col-md-2 col-lg-2"  >Date</th>
                             <th class="col-sm-1 col-md-1 col-lg-1" ></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $rownum = 1; ?>
                         @foreach($data as $dt)
                         <tr>
-                            <td class="text-right" >{{$rownum++}}</td>
+                            <td class="text-right" ></td>
+                            <td  >{{$dt->kode}}</td>
                             <td class="col-sm-2 col-md-2 col-lg-2 text-right" >{{$dt->kategori}}</td>
                             <td>{{$dt->nama}}</td>
+                            <td>{{$dt->created_at}}</td>
                             <td class="text-center" >
                                 <a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-barang" href="master/barang/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
                                 <a data-id="{{$dt->id}}" class="btn btn-danger btn-xs btn-delete-barang" href="master/barang/delete-barang/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
@@ -159,39 +134,6 @@
 
         </div><!-- /.box-body -->
     </div><!-- /.box -->
-
-    <!--    <div class="modal" id="modal-edit-barang" data-keyboard="false" data-backdrop="static">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Edit Barang</h4>
-                    </div>
-                    <div class="modal-body">
-                            <form method="POST" action="master/barang/update-barang" name="form-edit-barang" >
-                                <input type="hidden" name="id" />
-                                <table class="table table-bordered table-condensed" >
-                                    <tbody>
-                                        <tr>
-                                            <td>Nama</td>
-                                            <td>
-                                                <input type="text" name="nama" class="form-control" autocomplete="OFF" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>
-                                                <button type="submit" class="btn btn-primary btm-sm">Save</button>
-                                                <a data-dismiss="modal" class="btn btn-danger btn-sm" >Cancel</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </form>
-                    </div>
-                </div> 
-            </div> 
-        </div>-->
 
 </section><!-- /.content -->
 @stop
@@ -213,20 +155,26 @@
         }
     });
 
+    //format datatable
+    var tableData = $('#table-datatable').DataTable({
+        "aaSorting": [[4, "desc"]],
+        "columns": [
+            {className: "text-right"},
+            null,
+            {className: "text-right"},
+            null,
+            null,
+            {className: "text-center"}
+        ],
+        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            var index = iDisplayIndex + 1;
+            $('td:eq(0)', nRow).html(index);
+            return nRow;
+        }
+    });
+
     //kosongkan selectbox
     $('#form-add select').val([]);
-
-
-    //reorder row number
-    function tableRowReorder() {
-        var rownum = 1;
-        $('#table-datatable tbody tr').each(function (i, data) {
-            $(this).children('td:first').text(rownum++);
-
-        });
-    }
-    //format datatable
-    $('#table-datatable').dataTable();
 
     //tampilkan form new barang
     $('#btn-add').click(function () {
@@ -248,8 +196,8 @@
     //cancel add new
     $('#btn-cancel-add').click(function () {
         $('form[name=form-add]').slideUp(250, null, function () {
-            //clear input
-            $('form[name=form-add] input').val(null);
+            //clear form
+            $('#form-add').clearForm();
         });
 
         //tampilkan table data
@@ -261,24 +209,34 @@
         return false;
     });
 
+    //submit add new barang
     $('#form-add').ajaxForm({
+        beforeSubmit: function () {
+            //cek data
+            var ischeck = $("#form-add input[name='kategori']:checked").val();
+            if (ischeck) {
+
+            } else {
+                alert('Data kategori belum ditentukan.');
+                return false;
+            }
+        },
         success: function (datares) {
             var data = JSON.parse(datares);
             //tambahkan new row
-            var newrow = '<tr>\n\\n\
-                    <td class="text-right" ></td>\n\
-                    <td class="text-right" >' + data.kategori + '</td>\n\
-                    <td>' + data.nama + '</td>\n\
-                    <td class="text-center" >\n\
+            tableData.row.add([
+                '',
+                data.kode,
+                data.kategori,
+                data.nama,
+                data.created_at,
+                '<td class="text-center" >\n\
                         <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-barang" href="master/barang/edit/' + data.id + '" ><i class="fa fa-edit" ></i></a>\n\
                         <a data-id="' + data.id + '" class="btn btn-danger btn-xs btn-delete-barang" href="master/barang/delete-barang/' + data.id + '" ><i class="fa fa-trash" ></i></a>\n\
-                    </td>\n\
-                    </tr>';
-            $('#table-datatable tbody tr:first').before(newrow);
-            //reorder row number
-            tableRowReorder();
+                    </td>'
+            ]).draw(false);
+
             //close form add
-//            afterInsert = true;
             $('#btn-cancel-add').click();
         }
     });
@@ -298,18 +256,20 @@
             //tampilkan form edit
             $('#form-edit').hide();
             $('#form-edit').removeClass('hide');
+            //sebunyikan table data
+            $('#table-data').fadeOut(200);
+            //tampilkan form edit
             $('#form-edit').slideDown(250, null, function () {
                 //tampilkan data ke form
                 $('#form-edit input[name=id]').val(dataBarang.id);
+                $('#form-edit input[name=kode]').val(dataBarang.kode);
                 $('#form-edit input[name=nama]').val(dataBarang.nama);
+                $('#form-edit input[type=radio][value='+dataBarang.kategori_id+']').prop('checked',true);                
 
                 //focuskan
                 $('#form-edit input[name=nama]').focus();
             });
-
-            //sebunyikan table data
-            $('#table-data').fadeOut(200);
-
+            
             //disable btn add
             $('#btn-add').addClass('disabled');
 
@@ -322,8 +282,7 @@
     $('#btn-cancel-edit').click(function () {
         //sembunyikan form edit
         $('#form-edit').slideUp(250, null, function () {
-            //clear input
-            $('#form-edit input').val('');
+            $('#form-edit').clearForm();
         });
 
         //tapilkan table data
@@ -341,7 +300,10 @@
             var btnEdit = $('#table-datatable tbody tr td a.btn-edit-barang[data-id="' + data.id + '"]');
             var tdOpsi = btnEdit.parent();
             //update data row
-            tdOpsi.prev().html(data.nama);
+//            tdOpsi.prev().html(data.created_at);
+            tdOpsi.prev().prev().html(data.nama);
+            tdOpsi.prev().prev().prev().html(data.kategori);
+            tdOpsi.prev().prev().prev().prev().html(data.kode);
 
             //tutup form edit
             $('#btn-cancel-edit').click();
@@ -350,7 +312,7 @@
     });
 
     //delete barang
-    $(document).on('click','.btn-delete-barang',function () {
+    $(document).on('click', '.btn-delete-barang', function () {
 //        var id = $(this).data('id');
         var url = $(this).attr('href');
         var row = $(this).parent().parent();
@@ -360,13 +322,28 @@
             $.get(url, null, function () {
                 //delete row
                 row.fadeOut(250, null, function () {
-                    row.remove();
-                    tableRowReorder();
+                    //delete row dari jquery datatable
+                    tableData
+                            .row(row)
+                            .remove()
+                            .draw();
                 });
             });
         }
 
         return false;
+    });
+
+    //checkbox change
+    $('#form-add input[type=checkbox],#form-edit input[type=checkbox]').change(function () {
+        var ischeck = $(this).prop('checked');
+        var checkitem = $(this);
+        if (ischeck == false) {
+            checkitem.parent().parent().next().val('');
+        } else {
+            //focuskan
+            checkitem.parent().parent().next().focus();
+        }
     });
 
 })(jQuery);

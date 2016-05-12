@@ -9,29 +9,45 @@ use App\Http\Controllers\Controller;
 class KategoriController extends Controller {
 
     public function index() {
-        $data = \DB::table('kategori')->orderBy('created_at', 'desc')->get();
+        $data = \DB::table('kategori')
+                ->orderBy('created_at', 'desc')
+                ->join('satuan', 'kategori.satuan_id', '=', 'satuan.id')
+                ->select('kategori.*', 'satuan.nama as satuan')
+                ->get();
+        $satuan = \DB::table('satuan')->get();
 
         return view('master.kategori.index', [
-            'data' => $data
+            'data' => $data,
+            'satuan' => $satuan,
         ]);
     }
 
     //insert new data kategori
     public function insert(Request $request) {
         $id = \DB::table('kategori')->insertGetId([
-            'nama' => $request->input('nama')
+            'nama' => $request->input('nama'),
+            'satuan_id' => $request->input('satuan'),
         ]);
 
         if (!$request->ajax()) {
             return redirect('master/kategori');
-        }else{
-            return json_encode(\DB::table('kategori')->find($id));
+        } else {
+            $data = \DB::table('kategori')
+                    ->where('kategori.id', $id)
+                    ->join('satuan', 'satuan.id', '=', 'kategori.satuan_id')
+                    ->select('kategori.*', 'satuan.nama as satuan')
+                    ->first();
+            return json_encode($data);
         }
     }
 
     //get data kategori
     public function getKategori($id) {
-        $data = \DB::table('kategori')->find($id);
+        $data = \DB::table('kategori')
+                ->where('kategori.id', $id)
+                ->join('satuan', 'satuan.id', '=', 'kategori.satuan_id')
+                ->select('kategori.*', 'satuan.nama as satuan')
+                ->first();
 
         return json_encode($data);
     }
@@ -41,13 +57,19 @@ class KategoriController extends Controller {
         \DB::table('kategori')
                 ->whereId($request->input('id'))
                 ->update([
-                    'nama' => $request->input('nama')
+                    'nama' => $request->input('nama'),
+                    'satuan_id' => $request->input('satuan'),
         ]);
 
         if (!$request->ajax()) {
             return redirect('master/kategori');
-        }else{
-            return json_encode(\DB::table('kategori')->find($request->input('id')));
+        } else {
+            $data = \DB::table('kategori')
+                    ->where('kategori.id', $request->input('id'))
+                    ->join('satuan', 'satuan.id', '=', 'kategori.satuan_id')
+                    ->select('kategori.*', 'satuan.nama as satuan')
+                    ->first();
+            return json_encode($data);
         }
     }
 

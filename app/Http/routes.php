@@ -31,6 +31,7 @@ Route::group(['middleware' => ['web']], function () {
         //barang
         Route::get('barang', ['as' => 'master.barang', 'uses' => 'BarangController@index']);
         Route::get('barang/get-barang/{id}', ['as' => 'master.barang.get-barang', 'uses' => 'BarangController@getBarang']);
+        Route::get('barang/get-satuan-barang/{id}', ['as' => 'master.barang.get-satuan-barang', 'uses' => 'BarangController@getSatuanBarang']);
         Route::get('barang/delete-barang/{id}', ['as' => 'master.barang.delete-barang', 'uses' => 'BarangController@deleteBarang']);
         Route::post('barang/insert', ['as' => 'master.barang.insert', 'uses' => 'BarangController@insert']);
         Route::post('barang/update-barang', ['as' => 'master.barang.update-barang', 'uses' => 'BarangController@updateBarang']);
@@ -59,4 +60,12 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('sales/insert', ['as' => 'master.sales.insert', 'uses' => 'SalesController@insert']);
         Route::post('sales/update-sales', ['as' => 'master.sales.update-sales', 'uses' => 'SalesController@updateSales']);
     });
+
+    Route::group(['prefix' => 'setbar'], function () {
+        //kategori
+        Route::get('stok', ['as' => 'setbar.stok', 'uses' => 'StokController@index']);
+        Route::get('stok/set-stok/{id}', ['as' => 'setbar.stok.set-stok', 'uses' => 'StokController@setStok']);
+    });
+    
+    
 });

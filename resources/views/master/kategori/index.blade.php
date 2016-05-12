@@ -33,6 +33,17 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="col-sm-2 col-md-2 col-lg-2" >Satuan</td>
+                            <td>
+                                @foreach($satuan as $dt)
+                                <label>
+                                    <input type="radio" name="satuan" value="{{$dt->id}}" >
+                                    {{$dt->nama}}
+                                </label>&nbsp;&nbsp;&nbsp;
+                                @endforeach
+                            </td>
+                        </tr>
+                        <tr>
                             <td></td>
                             <td>
                                 <button type="submit" class="btn btn-primary btn-sm" >Save</button>
@@ -54,6 +65,17 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="col-sm-2 col-md-2 col-lg-2" >Satuan</td>
+                            <td>
+                                @foreach($satuan as $dt)
+                                <label>
+                                    <input type="radio" name="satuan" value="{{$dt->id}}" >
+                                    {{$dt->nama}}
+                                </label>&nbsp;&nbsp;&nbsp;
+                                @endforeach
+                            </td>
+                        </tr>
+                        <tr>
                             <td></td>
                             <td>
                                 <button type="submit" class="btn btn-primary btm-sm">Save</button>
@@ -71,6 +93,7 @@
                         <tr>
                             <th class="col-sm-1 col-md-1 col-lg-1" >No</th>
                             <th>Nama</th>
+                            <th class="col-sm-2 col-md-2 col-lg-2" >Satuan</th>
                             <th class="col-sm-2 col-md-2 col-lg-2" >Date</th>
                             <th class="col-sm-1 col-md-1 col-lg-1" ></th>
                         </tr>
@@ -80,6 +103,7 @@
                         <tr>
                             <td class="text-right" ></td>
                             <td>{{$dt->nama}}</td>
+                            <td>{{$dt->satuan}}</td>
                             <td>{{$dt->created_at}}</td>
                             <td class="text-center" >
                                 <a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-kategori" href="master/kategori/get-kategori/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
@@ -105,9 +129,10 @@
 (function ($) {
     //format datatable
     var tableData = $('#table-datatable').DataTable({
-        "aaSorting": [[2, "desc"]],
+        "aaSorting": [[3, "desc"]],
         "columns": [
             {className: "text-right"},
+            null,
             null,
             null,
             {className: "text-center"}
@@ -140,14 +165,11 @@
     $('#btn-cancel-add-kategori').click(function () {
         $('form[name=form-add-kategori]').slideUp(250, null, function () {
             //clear input
-            $('form[name=form-add-kategori] input[name=nama]').val(null);
+            $('#form-add-kategori').clearForm();
         });
 
         //tampilkan table data
         $('#table-data').fadeIn(200);
-
-        //clear input
-        $('#form-add-kategori input').val('');
 
         //enable btn add
         $('#btn-add-kategori').removeClass('disabled');
@@ -157,13 +179,24 @@
 
     //submit add new
     $('#form-add-kategori').ajaxForm({
+        beforeSubmit: function () {
+            //cek data
+            var ischeck = $("#form-add-kategori input[name='satuan']:checked").val();
+            if (ischeck) {
+
+            } else {
+                alert('Data satuan belum diinputkan.');
+                return false;
+            }
+        },
         success: function (datares) {
             var data = JSON.parse(datares);
 
-            //add new row
+//            //add new row
             tableData.row.add([
                 '',
                 data.nama,
+                data.satuan,
                 data.created_at,
                 '<td class="text-center" >\n\
                         <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-kategori" href="master/kategori/edit/' + data.id + '" ><i class="fa fa-edit" ></i></a>\n\
@@ -176,6 +209,7 @@
         }
     });
 
+    //==========================================================================================
 
     //edit kategori
     $(document).on('click', '.btn-edit-kategori', function () {
@@ -189,17 +223,22 @@
             //tampilkan data ke modal edit
             $('#form-edit-kategori input[name=id]').val(dataKategori.id);
             $('#form-edit-kategori input[name=nama]').val(dataKategori.nama);
+            $('#form-edit-kategori input[type=radio][value=' + dataKategori.satuan_id + ']').prop('checked', true);
 
             //tampilkan form edit
             $('#form-edit-kategori').hide();
             $('#form-edit-kategori').removeClass('hide');
+            
+            //sembunyikan table data
+            $('#table-data').fadeOut(200);
+            
+            //tampilkan form edit
             $('#form-edit-kategori').slideDown(250, null, function () {
                 //focuskan 
                 $('#form-edit-kategori input[name=nama]').focus();
             });
 
-            //sembunyikan table data
-            $('#table-data').fadeOut(200);
+            
         });
 
         //disable btn add
@@ -210,7 +249,10 @@
 
     //cancel edit
     $('#btn-cancel-edit').click(function () {
-        $('#form-edit-kategori').slideUp(250);
+        $('#form-edit-kategori').slideUp(250, null, function () {
+            //clear input
+            $('#form-edit-kategori').clearForm();
+        });
         $('#table-data').fadeIn(200);
         //enable btn add
         $('#btn-add-kategori').removeClass('disabled');
@@ -218,14 +260,24 @@
 
     //submit edit
     $('#form-edit-kategori').ajaxForm({
+        beforeSubmit: function () {
+            //cek data
+            var ischeck = $("#form-edit-kategori input[name='satuan']:checked").val();
+            if (ischeck) {
+
+            } else {
+                alert('Data satuan belum diinputkan.');
+                return false;
+            }
+        },
         success: function (datares) {
             var data = JSON.parse(datares);
             //update row
             var btnEdit = $('#table-datatable tbody tr td a.btn-edit-kategori[data-id="' + data.id + '"]');
             var tdOpsi = btnEdit.parent();
             //update data row
-            tdOpsi.prev().prev().html(data.nama);
-            tdOpsi.prev().html(data.created_at);
+            tdOpsi.prev().prev().html(data.satuan);
+            tdOpsi.prev().prev().prev().html(data.nama);
 
             //tutup form edit
             $('#btn-cancel-edit').click();

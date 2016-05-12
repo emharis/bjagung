@@ -17,60 +17,28 @@ class BarangController extends Controller {
         $kategori = \DB::table('kategori')
                 ->orderBy('created_at', 'desc')
                 ->get();
-        $slc_kategori = [];
-        foreach ($kategori as $dt) {
-            $slc_kategori[$dt->id] = $dt->nama;
-        }
 
-        $satuan = \DB::table('satuan')
-                ->orderBy('created_at', 'desc')
-                ->get();
-        $slc_satuan_beli = [];
-        foreach ($satuan as $dt) {
-            $slc_satuan_beli[$dt->id] = $dt->nama;
-        }
 
         return view('master.barang.index', [
             'data' => $data,
-            'slc_kategori' => $slc_kategori,
-            'slc_satuan_beli' => $slc_satuan_beli,
-            'satuan' => $satuan,
+            'kategori' => $kategori,
         ]);
     }
 
     //insert new data barang
     public function insert(Request $request) {
 
-        \DB::transaction(function()use($request) {
-            //insert data barang
-            $id = \DB::table('barang')->insertGetId([
-                'nama' => $request->input('nama'),
-                'kategori_id' => $request->input('kategori'),
-                'satuan_beli_id' => $request->input('satuan_beli'),
-            ]);
-
-            //insert satuan jual
-            if (count($request->input('satuan_jual'))) {
-                foreach ($request->input('satuan_jual') as $dt) {
-                    \DB::table('satuan_jual_barang')->insert([
-                        'barang_id' => $id,
-                        'satuan_id' => $dt,
-                        'konversi' => $request->input('konversi_satuan_' . $dt),
-                    ]);
-                }
-            }
-
-            if ($request->ajax()) {
-                echo json_encode(\DB::table('VIEW_BARANG')->find($id));
-            }
-        });
+        $id = \DB::table('barang')->insertGetId([
+            'nama' => $request->input('nama'),
+            'kode' => $request->input('kode'),
+            'kategori_id' => $request->input('kategori'),
+        ]);
 
         if (!$request->ajax()) {
             return redirect('master/barang');
+        } else {
+            return json_encode(\DB::table('VIEW_BARANG')->find($id));
         }
-//        else {
-//            return json_encode(\DB::table('barang')->find($id));
-//        }
     }
 
     //get data barang
@@ -80,18 +48,25 @@ class BarangController extends Controller {
         return json_encode($data);
     }
 
+    public function getSatuanBarang($id) {
+        return json_encode($satuan = \DB::table('VIEW_SATUAN_JUAL_BARANG')->where('id', $id)->get());
+    }
+
     //update data barang
     public function updateBarang(Request $request) {
+        //update data barang
         \DB::table('barang')
                 ->whereId($request->input('id'))
                 ->update([
-                    'nama' => $request->input('nama')
+                    'nama' => $request->input('nama'),
+                    'kode' => $request->input('kode'),
+                    'kategori_id' => $request->input('kategori'),
         ]);
 
         if (!$request->ajax()) {
             return redirect('master/barang');
         } else {
-            return json_encode(\DB::table('barang')->find($request->input('id')));
+            return json_encode(\DB::table('VIEW_BARANG')->find($request->input('id')));
         }
     }
 

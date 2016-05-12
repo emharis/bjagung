@@ -28,9 +28,21 @@
                     <table class="table table-bordered table-condensed" >
                         <tbody>
                             <tr>
+                                <td class="col-sm-2 col-md-2 col-lg-2" >Kode</td>
+                                <td>
+                                    <input autocomplete="off" required type="text" class="form-control" name="kode" />
+                                </td>
+                            </tr>
+                            <tr>
                                 <td class="col-sm-2 col-md-2 col-lg-2" >Nama</td>
                                 <td>
                                     <input autocomplete="off" required type="text" class="form-control" name="nama" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="" >KTP</td>
+                                <td>
+                                    <input autocomplete="off" required type="text" class="form-control" name="ktp" />
                                 </td>
                             </tr>
                             <tr>
@@ -68,9 +80,21 @@
                     <table class="table table-bordered table-condensed" >
                         <tbody>
                             <tr>
+                                <td>Kode</td>
+                                <td>
+                                    <input required type="text" name="kode" class="form-control" autocomplete="OFF" />
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Nama</td>
                                 <td>
                                     <input required type="text" name="nama" class="form-control" autocomplete="OFF" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>KTP</td>
+                                <td>
+                                    <input required type="text" name="ktp" class="form-control" autocomplete="OFF" />
                                 </td>
                             </tr>
                             <tr>
@@ -109,9 +133,10 @@
                     <thead>
                         <tr>
                             <th class="col-sm-1 col-md-1 col-lg-1" >No</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1" >Kode</th>
                             <th>Nama</th>
+                            <th>KTP</th>
                             <th>Telp</th>
-                            <th>Alamat</th>
                             <th class="col-sm-2 col-md-2 col-lg-2" >Date</th>
                             <th class="col-sm-1 col-md-1 col-lg-1" ></th>
                         </tr>
@@ -121,9 +146,10 @@
                         @foreach($data as $dt)
                         <tr>
                             <td class="text-right" ></td>
+                            <td>{{$dt->kode}}</td>                            
                             <td>{{$dt->nama}}</td>                            
+                            <td>{{$dt->ktp}}</td>                            
                             <td>{!! $dt->telp !!} {!!$dt->telp_2 != '' ? '&nbsp;|&nbsp;' . $dt->telp_2 : '' !!} </td>
-                            <td>{{$dt->alamat}}</td>
                             <td>{{$dt->created_at}}</td>
                             <td class="text-center" >
                                 <a title="edit data" data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-sales" href="master/sales/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
@@ -151,9 +177,10 @@
 
     //format datatable
     var tableData = $('#table-datatable').DataTable({
-        "aaSorting": [[4, "desc"]],
+        "aaSorting": [[5, "desc"]],
         "columns": [
             {className: "text-right"},
+            null,
             null,
             null,
             null,
@@ -181,7 +208,7 @@
         $('#form-add-salesman').hide();
         $('#form-add-salesman').slideDown(250, null, function () {
             //fokuskan
-            $('form[name=form-add-sales] input[name=nama]').focus();
+            $('form[name=form-add-sales] input[name=kode]').focus();
         });
         $('#table-salesman').fadeOut(100);
 
@@ -214,9 +241,10 @@
             }
             tableData.row.add([
                 '',
+                data.kode,
                 data.nama,
+                data.ktp,
                 telp,
-                data.alamat,
                 data.created_at,
                 '<td class="text-center" >\n\
                         <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-sales" href="master/sales/edit/' + data.id + '" ><i class="fa fa-edit" ></i></a>\n\
@@ -240,7 +268,9 @@
 
             //tampilkan data ke modal edit
             $('#form-edit-salesman input[name=id]').val(dataSales.id);
+            $('#form-edit-salesman input[name=kode]').val(dataSales.kode);
             $('#form-edit-salesman input[name=nama]').val(dataSales.nama);
+            $('#form-edit-salesman input[name=ktp]').val(dataSales.ktp);
             $('#form-edit-salesman input[name=telp]').val(dataSales.telp);
             $('#form-edit-salesman input[name=telp_2]').val(dataSales.telp_2);
             $('#form-edit-salesman input[name=alamat]').val(dataSales.alamat);
@@ -249,7 +279,7 @@
             $('#form-edit-salesman').hide();
             $('#form-edit-salesman').slideDown(250, null, function () {
                 //fokuskan
-//                $('#form-edit-salesman input[name=nama]').focus();
+                $('#form-edit-salesman input[name=kode]').focus();
             });
             $('#table-salesman').fadeOut(100);
 
@@ -280,9 +310,10 @@
             var tdOpsi = btnEdit.parent();
             //update data row
             tdOpsi.prev().html(data.created_at);
-            tdOpsi.prev().prev().html(data.alamat);
-            tdOpsi.prev().prev().prev().html(data.telp + '<br/>' + data.telp_2);
+            tdOpsi.prev().prev().html(data.telp + '<br/>' + data.telp_2);
+            tdOpsi.prev().prev().prev().html(data.ktp);
             tdOpsi.prev().prev().prev().prev().html(data.nama);
+            tdOpsi.prev().prev().prev().prev().prev().html(data.kode);
 
             //tutup form edit
             $('#btn-cancel-edit-salesman').click();
