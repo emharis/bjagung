@@ -9,10 +9,12 @@ use App\Http\Controllers\Controller;
 class BarangController extends Controller {
 
     public function index() {
-        $data = \DB::table('VIEW_BARANG')
-                ->orderBy('kategori', 'asc')
-                ->orderBy('created_at', 'desc')
-                ->get();
+//        $data = \DB::table('VIEW_BARANG')
+//                ->orderBy('kategori', 'asc')
+//                ->orderBy('created_at', 'desc')
+//                ->get();
+        
+        $data = \DB::select('select * from VIEW_BARANG order by kategori,created_at desc');
 
         $kategori = \DB::table('kategori')
                 ->orderBy('created_at', 'desc')
