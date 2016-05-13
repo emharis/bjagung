@@ -43,6 +43,13 @@
                                     {{$data->satuan}}
                                 </td>
                             </tr>
+                            <tr>
+                                <td><label>Berat/Satuan</label></td>
+                                <td>:</td>
+                                <td>
+                                    {{$data->berat}}
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -53,7 +60,10 @@
             <div class="box box-solid">
                 <div class="box-header with-border">
                     <h3 class="box-title">Riwayat Stok Manual</h3>
-                    <a class="btn btn-primary pull-right btn-sm" id="btn-add" ><i class="fa fa-plus"  ></i>  Add Manual Stok</a>
+                    <div class="pull-right">
+                        <a class="btn btn-primary btn-sm" id="btn-add" ><i class="fa fa-plus"  ></i>  Add Manual Stok</a>
+                        <a class="btn btn-danger btn-sm" href="setbar/manstok" ><i class="fa fa-remove" ></i> Close</a>
+                    </div>
                 </div>
                 <div class="box-body">
                     <!--Form add stok manual-->
@@ -79,7 +89,7 @@
                                             <input required type="text" name="jumlah" class="form-control text-right">
                                             <span class="input-group-addon">{{$data->satuan}}</span>
                                         </div>
-                                        
+
                                     </td>
                                 </tr>
                                 <tr>
@@ -112,6 +122,7 @@
                                     <th>Tanggal Stok</th>
                                     <th>Jumlah</th>
                                     <th>Harga Pembelian</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -127,12 +138,11 @@
                                     <td class="text-right">
                                         {{number_format($dt->harga,0,',','.')}}
                                     </td>
+                                    <td class="text-center" >
+                                        <a class="btn btn-danger btn-delete btn-sm" href="setbar/manstok/delete/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
+                                    </td>
                                 </tr>
-                                @endforeach
-                                @else
-                                <tr>
-                                    <td colspan="4" >Belum ada data stok</td>
-                                </tr>
+                                @endforeach                                
                                 @endif
                             </tbody>
                         </table>
@@ -159,7 +169,7 @@
 <script type="text/javascript">
 (function ($) {
     var tableStok = $('#table-history-stok').DataTable();
-    
+
     //add manual stok
     $('#btn-add').click(function () {
         $('#form-add').hide();
@@ -168,16 +178,16 @@
         $('#form-add').slideDown(250, null, function () {
 
         });
-        
+
         //disable btn add
         $('#btn-add').addClass('disabled');
     });
-    
+
     //cancel add 
-    $('#btn-cancel').click(function(){
-        $('#form-add').slideUp(250,null,function(){});
+    $('#btn-cancel').click(function () {
+        $('#form-add').slideUp(250, null, function () {});
         $('#table-data').fadeIn(200);
-        
+
         //enable btn add
         $('#btn-add').removeClass('disabled');
     });
@@ -193,6 +203,15 @@
     $('.tanggal').datepicker({
         format: 'yyyy/mm/dd',
         todayHighlight: true
+    });
+    
+    //delete stok manual
+    $(document).on('click','.btn-delete',function(){
+        var url = $(this).attr('href');
+        if(confirm('Anda akan menghapus data ini?')){
+            location.href = url;
+        }
+        return false;
     });
 })(jQuery);
 </script>

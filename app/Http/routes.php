@@ -69,6 +69,7 @@ Route::group(['middleware' => ['web']], function () {
         //Manual Stok
         Route::get('manstok', ['as' => 'setbar.manstok', 'uses' => 'ManstokController@index']);
         Route::get('manstok/set-stok/{id}', ['as' => 'setbar.manstok.set-stok', 'uses' => 'ManstokController@setStok']);
+        Route::get('manstok/delete/{id}', ['as' => 'setbar.manstok.delete', 'uses' => 'ManstokController@delete']);
         Route::post('manstok/insert', ['as' => 'setbar.manstok.insert', 'uses' => 'ManstokController@insert']);
     });
     

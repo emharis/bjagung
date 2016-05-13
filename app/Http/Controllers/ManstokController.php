@@ -35,17 +35,17 @@ class ManstokController extends Controller {
     public function insert(Request $request) {
         \DB::transaction(function()use($request) {
             //Insert ke tabel stok
-            
-            $harga = str_replace(',','',$request->input('harga'));
-            $harga = str_replace('.','',$harga);
-            
+
+            $harga = str_replace(',', '', $request->input('harga'));
+            $harga = str_replace('.', '', $harga);
+
             $id = \DB::table('stok')->insertGetId([
                 'barang_id' => $request->input('barang_id'),
                 'stok_awal' => $request->input('jumlah'),
                 'current_stok' => $request->input('jumlah'),
                 'tipe' => 'M',
                 'harga' => $harga,
-                'tgl'=>date('Y-m-d',  strtotime($request->input('tanggal')))
+                'tgl' => date('Y-m-d', strtotime($request->input('tanggal')))
             ]);
 
             //insert ke stok_moving
@@ -61,12 +61,17 @@ class ManstokController extends Controller {
                         ->find($id);
                 echo json_encode($data);
             }
-            
         });
 
         if (!$request->ajax()) {
             return redirect('setbar/manstok/set-stok/' . $request->input('barang_id'));
         }
+    }
+
+    public function delete($id) {
+        $barangid = \DB::table('stok')->find($id)->barang_id;
+        \DB::table('stok')->delete($id);
+        return redirect('setbar/manstok/set-stok/' . $barangid);
     }
 
 //END OF CLASS
