@@ -9,12 +9,12 @@ use App\Http\Controllers\Controller;
 class BarangController extends Controller {
 
     public function index() {
-//        $data = \DB::table('VIEW_BARANG')
-//                ->orderBy('kategori', 'asc')
-//                ->orderBy('created_at', 'desc')
-//                ->get();
+        $data = \DB::table('VIEW_BARANG')
+                ->orderBy('kategori', 'asc')
+                ->orderBy('created_at', 'desc')
+                ->get();
         
-        $data = \DB::select('select * from VIEW_BARANG order by kategori,created_at desc');
+//        $data = \DB::select('select * from VIEW_BARANG order by kategori,created_at desc');
 
         $kategori = \DB::table('kategori')
                 ->orderBy('created_at', 'desc')
@@ -35,6 +35,7 @@ class BarangController extends Controller {
             'kode' => $request->input('kode'),
             'kategori_id' => $request->input('kategori'),
             'rol' => $request->input('rol'),
+            'berat' => $request->input('berat'),
         ]);
 
         if (!$request->ajax()) {
@@ -65,6 +66,7 @@ class BarangController extends Controller {
                     'kode' => $request->input('kode'),
                     'kategori_id' => $request->input('kategori'),
                     'rol' => $request->input('rol'),
+                    'berat' => $request->input('berat'),
         ]);
 
         if (!$request->ajax()) {

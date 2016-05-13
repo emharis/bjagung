@@ -62,6 +62,16 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="col-sm-2 col-md-2 col-lg-2" >Berat</td>
+                            <td>
+                                <div class="row" >
+                                    <div class="col-sm-2 col-md-2 col-lg-2" >
+                                        <input autocomplete="off" required type="text" class="form-control text-right" name="berat" />
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
                             <td></td>
                             <td>
                                 <button type="submit" class="btn btn-primary btn-sm" >Save</button>
@@ -112,6 +122,16 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="col-sm-2 col-md-2 col-lg-2" >Berat</td>
+                            <td>
+                                <div class="row" >
+                                    <div class="col-sm-2 col-md-2 col-lg-2" >
+                                        <input autocomplete="off" required type="text" class="form-control text-right" name="berat" />
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
 
                         <tr>
                             <td></td>
@@ -133,6 +153,7 @@
                             <th class="col-sm-1 col-md-1 col-lg-1" >Kode</th>
                             <th class="col-sm-3 col-md-3 col-lg-3" >Kategori</th>
                             <th   >Barang</th>
+                            <th   >Berat</th>
                             <th class="col-sm-2 col-md-2 col-lg-2"  >Date</th>
                             <th class="col-sm-1 col-md-1 col-lg-1" ></th>
                         </tr>
@@ -144,6 +165,7 @@
                             <td  >{{$dt->kode}}</td>
                             <td class="col-sm-2 col-md-2 col-lg-2 text-right" >{{$dt->kategori}}</td>
                             <td>{{$dt->nama}}</td>
+                            <td>{{$dt->berat}}</td>
                             <td>{{$dt->created_at}}</td>
                             <td class="text-center" >
                                 <a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-barang" href="master/barang/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
@@ -181,13 +203,14 @@
 
     //format datatable
     var tableData = $('#table-datatable').DataTable({
-        "aaSorting": [[4, "desc"]],
+        "aaSorting": [[5, "desc"]],
         "columns": [
             {className: "text-right"},
             null,
             {className: "text-right"},
             null,
-            null,
+            {className: "text-right"},
+            {className: "text-right"},
             {className: "text-center"}
         ],
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -253,6 +276,7 @@
                 data.kode,
                 data.kategori,
                 data.nama,
+                data.berat,
                 data.created_at,
                 '<td class="text-center" >\n\
                         <a data-id="' + data.id + '" class="btn btn-success btn-xs btn-edit-barang" href="master/barang/edit/' + data.id + '" ><i class="fa fa-edit" ></i></a>\n\
@@ -289,6 +313,7 @@
                 $('#form-edit input[name=kode]').val(dataBarang.kode);
                 $('#form-edit input[name=nama]').val(dataBarang.nama);
                 $('#form-edit input[name=rol]').val(dataBarang.rol);
+                $('#form-edit input[name=berat]').val(dataBarang.berat);
                 $('#form-edit input[type=radio][value=' + dataBarang.kategori_id + ']').prop('checked', true);
 
                 //focuskan
@@ -326,9 +351,10 @@
             var tdOpsi = btnEdit.parent();
             //update data row
 //            tdOpsi.prev().html(data.created_at);
-            tdOpsi.prev().prev().html(data.nama);
-            tdOpsi.prev().prev().prev().html(data.kategori);
-            tdOpsi.prev().prev().prev().prev().html(data.kode);
+            tdOpsi.prev().prev().html(data.berat);
+            tdOpsi.prev().prev().prev().html(data.nama);
+            tdOpsi.prev().prev().prev().prev().html(data.kategori);
+            tdOpsi.prev().prev().prev().prev().prev().html(data.kode);
 
             //tutup form edit
             $('#btn-cancel-edit').click();
