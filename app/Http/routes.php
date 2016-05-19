@@ -70,7 +70,10 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('manstok', ['as' => 'setbar.manstok', 'uses' => 'ManstokController@index']);
         Route::get('manstok/set-stok/{id}', ['as' => 'setbar.manstok.set-stok', 'uses' => 'ManstokController@setStok']);
         Route::get('manstok/delete/{id}', ['as' => 'setbar.manstok.delete', 'uses' => 'ManstokController@delete']);
+        Route::get('manstok/set-harga/{id}', ['as' => 'setbar.manstok.set-harga', 'uses' => 'ManstokController@setHarga']);
         Route::post('manstok/insert', ['as' => 'setbar.manstok.insert', 'uses' => 'ManstokController@insert']);
+        Route::post('manstok/update-harga', ['as' => 'setbar.manstok.update-harga', 'uses' => 'ManstokController@updateHarga']);
+        Route::get('manstok/delete-harga/{id}', ['as' => 'setbar.manstok.delete-harga', 'uses' => 'ManstokController@deleteHarga']);
     });
     
     

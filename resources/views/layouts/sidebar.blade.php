@@ -27,13 +27,23 @@
             <li class="treeview {{Request::is('setbar/*') ? 'active':''}}" >
                 <a href="#">
                     <i class="fa fa-briefcase"></i>
-                    <span>Pengaturan Barang</span>
+                    <span>Pengaturan</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="{{Request::is('setbar/manstok*') ? 'active':''}}" ><a href="setbar/manstok"><i class="fa fa-circle-o"></i> Manual Stok</a></li>
-                    <li class="{{Request::is('setbar/harga*') ? 'active':''}}" ><a href="setbar/harga"><i class="fa fa-circle-o"></i> Harga Barang</a></li>
+                    <li class="{{Request::is('setbar/manstok*') ? 'active':''}}" ><a href="setbar/manstok"><i class="fa fa-circle-o"></i> Barang</a></li>
+                    <!--<li class="{{Request::is('setbar/harga*') ? 'active':''}}" ><a href="setbar/harga"><i class="fa fa-circle-o"></i> Harga Barang</a></li>-->
                     
+                </ul>
+            </li>
+            <li class="treeview {{Request::is('pembelian/*') ? 'active':''}}" >
+                <a href="#">
+                    <i class="fa fa-calculator"></i>
+                    <span>Pembelian</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="{{Request::is('pembelian/beli*') ? 'active':''}}" ><a href="pembelian/beli"><i class="fa fa-circle-o"></i> Pembelian</a></li>                    
                 </ul>
             </li>
             <li class="">

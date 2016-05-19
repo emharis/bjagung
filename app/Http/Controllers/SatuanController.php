@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 class SatuanController extends Controller {
 
     public function index() {
-        $data = \DB::table('satuan')->orderBy('created_at','desc')->get();
+        $data = \DB::table('VIEW_SATUAN')->orderBy('created_at','desc')->get();
 
         return view('master.satuan.index', [
             'data' => $data

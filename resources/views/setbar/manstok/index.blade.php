@@ -9,7 +9,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Stok Manual Barang
+        Pengaturan Barang
     </h1>
 </section>
 
@@ -25,27 +25,33 @@
 
             <div id="table-data" >
                 <!--table data barang-->
-                <table class="table table-bordered table-condensed" id="table-datatable" >
+                <table class="table table-bordered table-hover table-striped" id="table-datatable" >
                     <thead>
                         <tr>
                             <th class="col-sm-1 col-md-1 col-lg-1" >No</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1" >Kode</th>
                             <th class="col-sm-3 col-md-3 col-lg-3" >Kategori</th>
                             <th   >Barang</th>
                             <th class="col-sm-1 col-md-1 col-lg-1"  >Stok</th>
-                            <th class="col-sm-2 col-md-2 col-lg-2"  >Date</th>
-                            <th class="col-sm-1 col-md-1 col-lg-1" ></th>
+                            <th class="col-sm-1 col-md-1 col-lg-1"  >Satuan</th>
+                            <th>Harga Jual</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($data as $dt)
                         <tr>
                             <td class="text-right" ></td>
-                            <td class="col-sm-2 col-md-2 col-lg-2 text-right" >{{$dt->kategori}}</td>
+                            <td>{{$dt->kode}}</td>
+                            <td >{{$dt->kategori}}</td>
                             <td>{{$dt->nama}}</td>
-                            <td>0</td>
-                            <td>{{$dt->created_at}}</td>
+                            <td>{{$dt->stok>0 ? $dt->stok : 0}}</td>
+                            <td>{{$dt->satuan }}</td>
+                            <td>{{number_format($dt->harga_jual_current,0,',','.')}}</td>
                             <td class="text-center" >
-                                <a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-barang" href="setbar/manstok/set-stok/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
+                                <!--<a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-barang" href="setbar/manstok/set-stok/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>-->
+                                <a class="btn btn-primary btn-sm btn-set-man-stok" href="setbar/manstok/set-stok/{{$dt->id}}" ><i class="fa fa-download" ></i> Manual Stok</a>
+                                <a class="btn btn-success btn-sm btn-set-harga" href="setbar/manstok/set-harga/{{$dt->id}}" ><i class="fa fa-dollar" ></i> Set Harga Jual</a>
                             </td>
                         </tr>
                         @endforeach
@@ -69,12 +75,14 @@
 (function ($) {
     //format datatable
     var tableData = $('#table-datatable').DataTable({
-        "aaSorting": [[4, "desc"]],
+        "aaSorting": [[2, "asc"]],
         "columns": [
-            {className: "text-right"},
             {className: "text-right"},
             null,
             {className: "text-right"},
+            null,
+            {className: "text-right"},
+            {className: "text-left"},
             {className: "text-right"},
             {className: "text-center"}
         ],

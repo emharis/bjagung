@@ -9,10 +9,8 @@ use App\Http\Controllers\Controller;
 class KategoriController extends Controller {
 
     public function index() {
-        $data = \DB::table('kategori')
+        $data = \DB::table('VIEW_KATEGORI')
                 ->orderBy('created_at', 'desc')
-                ->join('satuan', 'kategori.satuan_id', '=', 'satuan.id')
-                ->select('kategori.*', 'satuan.nama as satuan')
                 ->get();
         $satuan = \DB::table('satuan')->get();
 

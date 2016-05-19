@@ -83,7 +83,9 @@
                             <td>{{$dt->created_at}}</td>
                             <td class="text-center" >
                                 <a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-satuan" href="master/satuan/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
+                                @if($dt->ref == 0)
                                 <a data-id="{{$dt->id}}" class="btn btn-danger btn-xs btn-delete-satuan" href="master/satuan/delete-satuan/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
+                                @endif
                             </td>
                         </tr>
                         @endforeach

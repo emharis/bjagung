@@ -18,6 +18,8 @@
 <section class="content">
 
     <div class="row" >
+        
+        <!--Data Barang-->
         <div class="col-sm-4 col-md-4 col-lg-4" >
             <div class="box box-solid">
                 <div class="box-header with-border">
@@ -50,12 +52,20 @@
                                     {{$data->berat}}
                                 </td>
                             </tr>
+                            <tr>
+                                <td><label>Jumlah Stok</label></td>
+                                <td>:</td>
+                                <td>
+                                    {{$data->stok}}
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
+        <!--Table riwayat stok manual-->
         <div class="col-sm-8 col-md-8 col-lg-8" >
             <div class="box box-solid">
                 <div class="box-header with-border">
@@ -78,7 +88,7 @@
                                     </td>
                                     <td>:</td>
                                     <td>
-                                        <input required type="text" name="tanggal" class="form-control  tanggal" placeholder="yyy/mm/dd" value="{{date('Y/m/d')}}">
+                                        <input required type="text" name="tanggal" class="form-control  tanggal" placeholder="yyyy/mm/dd" value="{{date('Y/m/d')}}">
                                     </td>
                                 </tr>
                                 <tr>
@@ -93,7 +103,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Harga Pembalian </td>
+                                    <td>Harga Pembelian </td>
                                     <td>:</td>
                                     <td>
                                         <div class="input-group">
@@ -168,7 +178,16 @@
 
 <script type="text/javascript">
 (function ($) {
-    var tableStok = $('#table-history-stok').DataTable();
+    //format datatable  
+    var tableStok = $('#table-history-stok').DataTable({
+        "aaSorting": [[0, "desc"]],
+        "columns": [
+            null,
+            {className: "text-right"},
+            {className: "text-right"},
+            {className: "text-center"},
+        ]
+    });
 
     //add manual stok
     $('#btn-add').click(function () {
@@ -176,7 +195,8 @@
         $('#form-add').removeClass('hide');
         $('#table-data').fadeOut(200);
         $('#form-add').slideDown(250, null, function () {
-
+            //focuskan ke input jumlah stok
+            $('#form-add input[name=jumlah]').focus();
         });
 
         //disable btn add
@@ -185,7 +205,26 @@
 
     //cancel add 
     $('#btn-cancel').click(function () {
-        $('#form-add').slideUp(250, null, function () {});
+        $('#form-add').slideUp(250, null, function () {
+            //clear form
+            $('#form-add').clearForm();
+            //set default tanggal ke hari ini
+            var dat = new Date();
+            var tgl = dat.getDate();
+            if(tgl.toString().length == 1){
+                tgl = "0" + tgl.toString();
+            }
+
+            var bln = dat.getMonth()+1;
+            if(bln.toString().length == 1){
+                bln = "0" + bln.toString();
+            }
+
+            var thn = dat.getFullYear();
+            
+            $('#form-add input[name=tanggal]').val(thn + "/" + bln + "/" + tgl);
+
+        });
         $('#table-data').fadeIn(200);
 
         //enable btn add
