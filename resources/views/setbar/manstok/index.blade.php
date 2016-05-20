@@ -23,7 +23,7 @@
             <div class="clearfix" ></div>
             <br/>-->
 
-            <div id="table-data" >
+            <div id="table-data" class="table-responsive" >
                 <!--table data barang-->
                 <table class="table table-bordered table-hover table-striped" id="table-datatable" >
                     <thead>

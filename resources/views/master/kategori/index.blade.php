@@ -90,7 +90,7 @@
                 </table>
             </form>
 
-            <div id="table-data" >
+            <div id="table-data" class="table-responsive" >
                 <!--table data kategori-->
                 <table class="table table-bordered table-condensed" id="table-datatable" >
                     <thead>

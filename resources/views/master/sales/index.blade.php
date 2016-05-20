@@ -128,7 +128,7 @@
             </div>
 
             <!--table data sales-->
-            <div id="table-salesman" >
+            <div id="table-salesman" class="table-responsive" >
                 <table class="table table-bordered table-striped table-hover" id="table-datatable" >
                     <thead>
                         <tr>

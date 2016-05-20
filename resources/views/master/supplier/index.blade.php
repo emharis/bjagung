@@ -158,7 +158,7 @@
             <!--End of Form edit Supplier-->
 
             <!--table data supplier-->
-            <div id="table-data" >
+            <div id="table-data" class="table-responsive" >
                 <table class="table table-bordered table-condensed" id="table-datatable" >
                     <thead>
                         <tr>

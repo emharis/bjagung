@@ -125,7 +125,7 @@
                     </form>
 
                     <!--table riwayat stok manual-->
-                    <div id="table-data" >
+                    <div id="table-data" class="table-responsive" >
                         <table class="table table-bordered" id="table-history-stok" >
                             <thead>
                                 <tr>

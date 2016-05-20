@@ -208,7 +208,7 @@
                 </div>
                 <div class="box-body">
                     <!--table riwayat harga barang-->
-                    <div id="table-data" >
+                    <div id="table-data" class="table-responsive" >
                         <table class="table table-bordered table-striped" id="table-history-harga" >
                             <thead>
                                 <tr>
