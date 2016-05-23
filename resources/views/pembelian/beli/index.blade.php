@@ -9,7 +9,11 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Pengaturan Barang
+        Data Pembelian
+
+        <div class="pull-right" >
+            <a class="btn btn-primary btn-sm" href="pembelian/beli/add" ><i class="fa fa-plus" ></i> Add Data Pembelian</a>
+        </div>
     </h1>
 </section>
 
@@ -19,9 +23,6 @@
     <!-- Default box -->
     <div class="box box-solid">
         <div class="box-body">
-<!--            <a class="btn btn-primary btn-sm" id="btn-add" ><i class="fa fa-plus" ></i> Add Barang</a>
-            <div class="clearfix" ></div>
-            <br/>-->
 
             <div id="table-data" class="table-responsive" >
                 <!--table data barang-->
@@ -29,12 +30,11 @@
                     <thead>
                         <tr>
                             <th class="col-sm-1 col-md-1 col-lg-1" >No</th>
-                            <th class="col-sm-1 col-md-1 col-lg-1" >Kode</th>
-                            <th class="col-sm-2 col-md-2 col-lg-2" >Kategori</th>
-                            <th   >Barang</th>
-                            <th class="col-sm-1 col-md-1 col-lg-1"  >Stok</th>
-                            <th class="col-sm-1 col-md-1 col-lg-1"  >Satuan</th>
-                            <th>Harga Jual</th>
+                            <th  >Inv</th>
+                            <th  >Supplier</th>
+                            <th  >Sub Total</th>
+                            <th  >Disc</th>
+                            <th>Total</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -42,14 +42,12 @@
                         @foreach($data as $dt)
                         <tr>
                             <td class="text-right" ></td>
-                            <td>{{$dt->kode}}</td>
-                            <td >{{$dt->kategori}}</td>
-                            <td>{{$dt->nama}}</td>
-                            <td>{{$dt->stok>0 ? $dt->stok : 0}}</td>
-                            <td>{{$dt->satuan }}</td>
-                            <td>{{number_format($dt->harga_jual_current,0,',','.')}}</td>
+                            <td>{{$dt->no_inv}}</td>
+                            <td>{{$dt->supplier}}</td>
+                            <td>{{number_format($dt->total,0,',','.')}}</td>
+                            <td>{{number_format($dt->disc,0,',','.')}}</td>
+                            <td>{{number_format($dt->total - $dt->disc,0,',','.') }}</td>
                             <td class="text-center" >
-                                <!--<a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-barang" href="setbar/manstok/set-stok/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>-->
                                 <a class="btn btn-primary btn-sm btn-set-man-stok" href="setbar/manstok/set-stok/{{$dt->id}}" ><i class="fa fa-download" ></i> Manual Stok</a>
                                 <a class="btn btn-success btn-sm btn-set-harga" href="setbar/manstok/set-harga/{{$dt->id}}" ><i class="fa fa-dollar" ></i> Set Harga Jual</a>
                             </td>
@@ -75,14 +73,13 @@
 (function ($) {
     //format datatable
     var tableData = $('#table-datatable').DataTable({
-        "aaSorting": [[2, "asc"]],
+        "sort":false,
         "columns": [
             {className: "text-right"},
             null,
-            {className: "text-right"},
             null,
             {className: "text-right"},
-            {className: "text-left"},
+            {className: "text-right"},
             {className: "text-right"},
             {className: "text-center"}
         ],

@@ -61,11 +61,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('sales/update-sales', ['as' => 'master.sales.update-sales', 'uses' => 'SalesController@updateSales']);
     });
 
-    Route::group(['prefix' => 'setbar'], function () {
-//        //stok
-//        Route::get('stok', ['as' => 'setbar.stok', 'uses' => 'StokController@index']);
-//        Route::get('stok/set-stok/{id}', ['as' => 'setbar.stok.set-stok', 'uses' => 'StokController@setStok']);
-        
+    Route::group(['prefix' => 'setbar'], function () {        
         //Manual Stok
         Route::get('manstok', ['as' => 'setbar.manstok', 'uses' => 'ManstokController@index']);
         Route::get('manstok/set-stok/{id}', ['as' => 'setbar.manstok.set-stok', 'uses' => 'ManstokController@setStok']);
@@ -74,6 +70,14 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('manstok/insert', ['as' => 'setbar.manstok.insert', 'uses' => 'ManstokController@insert']);
         Route::post('manstok/update-harga', ['as' => 'setbar.manstok.update-harga', 'uses' => 'ManstokController@updateHarga']);
         Route::get('manstok/delete-harga/{id}', ['as' => 'setbar.manstok.delete-harga', 'uses' => 'ManstokController@deleteHarga']);
+    });
+    
+    Route::group(['prefix' => 'pembelian'], function () {        
+        //Pembelian
+        Route::get('beli', ['as' => 'pembelian.beli', 'uses' => 'BeliController@index']);
+        Route::get('beli/add', ['as' => 'pembelian.beli.add', 'uses' => 'BeliController@add']);
+        Route::get('beli/get-barang', ['as' => 'pembelian.beli.get-barang', 'uses' => 'BeliController@getBarang']);
+        Route::get('beli/get-barang-by-kode', ['as' => 'pembelian.beli.get-barang-by-kode', 'uses' => 'BeliController@getBarangByKode']);
     });
     
     

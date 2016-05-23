@@ -259,6 +259,7 @@
 <script type="text/javascript">
 (function ($) {
     var tableData = $('#table-history-harga').DataTable({
+        bSort:false,
         "columns": [
             null,
             {className: "text-right"},

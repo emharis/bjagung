@@ -48,7 +48,7 @@
                             <tr>
                                 <td>Telp</td>
                                 <td>
-                                    <input autocomplete="off" type="text" class="form-control" name="telp" />
+                                    <input autocomplete="off" type="number" class="form-control" name="telp" />
                                 </td>
                             </tr>
                             <tr>
