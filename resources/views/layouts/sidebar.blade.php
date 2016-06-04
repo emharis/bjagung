@@ -46,13 +46,23 @@
                     <li class="{{Request::is('pembelian/beli*') ? 'active':''}}" ><a href="pembelian/beli"><i class="fa fa-circle-o"></i> Pembelian</a></li>                    
                 </ul>
             </li>
-            <li class="">
+            <li class="treeview {{Request::is('penjualan/*') ? 'active':''}}" >
+                <a href="#">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span>Penjualan</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="{{Request::is('penjualan/beli*') ? 'active':''}}" ><a href="penjualan/jual"><i class="fa fa-circle-o"></i> Penjualan</a></li>                    
+                </ul>
+            </li>
+            <!-- <li class="">
                 <a href="#">
                     <i class="fa fa-laptop"></i>
                     <span>Blogs</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
-            </li>
+            </li> -->
             
         </ul>
     </section>

@@ -8,8 +8,8 @@
 <style>
     .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
     .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
-    .autocomplete-selected { background: #FFE291; }
-    .autocomplete-suggestions strong { font-weight: normal; color: red; }
+    .autocomplete-selected { background: #F0F0F0; }
+    .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
     .autocomplete-group { padding: 2px 5px; }
     .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
 </style>
@@ -19,7 +19,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Add Data Pembelian
+        Edit Data Pembelian
     </h1>
 </section>
 
@@ -37,14 +37,14 @@
                             <td>No. Invoice</td>
                             <td>:</td>
                             <td>
-                                <input type="text" name="no_inv" class="form-control text-uppercase" autofocus>
+                                <input type="text" name="no_inv" class="form-control" value="{{$beli->no_inv}}" autofocus>
                             </td>
                         </tr>
                         <tr>
                             <td>Tanggal</td>
                             <td>:</td>
                             <td>
-                                <input id="tanggal" type="text" name="tanggal" class="form-control" value="{{date('d-m-Y')}}" >
+                                <input id="tanggal" type="text" name="tanggal" class="form-control" value="{{$beli->tgl_formatted}}" >
                             </td>
                         </tr>
                     </tbody>
@@ -52,6 +52,7 @@
             </div>
             <div class="col-sm-4 col-md-4 col-lg-4" ></div>
             <div class="col-sm-4 col-md-4 col-lg-4" >
+                <input type="hidden" name="id_pembelian" value="{{$beli->id}}">
                 <table class="table table-bordered table-condensed" >
                     <tbody>
                         <tr>
@@ -60,7 +61,7 @@
                             <td>
                                 <select name="supplier" class="form-control" >
                                     @foreach($suppliers as $dt)
-                                        <option value="{{$dt->id}}" data-tempo="{{$dt->jatuh_tempo}}" >{{strtoupper($dt->nama)}}</option>
+                                        <option value="{{$dt->id}}" {{$dt->id == $beli->supplier_id ? 'selected':''}} data-tempo="{{$dt->jatuh_tempo}}" >{{strtoupper($dt->nama)}}</option>
                                     @endforeach
                                 </select>
                             </td>
@@ -70,8 +71,8 @@
                             <td>:</td>
                             <td>
                                 <select class="form-control" name="pembayaran" >
-                                    <option value="T" >TUNAI/LUNAS</option>
-                                    <option value="K" >KREDIT/TEMPO</option>
+                                    <option value="T" {{$beli->tipe == 'T' ? 'selected':''}} >TUNAI/LUNAS</option>
+                                    <option value="K" {{$beli->tipe == 'K' ? 'selected':''}} >KREDIT/TEMPO</option>
                                 </select>
                             </td>
                         </tr>
@@ -97,10 +98,10 @@
                 <tbody>
                     <tr>
                         <td>
-                            <input type="text" name="kode" class="form-control text-uppercase">
+                            <input type="text" name="kode" class="form-control">
                         </td>
                         <td>
-                            <input type="text" name="nama" id="nama_autocomplete" class="form-control text-uppercase">
+                            <input type="text" name="nama" id="nama_autocomplete" class="form-control">
                         </td>
                         <td>
                             <input type="text" name="qty" class="form-control text-right">
@@ -112,6 +113,19 @@
                         <td class="text-right" id="col-total" ></td>
                         <td  ></td>
                     </tr>
+                    @foreach($beli_barang as $dt)
+                        <tr data-id="{{$dt->barang_id}}" >
+                            <td>{{$dt->kode}}</td>
+                            <td>{{$dt->nama_barang_full}}</td>
+                            <td class='text-right td-qty' >{{$dt->qty}}</td>
+                            <td>{{$dt->satuan}}</td>
+                            <td class='text-right td-harga' >{{number_format($dt->harga,0,'.',',')}}</td>
+                            <td class='text-right td-total' >{{number_format($dt->total,0,'.',',')}}</td>
+                            <td class='text-center' >
+                                    <a class='btn-delete ' href='#' ><i class='fa fa-trash text-red' ></i></a>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
@@ -119,7 +133,7 @@
                             <label>TOTAL</label>
                         </td>
                         <td  style="border-top-width: 3px; border-top-color: grey;"  class="text-right"  >
-                            <label id="label-total"></label>
+                            <label id="label-total">{{$beli->total}}</label>
                         </td>
                         <td  style="border-top-width: 3px; border-top-color: grey;"  ></td>
                     </tr>
@@ -128,18 +142,18 @@
                             <label>DISC</label>
                         </td>
                         <td  class="text-right"  >
-                            <input type="text" name="disc" class="form-control text-right" value="0" >
+                            <input type="text" name="disc" class="form-control text-right" value="{{$beli->disc}}" >
                         </td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td    colspan="5 " class="text-right" >
+                        <td colspan="5 " class="text-right" >
                             <label>JUMLAH TOTAL</label>
                         </td>
                         <td    class="text-right"  >
-                            <label id="label-grand-total" ></label>
+                            <label id="label-grand-total" >{{$beli->grand_total}}</label>
                         </td>
-                        <td    ></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td colspan="4" ></td>
@@ -160,7 +174,7 @@
         </div><!-- /.box-body -->
     </div><!-- /.box -->
 
-    <a id="btn-test" ><!-- TEST --></a>
+    <input type="hidden" name="data_barang_json" value="{{$data_barang_json}}" >
 
 </section><!-- /.content -->
 @stop
@@ -178,8 +192,10 @@
 
 <script type="text/javascript">
 (function ($) {
+    // alert($('input[name=data_barang_json]').val());
+
     var strBarang = '{"barang" : [] }';
-    var brObj = JSON.parse(strBarang);
+    var brObj = JSON.parse($('input[name=data_barang_json]').val());
 
     //set datetimepicker
     $('#tanggal').datepicker({
@@ -222,7 +238,7 @@
         }
 
     });
-    var colTotal = $('input[name=harga]').parent().next();
+    var colTotal = $('input[nae=harga]').parent().next();
     $('input[name=harga]').autoNumeric('init',{
         vMin:'0',
         vMax:'999999999'
@@ -303,6 +319,7 @@
     //save with button save
     $('#btn-save').click(function(event) {
         //cek submit
+        var beli_id = $('input[name=id_pembelian]').val() ;
         var inv = $('input[name=no_inv]').val() ;
         var tgl = $('input[name=tanggal]').val() ;
         var sup = $('select[name=supplier]').val() ;
@@ -310,11 +327,15 @@
         var disc = $('input[name=disc]').autoNumeric('get') ;
         if(inv != "" && tgl != "" && sup != "" && pemb != "" && brObj.barang.length > 0 ){
             var newForm = jQuery('<form>', {
-                'action': 'pembelian/beli/insert',
+                'action': 'pembelian/beli/update',
                 'method': 'POST'
             }).append(jQuery('<input>', {
                 'name': 'tanggal',
                 'value': tgl,
+                'type': 'hidden'
+            })).append(jQuery('<input>', {
+                'name': 'id_pembelian',
+                'value': beli_id,
                 'type': 'hidden'
             })).append(jQuery('<input>', {
                 'name': 'no_inv',
@@ -352,7 +373,7 @@
     var edit_state = false;
     var default_value_edit_qty=0;
     $(document).on('dblclick','.td-qty',function(event) {
-        if(!edit_state){
+        if(edit_state != true){
             if($(this).children('input').length == 0){
                 var text = $(this).text();
                 default_value_edit_qty = text;
@@ -374,7 +395,7 @@
 
     //fungsi set edit state
     function setEditState(val){
-        edit_state = val;
+        edit_state  =val;
         if(val){
             //jika dalam mode edit
             ////disable tombol save
@@ -449,7 +470,7 @@
     //edit harga satuan
     var default_value_edit_harga=0;
     $(document).on('dblclick','.td-harga',function(event) {
-        if(!edit_state){
+        if(edit_state != true){
             if($(this).children('input').length == 0){
                 var text_harga = $(this).text();
                 //normalize text_harga
@@ -495,7 +516,7 @@
             setEditState(false);
 
         }else if(e.keyCode == 27){
-            //cancel edit
+            //cancel edit harga
             $(this).parent().html(numeral(default_value_edit_harga).format('0,0'));
 
             //edit state to false
