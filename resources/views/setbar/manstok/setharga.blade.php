@@ -252,10 +252,12 @@
 <script src="plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script src="plugins/jqueryform/jquery.form.min.js" type="text/javascript"></script>
-<script src="plugins/phpjs/numberformat.js" type="text/javascript"></script>
 <script src="plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
 <script src="plugins/calculator/jquery.plugin.min.js" type="text/javascript"></script>
 <script src="plugins/calculator/jquery.calculator.min.js" type="text/javascript"></script>
+<script src="plugins/autonumeric/autoNumeric-min.js" type="text/javascript"></script>
+<script src="plugins/numeraljs/numeral.min.js" type="text/javascript"></script>
+
 <script type="text/javascript">
 (function ($) {
     var tableData = $('#table-history-harga').DataTable({
@@ -270,23 +272,30 @@
         ]
     });
 
+    //setting auto numeric
+    $('.for-money').autoNumeric('init',{
+        vMin:'0',
+        vMax:'999999999'
+    });
+
     //format number uang
     $('.for-money').blur(function () {
-        var val = $(this).val();
-        //bulatkan dulu
-        val = Math.round(val);
+        // var val = $(this).val();
+        // //bulatkan dulu
+        // val = Math.round(val);
         
-        // val = val.replace(/\./g, '');
-        // val = val.replace(/\,/g, '');
-        $(this).val(number_format(val, 0, ',', '.'));
+        // // val = val.replace(/\./g, '');
+        // // val = val.replace(/\,/g, '');
+        // $(this).val(number_format(val, 0, ',', '.'));
         calculate_keuntungan();
+        // alert('toket');
     });
-    $('.for-money').focus(function () {
-        var val = $(this).val();
-        val = val.replace(/\./g, '');
-        val = val.replace(/\,/g, '');
-        $(this).val(val);
-    });
+    // $('.for-money').focus(function () {
+    //     var val = $(this).val();
+    //     val = val.replace(/\./g, '');
+    //     val = val.replace(/\,/g, '');
+    //     $(this).val(val);
+    // });
     
     //hitung margin keuntungan
     function calculate_keuntungan(){
@@ -302,7 +311,9 @@
             
             //hitung keuntungan
             var keuntungan = harga_jual - hpp;
-            $('input[name=margin]').val(number_format(keuntungan, 0, ',', '.'));
+
+            // $('input[name=margin]').val(number_format(keuntungan, 0, ',', '.'));
+            $('input[name=margin]').val(numeral(keuntungan).format('0,0'));
         }
     }
 

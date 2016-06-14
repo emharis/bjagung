@@ -19,9 +19,6 @@
     <!-- Default box -->
     <div class="box box-solid">
         <div class="box-body">
-<!--            <a class="btn btn-primary btn-sm" id="btn-add" ><i class="fa fa-plus" ></i> Add Barang</a>
-            <div class="clearfix" ></div>
-            <br/>-->
 
             <div id="table-data" class="table-responsive" >
                 <!--table data barang-->
@@ -30,8 +27,7 @@
                         <tr>
                             <th class="col-sm-1 col-md-1 col-lg-1" >No</th>
                             <th class="col-sm-1 col-md-1 col-lg-1" >Kode</th>
-                            <th class="col-sm-2 col-md-2 col-lg-2" >Kategori</th>
-                            <th   >Barang</th>
+                            <th  >Kategori/Barang</th>
                             <th class="col-sm-1 col-md-1 col-lg-1"  >Stok</th>
                             <th class="col-sm-1 col-md-1 col-lg-1"  >Satuan</th>
                             <th>Harga Jual</th>
@@ -43,11 +39,10 @@
                         <tr>
                             <td class="text-right" ></td>
                             <td>{{$dt->kode}}</td>
-                            <td >{{$dt->kategori}}</td>
-                            <td>{{$dt->nama}}</td>
+                            <td >{{$dt->kategori . ' ' .$dt->nama}}</td>
                             <td>{{$dt->stok>0 ? $dt->stok : 0}}</td>
                             <td>{{$dt->satuan }}</td>
-                            <td>{{number_format($dt->harga_jual_current,0,',','.')}}</td>
+                            <td>{{number_format($dt->harga_jual_current,0,'.',',')}}</td>
                             <td class="text-center" >
                                 <!--<a data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-barang" href="setbar/manstok/set-stok/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>-->
                                 <a class="btn btn-primary btn-sm btn-set-man-stok" href="setbar/manstok/set-stok/{{$dt->id}}" ><i class="fa fa-download" ></i> Manual Stok</a>
@@ -79,7 +74,6 @@
         "columns": [
             {className: "text-right"},
             null,
-            {className: "text-right"},
             null,
             {className: "text-right"},
             {className: "text-left"},
@@ -92,6 +86,11 @@
             return nRow;
         }
     });
+
+
+    //SET AUTOFOCUS KE FILTER TABLE
+    $('input[type=search]').focus();
+
 })(jQuery);
 </script>
 @append

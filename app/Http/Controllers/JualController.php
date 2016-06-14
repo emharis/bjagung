@@ -45,7 +45,7 @@ class JualController extends Controller {
 
     //get data barang JSON
     public function getBarang(Request $request){
-        $barangs = \DB::table('VIEW_STOK_BARANG')->select('id as data','nama_full as value','kode','satuan as sat','harga_jual_current')
+        $barangs = \DB::table('VIEW_STOK_BARANG')->select('id as data','nama_full as value','kode','satuan as sat','harga_jual_current','stok')
             ->where('nama_full','like','%'.$request->get('nama').'%')
             //dan select data yang stok > 0 dan telah di set harga jual
             ->where('stok','>',0)
@@ -59,7 +59,7 @@ class JualController extends Controller {
 
     //get data barang by kode return JSON
     public function getBarangByKode(Request $request){
-         $barangs = \DB::table('VIEW_STOK_BARANG')->select('id as data','nama_full as nama','kode as value','satuan as sat','harga_jual_current')
+         $barangs = \DB::table('VIEW_STOK_BARANG')->select('id as data','nama_full as nama','kode as value','satuan as sat','harga_jual_current','stok')
             ->where('kode','like','%'.$request->get('nama').'%')
             ->where('stok','>',0)
             ->where('harga_jual_current','>',0)
@@ -89,6 +89,144 @@ class JualController extends Controller {
         $data_customer = ['query'=>'Unit','suggestions' => $customer];
 
         return json_encode($data_customer);
+    }
+
+    //save penjualan
+    public function insert(Request $request){
+        // echo 'input data penjualan <br/>';
+        // echo $request->input('customer') . '<br/>';
+        // echo $request->input('salesman') . '<br/>';
+        // echo $request->input('tanggal') . '<br/>';
+        // echo $request->input('pembayaran') . '<br/>';
+        // echo $request->input('disc') . '<br/>';
+        // echo $request->input('barang') . '<br/>';
+
+
+
+        \DB::transaction(function()use($request){
+
+            //generate tanggal
+            $tgl = $request->input('tanggal');
+            $arr_tgl = explode('-',$tgl);
+            $_tgl = new \DateTime();
+            $_tgl->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);
+
+            //generatre no invoice penjualan
+            $sales = \DB::table('sales')->find($request->input('salesman'));
+            $penjualan_counter = \DB::table('appsetting')
+                                ->whereName('penjualan_counter')
+                                ->first();
+            $no_inv = $sales->kode . '/' . $arr_tgl[0] . $arr_tgl[1] . '0'.$penjualan_counter->value;
+            //update penjualan counter
+            \DB::table('appsetting')
+                                ->whereName('penjualan_counter')
+                                ->update([
+                                        'value' => $penjualan_counter->value + 1
+                                    ]);
+
+            //input table jual
+            $jual_id = \DB::table('jual')
+                            ->insertGetId([
+                                    'tgl' => $_tgl,
+                                    'customer_id' => $request->input('customer'),
+                                    'sales_id' => $request->input('salesman'),
+                                    'disc' => $request->input('disc'),
+                                    'tipe' => $request->input('pembayaran'),
+                                    'total' => $request->input('total'),
+                                    'grand_total' => $request->input('grand_total'),
+                                    'no_inv' => $no_inv,
+                                ]);
+
+            $barang = json_decode($request->input('barang'));
+
+            //input detil barang
+            foreach($barang->barang as $dt){
+                //insert ke table jual_barang
+                \DB::table('jual_barang')->insert([
+                        'jual_id' => $jual_id,
+                        'barang_id' => $dt->id,
+                        'qty' => $dt->qty,
+                        'harga' => $dt->harga,
+                        'total' => $dt->harga * $dt->qty,
+                    ]);
+
+                //Pengurangan/Update data STOK
+                $stoks = \DB::table('stok')
+                            ->where('barang_id',$dt->id)
+                            ->where('current_stok','>',0)
+                            ->orderBy('created_at','asc')
+                            ->get();
+
+                $qty_barang_di_jual = $dt->qty;
+
+                foreach($stoks as $st){ 
+
+                    if($qty_barang_di_jual > 0 ){
+
+                        if($st->current_stok == $qty_barang_di_jual ){
+                            //input ke stok moving
+                            \DB::table('stok_moving')->insert([
+                                    'stok_id' => $st->id,
+                                    'jumlah' => $qty_barang_di_jual,
+                                    'tipe' => 'O',
+                                    'jual_id' => $jual_id
+                                ]);
+                            //update stok current
+                            \DB::table('stok')->whereId($st->id)->update([
+                                    'current_stok' => 0 
+                                ]);
+                            $qty_barang_di_jual = 0;
+                        }else if($st->current_stok > $qty_barang_di_jual){
+                            //input ke stok moving
+                            \DB::table('stok_moving')->insert([
+                                    'stok_id' => $st->id,
+                                    'jumlah' => $qty_barang_di_jual,
+                                    'tipe' => 'O',
+                                    'jual_id' => $jual_id
+                                ]);
+                            //update stok current
+                            $sisa_stok = $st->current_stok;
+                            \DB::table('stok')->whereId($st->id)->update([
+                                    'current_stok' => ($st->current_stok - $qty_barang_di_jual)  
+                                ]);
+                            $qty_barang_di_jual = 0;
+                        }else{
+                            //input ke stok moving
+                            \DB::table('stok_moving')->insert([
+                                    'stok_id' => $st->id,
+                                    'jumlah' => $st->current_stok,
+                                    'tipe' => 'O',
+                                    'jual_id' => $jual_id
+                                ]);
+                            //update stok current
+                            $sisa_stok = $st->current_stok;
+                            \DB::table('stok')->whereId($st->id)->update([
+                                    'current_stok' => 0
+                                ]);
+                            $qty_barang_di_jual = $qty_barang_di_jual - $st->current_stok;
+                        }
+                    }
+                //END OF FOREACH STOK
+                }
+
+            //END OF FOREACH INSERT DETIL BARANG
+            }
+
+
+            if($request->input('pembayaran') == 'K'){
+                //masukkan daftar piutang
+                \DB::table('piutang')->insert([
+                        'jual_id' => $jual_id,
+                        'customer_id' => $request->input('customer'),
+                        'total' => $request->input('total') - $request->input('disc'),
+                        'sisa_bayar' => $request->input('total') - $request->input('disc'),
+                    ]);
+            }
+
+        //END OF TRANSACTION INSERT JUAL
+        });
+
+        echo 'Penjualan Sukses';
     }
 
 //==================================================================================

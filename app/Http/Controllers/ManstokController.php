@@ -130,10 +130,10 @@ class ManstokController extends Controller {
                 'hpp' => $hpp,
             ]);
             
-            //update harga barang terbaru ke table barang
-            \DB::table('barang')->where('id',$request->input('id'))->update([
-                'harga_jual_current' => $harga_jual
-            ]);
+            // //update harga barang terbaru ke table barang
+            // \DB::table('barang')->where('id',$request->input('id'))->update([
+            //     'harga_jual_current' => $harga_jual
+            // ]);
             
         });
         

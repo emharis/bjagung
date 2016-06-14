@@ -88,6 +88,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::group(['prefix' => 'penjualan'], function () {        
         //PENJUALAN
         Route::get('jual', ['as' => 'penjualan.jual', 'uses' => 'JualController@index']);
+        Route::post('jual/insert', ['as' => 'penjualan.jual.insert', 'uses' => 'JualController@insert']);
         Route::get('jual/pos', ['as' => 'penjualan.jual.pos', 'uses' => 'JualController@pos']);
         Route::get('jual/get-barang', ['as' => 'penjualan.jual.get-barang', 'uses' => 'JualController@getBarang']);
         Route::get('jual/get-barang-by-kode', ['as' => 'penjualan.jual.get-barang-by-kode', 'uses' => 'JualController@getBarangByKode']);

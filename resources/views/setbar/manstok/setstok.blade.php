@@ -81,7 +81,7 @@
                         <input type="hidden" name="barang_id" value="{{$data->id}}">
                         <table class="table table-bordered" >
                             <tbody>
-                                <tr>
+                                <tr class="hide" >
                                     <td>
                                         Tanggal
                                         <small>(YYYY/MM/DD)</small>
@@ -146,7 +146,7 @@
                                         {{$dt->stok_awal}}
                                     </td>
                                     <td class="text-right">
-                                        {{number_format($dt->harga,0,',','.')}}
+                                        {{number_format($dt->harga,0,'.',',')}}
                                     </td>
                                     <td class="text-center" >
                                         <a class="btn btn-danger btn-delete btn-sm" href="setbar/manstok/delete/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
@@ -173,11 +173,17 @@
 <script src="plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script src="plugins/jqueryform/jquery.form.min.js" type="text/javascript"></script>
-<script src="plugins/phpjs/numberformat.js" type="text/javascript"></script>
 <script src="plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="plugins/autonumeric/autoNumeric-min.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 (function ($) {
+    //setting auto numeric
+    $('.for-money').autoNumeric('init',{
+        vMin:'0',
+        vMax:'999999999'
+    });
+
     //format datatable  
     var tableStok = $('#table-history-stok').DataTable({
         "aaSorting": [[0, "desc"]],
@@ -232,12 +238,12 @@
     });
 
     //format number uang
-    $('.for-money').change(function () {
-        var val = $(this).val();
-        val = val.replace(".", "");
-        val = val.replace(",", "");
-        $(this).val(number_format(val, 0, ',', '.'));
-    });
+    // $('.for-money').change(function () {
+    //     var val = $(this).val();
+    //     val = val.replace(".", "");
+    //     val = val.replace(",", "");
+    //     $(this).val(number_format(val, 0, ',', '.'));
+    // });
 
     $('.tanggal').datepicker({
         format: 'yyyy/mm/dd',
