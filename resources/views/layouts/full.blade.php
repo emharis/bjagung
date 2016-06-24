@@ -48,7 +48,7 @@
                 <!-- /.container -->
             </div>
             <!-- /.content-wrapper -->
-            <footer class="main-footer">
+            <!-- <footer class="main-footer">
                 <div class="container">
                     <div class="pull-right hidden-xs">
                         <b>
@@ -66,7 +66,7 @@
                     All rights reserved.
                 </div>
                 <!-- /.container -->
-            </footer>
+            </footer> -->
         </div>
         <!-- ./wrapper -->
         <!-- jQuery 2.1.4 -->

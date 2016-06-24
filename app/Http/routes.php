@@ -94,6 +94,8 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('jual/get-barang-by-kode', ['as' => 'penjualan.jual.get-barang-by-kode', 'uses' => 'JualController@getBarangByKode']);
         Route::get('jual/get-salesman', ['as' => 'penjualan.jual.get-salesman', 'uses' => 'JualController@getSalesman']);
         Route::get('jual/get-customer', ['as' => 'penjualan.jual.get-customer', 'uses' => 'JualController@getCustomer']);
+        Route::get('jual/get-jual/{id}', ['as' => 'penjualan.jual.get-jual', 'uses' => 'JualController@getJual']);
+        Route::get('jual/get-jual-barang/{id}', ['as' => 'penjualan.jual.get-jual-barang', 'uses' => 'JualController@getJualBarang']);
     });
     
     

@@ -10,9 +10,12 @@ class JualController extends Controller {
 
     public function index() {
         // $data = \DB::table('VIEW_PEMBELIAN')->orderBy('tgl','desc')->get();
+// date_format(`b`.`tgl`,'%d-%m-%Y') AS `tgl_formatted`
+        $jual = \DB::table('view_jual')
+                    ->orderBy('created_at','desc')->get();
 
         return view('penjualan.jual.index', [
-            // 'data' => $data
+            'jual' => $jual
         ]);
     }
 
@@ -45,12 +48,23 @@ class JualController extends Controller {
 
     //get data barang JSON
     public function getBarang(Request $request){
-        $barangs = \DB::table('VIEW_STOK_BARANG')->select('id as data','nama_full as value','kode','satuan as sat','harga_jual_current','stok')
-            ->where('nama_full','like','%'.$request->get('nama').'%')
-            //dan select data yang stok > 0 dan telah di set harga jual
-            ->where('stok','>',0)
-            ->where('harga_jual_current','>',0)
-            ->get();
+        // $barangs = \DB::table('VIEW_STOK_BARANG')
+            // ->select('id as data',\DB::raw('concat(kode," ", nama_full) as value'),'id','nama_full as nama','kode',
+            //             'satuan as sat','harga_jual_current','stok')
+            // ->where('nama_full','like','%'.$request->get('nama').'%')
+            // ->orWhere('kode','like','%'.$request->get('nama').'%')
+            // //dan select data yang stok > 0 dan telah di set harga jual
+            // ->where('stok','>',0)
+            // ->where('harga_jual_current','>',0)
+            // ->get();
+
+            $barangs = \DB::select('select id as data,concat(kode," ", nama_full) as value,id,nama_full as nama,
+                kode,satuan as sat,harga_jual_current,stok 
+                from VIEW_STOK_BARANG 
+                where stok > 0 
+                and harga_jual_current > 0
+                and (nama_full like "%'.$request->get('nama').'%"
+                or kode like "%'.$request->get('nama').'%")');
         // $barangs['nama'] = $request->input('nama');
         $data_barang = ['query'=>'Unit','suggestions' => $barangs];
         echo json_encode($data_barang);
@@ -59,7 +73,9 @@ class JualController extends Controller {
 
     //get data barang by kode return JSON
     public function getBarangByKode(Request $request){
-         $barangs = \DB::table('VIEW_STOK_BARANG')->select('id as data','nama_full as nama','kode as value','satuan as sat','harga_jual_current','stok')
+         $barangs = \DB::table('VIEW_STOK_BARANG')
+            ->select('id as data','id','kode','nama_full as nama','kode as value','satuan as sat',
+                        'harga_jual_current','stok')
             ->where('kode','like','%'.$request->get('nama').'%')
             ->where('stok','>',0)
             ->where('harga_jual_current','>',0)
@@ -146,8 +162,9 @@ class JualController extends Controller {
                         'jual_id' => $jual_id,
                         'barang_id' => $dt->id,
                         'qty' => $dt->qty,
-                        'harga' => $dt->harga,
-                        'total' => $dt->harga * $dt->qty,
+                        'harga_satuan' => $dt->harga_satuan,
+                        'harga_salesman' => $dt->harga_salesman,
+                        'total' => $dt->harga_salesman * $dt->qty,
                     ]);
 
                 //Pengurangan/Update data STOK
@@ -227,6 +244,21 @@ class JualController extends Controller {
         });
 
         echo 'Penjualan Sukses';
+
+        return redirect('penjualan/jual/pos');
+    }
+
+
+    //GET DATA PENJUALAN
+    public function getJual($id){
+        $jual = \DB::table('VIEW_JUAL')->find($id);
+        return json_encode($jual);
+    }
+
+    //GET DATA DETIL PENJUALAN
+    public function getJualBarang($jual_id){
+        $jual_barang = \DB::table('VIEW_JUAL_BARANG')->where('jual_id',$jual_id)->get();
+        return json_encode($jual_barang);
     }
 
 //==================================================================================

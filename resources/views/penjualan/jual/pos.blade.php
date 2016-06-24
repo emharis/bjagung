@@ -100,86 +100,93 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-sm-3 col-md-3 col-lg-3 bg-green" >
-                            <label>TOTAL BAYAR</label>
-                            <h1 class="text-right grand-total" id="grand-total-atas" >0</h1>
-                        </div>
-                        <div class="col-sm-1 col-md-1 col-lg-1 bg-white" >
-                            <label></label>
-                           
+                        <div class="col-sm-4 col-md-4 col-lg-4" >
+                            <div class="bg-green" >
+                                <label style="margin:5px;" >TOTAL BAYAR</label>
+                                <h1 style="margin-bottom:5px;margin-right:5px;" class="text-right grand-total" id="grand-total-atas" >0</h1>
+                            </div>
                         </div>
 
                         <div class="col-sm-12 col-md-12 col-lg-12" >
                             <input type="hidden" name="id_barang">
                             <input type="hidden" name="stok_barang">
-                            <table class="table table-bordered table-condensed" id="table-barang" >
-                                <thead>
-                                    <tr class="bg-blue" >
-                                        <th class="col-sm-1 col-md-1 col-lg-1 " >KODE</th>
-                                        <th>BARANG/KATEGORI</th>
-                                        <th class="col-sm-2 col-md-2 col-lg-2 " >HARGA/SATUAN</th>
-                                        <th class="col-sm-2 col-md-2 col-lg-2 " >HARGA SALESMAN</th>
-                                        <th class="col-sm-1 col-md-1 col-lg-1 " >QTY</th>
-                                        <th style="width: 25px;padding:none;" >SAT</th>
-                                        <th class="col-sm-2 col-md-2 col-lg-2 " >TOTAL</th>
-                                        <th style="width: 10px;padding:none;" ></th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr  >
-                                        <td >
-                                            <input type="text" name="kode" class="form-control text-uppercase">
-                                        </td>
-                                        <td>
-                                            <input type="text" name="barang" class="form-control text-uppercase">
-                                        </td>
-                                        <td id="harga-satuan" class="text-right" >
-                                            <!-- harga satuan -->
-                                        </td>
-                                        <td>
-                                            <input type="text" name="harga_salesman" class="form-control text-right">
-                                        </td> 
-                                        <td>
-                                            <input type="number" name="qty" class="form-control text-right">
-                                        </td>
-                                        <td id="label-satuan" ></td>
-                                        <td id="harga-total" class="text-right" ></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="6" class="text-right"  >
-                                            <label>TOTAL</label>
-                                        </td>
-                                        <td id="sub-total" class="text-right" ></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="6" class="text-right" >
-                                            <label>DISC</label>
-                                        </td>
-                                        <td>
-                                            <input type="text" name="disc" class="form-control text-right">
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="6" class="text-right" >
-                                            <label>TOTAL BAYAR</label>
-                                        </td>
-                                        <td id="grand-total-bawah" class="grand-total text-right" ></td>
-                                        <td></td>
-                                    </tr>
+                            <div class="table-responsive" >
+                                <table class="table table-bordered table-condensed" id="table-barang" >
+                                    <thead>
+                                        <tr class="bg-blue" >
+                                            <th class="col-sm-1 col-md-1 col-lg-1 hide" >KODE</th>
+                                            <th>BARANG/KATEGORI</th>
+                                            <th class="col-sm-2 col-md-2 col-lg-2 " >HARGA/SATUAN</th>
+                                            <th class="col-sm-2 col-md-2 col-lg-2 " >HARGA SALESMAN</th>
+                                            <th class="col-sm-1 col-md-1 col-lg-1 " >QTY</th>
+                                            <th style="width: 25px;padding:none;" >SAT</th>
+                                            <th class="col-sm-2 col-md-2 col-lg-2 " >TOTAL</th>
+                                            <th style="width: 10px;padding:none;" ></th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr  >
+                                            <td class="hide" >
+                                                <input type="text" name="kode" class="form-control text-uppercase hide">
+                                            </td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="text" name="barang" class="form-control text-uppercase">
+                                                    <span class="input-group-addon"></span>
+                                                </div>
+                                            </td>
+                                            <td id="harga-satuan" class="text-right" >
+                                                <!-- harga satuan -->
+                                            </td>
+                                            <td>
+                                                <input type="text" name="harga_salesman" class="form-control text-right">
+                                            </td> 
+                                            <td>
+                                                <input type="number" name="qty" class="form-control text-right">
+                                            </td>
+                                            <td id="label-satuan" ></td>
+                                            <td id="harga-total" class="text-right" ></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="hide" ></td>
+                                            <td colspan="5" class="text-right"  >
+                                                <label>TOTAL</label>
+                                            </td>
+                                            <td id="sub-total" class="text-right" ></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="hide" ></td>
+                                            <td colspan="5" class="text-right" >
+                                                <label>DISC</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="disc" class="form-control text-right">
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="hide" ></td>
+                                            <td colspan="5" class="text-right" >
+                                                <label>TOTAL BAYAR</label>
+                                            </td>
+                                            <td id="grand-total-bawah" class="grand-total text-right" ></td>
+                                            <td></td>
+                                        </tr>
 
-                                </tfoot>
-                            </table>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            
                         </div>
                         <div class="col-sm-12 col-md-12 col-lg-12 text-right" >
-                            <a class="btn btn-primary" id="btn-save" >&nbsp;&nbsp;&nbsp;&nbsp;SAVE&nbsp;&nbsp;&nbsp;&nbsp;</a>
-                            <a class="btn btn-success" id="btn-save-cetak" >&nbsp;&nbsp;&nbsp;&nbsp;SAVE & CETAK NOTA&nbsp;&nbsp;&nbsp;&nbsp;</a>
-                            <a class="btn btn-danger" id="btn-exit" href="penjualan/jual" >&nbsp;&nbsp;&nbsp;&nbsp;EXIT&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                            <a class="btn btn-primary" id="btn-save" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SAVE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                            <!-- <a class="btn btn-success" id="btn-save-cetak" >&nbsp;&nbsp;&nbsp;&nbsp;SAVE & CETAK NOTA&nbsp;&nbsp;&nbsp;&nbsp;</a> -->
+                            <a class="text-red" id="btn-exit" href="penjualan/jual" >&nbsp;&nbsp;&nbsp;&nbsp;EXIT&nbsp;&nbsp;&nbsp;&nbsp;</a>
                         </div>
                         <!-- End of input data barang -->
                     </div>
@@ -199,11 +206,40 @@
                     <h4 class="modal-title">PENJUALAN</h4>
                 </div>
                 <div class="modal-body">
-                    
+                    <table class="table table-bordered" style="font-size:1.2em;" >
+                        <tbody>
+                            <tr>
+                                <td><label>TOTAL</label></td>
+                                <td><label>:</label></td>
+                                <td class="text-right" ><label class="grand-total" ></labebl></td>
+                            </tr>
+                            <tr>
+                                <td><label>BAYAR</label></td>
+                                <td>:</td>
+                                <td>
+                                    <input style="font-size:1em;" type="text" name="bayar" class="form-control grand-total text-right" >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label>KEMBALI</label></td>
+                                <td>:</td>
+                                <td id="kembalian" class="text-right" >
+                                    0
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-center" >
+                                    <button id="btn-confirm-save" class="btn btn-primary btn-sm " >SAVE</button>
+                                    <button id="btn-confirm-save-print" class="btn btn-success btn-sm " >SAVE & PRINT</button>
+                                    <a id="btn-confirm-cancel-save" data-dismiss="modal" class="btn btn-default btn-sm" >cancel</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="modal-footer" >
+                <!-- <div class="modal-footer" >
                     <a class="btn btn-danger btn-sm" data-dismiss="modal" ><i class="fa fa-close" ></i> Close</a>
-                </div>
+                </div> -->
             </div> 
         </div> 
     </div>
@@ -225,7 +261,7 @@
             var brObj = JSON.parse(strBarang);
 
             //setting auto numeric
-            $('input[name=disc], input[name=harga_salesman]').autoNumeric('init',{
+            $('input[name=disc],input[name=bayar], input[name=harga_salesman],input[name=bayar]').autoNumeric('init',{
                 vMin:'0',
                 vMax:'999999999'
             });
@@ -272,10 +308,13 @@
             function setBarang(suggestions){
                 //set kode dan satuan
                     $('input[name=barang]').val(suggestions.nama);
+                    $('input[name=kode]').val(suggestions.kode);
                     $('input[name=qty]').parent().next().html(suggestions.sat);
-                    $('input[name=id_barang]').val(suggestions.data);
+                    $('input[name=id_barang]').val(suggestions.id);
                     $('input[name=stok_barang]').val(suggestions.stok);
-                     $('#harga-satuan').text(numeral(suggestions.harga_jual_current).format('0,0'));
+                    $('#harga-satuan').text(numeral(suggestions.harga_jual_current).format('0,0'));
+                     //set stok
+                    $('input[name=barang]').next().text(suggestions.stok);
                     // $('#harga-satuan').numeral(suggestions.harga_jual_current,'0.0');
                     //fokuskan ke qty
                     //enablekan input qty
@@ -361,7 +400,7 @@
                                     
                                     // tampilkan new row tabel barang
                                     var newrow = '<tr data-stok="' + $('input[name=stok_barang]').val() + '" >\n\
-                                                    <td>' + kode + '</td>\n\
+                                                    <td class="hide" >' + kode + '</td>\n\
                                                     <td>' + nama_barang + '</td>\n\
                                                     <td class="text-right" >' + numeral(harga_satuan).format('0,0') + '</td>\n\
                                                     <td class="text-right row-harga-salesman" >' + numeral(harga_salesman).format('0,0') + '</td>\n\
@@ -376,7 +415,9 @@
                                     //clear input
                                     $('input[name=kode],input[name=barang],input[name=qty],input[name=harga_salesman]').val('')
                                     $('#harga-total,#harga-satuan,#label-satuan').text('');
-                                    $('input[name=kode]').focus();
+                                    $('input[name=barang]').focus();
+                                    //clear stok
+                                    $('input[name=barang]').next().text('');
                                     //sembunyikan input qty
                                     $('input[name=qty],input[name=harga_salesman]').hide();
 
@@ -428,11 +469,26 @@
                     sub_total = sub_total + (data.harga_salesman * data.qty);
                 });
 
-                grand_total = sub_total - disc;
+                //tampilkan sub_total 
+                $('#sub-total').text(numeral(sub_total).format('0,0')); 
 
-                //tampilkan sub_total & grand_total
-                $('#sub-total').text(numeral(sub_total).format('0,0'));
-                $('.grand-total').text(numeral(grand_total).format('0,0'));
+                //cek disc jika melebihi suc_total maka harus di rubah
+                if(disc <= sub_total){
+                    grand_total = sub_total - disc;
+
+                    //tampilkan grand total
+                    $('.grand-total').text(numeral(grand_total).format('0,0'));
+                    $('input.grand-total').val(numeral(grand_total).format('0,0'));
+
+                }else{
+                    alert('Discount melebihi nilai total.');
+                    //focuskan ke input disc
+                    $('input[name=disc]').val(0);
+                    $('input[name=disc]').focus();
+                    $('input[name=disc]').select();
+                    //kembalikan nilai sub_total
+                    $('#sub-total').text(numeral(sub_total).format('0,0')); 
+                }
             }
 
             //cancel add barang
@@ -486,6 +542,9 @@
                 if(customer != "" && salesman != "" && tanggal != "" && pembayaran != "" && brObj.barang.length > 0 ){
 
                     $('#modal-konfirmasi').modal('show');
+                    //fokuskan ke input bayar
+                    $('input[name=bayar]').focus();
+                    $('input[name=bayar]').select();
                    
                 }else{
                     alert('Lengkapi data yang kosong');
@@ -733,6 +792,51 @@
                 }
             });
             //END OF DELETE BARANG DALAM TABLE
+
+            //HITUNG KEMBALIAN
+            var confirm_grand_total=0;
+            var confirm_bayar=0;
+            $('input[name=bayar]').keyup(function(env){
+                confirm_grand_total = $(this).parent().parent().prev().children('td:last').text();
+                confirm_grand_total = confirm_grand_total.replace(/\./g, "");
+                confirm_grand_total = confirm_grand_total.replace(/,/g, "");
+
+                confirm_bayar = $(this).val();
+                confirm_bayar = confirm_bayar.replace(/\./g, "");
+                confirm_bayar = confirm_bayar.replace(/,/g, "");
+
+                //hitung kembalian
+                var kembali = Number(confirm_bayar) - Number(confirm_grand_total);
+                //tampilkan kembalian
+                $('#kembalian').text(numeral(kembali).format('0,0'));
+
+                if(env.keyCode == 13){
+                    if(Number(confirm_bayar) < Number(confirm_grand_total)){
+                        alert('Jumlah bayar kurang dari total.');
+                        //focuskan ke input bayar
+                        $(this).focus();
+                        $(this).select();
+                    }else{
+                        
+                    }
+                }
+            });
+            //END OF HITUNG KEMBALIAN
+
+            //SAVE PENJUALAN
+            $('#btn-confirm-save').click(function(env){
+                if(Number(confirm_bayar) < Number(confirm_grand_total)){
+                    alert('Jumlah bayar kurang dari total.');
+                    //focuskan ke input bayar
+                    $('input[name=bayar]').focus();
+                    $('input[name=bayar]').select();
+                }else{
+                    savePenjualan();
+                }
+            });
+            //END SAVE PENJUALAN
+
+
 
 
         // END OF JQUERY

@@ -4,7 +4,7 @@
 <!--Bootsrap Data Table-->
 <link rel="stylesheet" href="plugins/datatables/dataTables.bootstrap.css">
 <style>
-    #modal-show-barang .modal-dialog {
+    #modal-show-jual .modal-dialog {
         width: 75%;
     }
 </style>
@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="col-sm-3 text-right" >
-            <a class="btn btn-app bg-blue " style="width: 90%;" href="penjualan/jual/pos" ><i class="fa fa-shopping-cart" ></i>JUAL</a>
+            <a class="btn btn-app bg-blue " style="width: 100%;margin-left:0;" href="penjualan/jual/pos" ><i class="fa fa-shopping-cart" ></i>JUAL</a>
             
         </div>
     </div>
@@ -58,9 +58,9 @@
                     <thead>
                         <tr>
                             <th style="padding-right:5px;padding-left:5px;" >NO</th>
-                            <th>No INV</th>
+                            <th>NO INV</th>
                             <th>TGL</th>
-                            <th>SUPPLIER</th>
+                            <th>CUSTOMER</th>
                             <th style="padding-right:1px;padding-left:1px;" >T/K</th>
                             <th  style="padding-right:1px;padding-left:1px;" >STS</th>
                             <th>SUB TOTAL</th>
@@ -70,7 +70,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+                        <?php $rownum=1; ?>
+                        @foreach($jual as $dt)
+                        <tr data-id="{{$dt->id}}" >
+                            <td class="text-right" >{{$rownum++}}</td>
+                            <td>{{$dt->no_inv}}</td>
+                            <td>{{$dt->tgl_formatted}}</td>
+                            <td>{{$dt->customer}}</td>
+                            <td>{{$dt->tipe}}</td>
+                            <td></td>
+                            <td class="text-right" >{{number_format($dt->total,0,'.',',')}}</td>
+                            <td class="text-right" >{{number_format($dt->disc,0,'.',',')}}</td>
+                            <td class="text-right" >{{number_format($dt->grand_total,0,'.',',')}}</td>                            
+                            <td class="text-center" >
+                                <a class="btn btn-primary btn-xs btn-show-jual" ><i class="fa fa-eye" ></i></a>
+                                <a class="btn btn-success btn-xs" ><i class="fa fa-edit" ></i></a>
+                                <a class="btn btn-danger btn-xs" ><i class="fa fa-trash" ></i></a>
+                            </td>
+                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -82,12 +100,12 @@
 </section><!-- /.content -->
 
 <!-- modal show detil Penjualan -->
-<div class="modal" id="modal-show-barang" data-keyboard="false" data-backdrop="static">
+<div class="modal" id="modal-show-jual" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Data Penjualan Barang</h4>
+                    <h4 class="modal-title">DATA PENJUALAN</h4>
                 </div>
                 <div class="modal-body">
                     <div class="row" >
@@ -104,22 +122,32 @@
                                         <td>:</td>
                                         <td id="show-tgl" ></td>
                                     </tr>
+                                    <tr>
+                                        <td><label>SALESMAN</label></td>
+                                        <td>:</td>
+                                        <td id="show-salesman" ></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-sm-4 col-md-4 col-lg-4" ></div>
-                        <div class="col-sm-4 col-md-4 col-lg-4" >
+                        <div class="col-sm-3 col-md-3 col-lg-3" ></div>
+                        <div class="col-sm-5 col-md-5 col-lg-5" >
                             <table class="table table-bordered table-condensed" >
                                 <tbody>
                                     <tr>
-                                        <td><label>SUPPLIER</label></td>
+                                        <td><label>CUSTOMER</label></td>
                                         <td>:</td>
-                                        <td id="show-supplier" ></td>
+                                        <td id="show-customer" ></td>
                                     </tr>
                                     <tr>
                                         <td><label>PEMBAYARAN</label></td>
                                         <td>:</td>
                                         <td id="show-pembayaran" ></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>STATUS</label></td>
+                                        <td>:</td>
+                                        <td id="show-status" ></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -134,18 +162,34 @@
                                         <th>QTY</th>
                                         <th>SAT</th>
                                         <th>HARGA/SAT</th>
+                                        <th>HARGA SALESMAN</th>
                                         <th>TOTAL</th>
                                     </tr>
                                 </thead>
                                 <tbody >
                                     
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="7" class="text-right" ><label>TOTAL</label></td>
+                                        <td id="show-total" class="text-right" style="font-weight:bold;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7" class="text-right" ><label>DISC</label></td>
+                                        <td id="show-disc" class="text-right" style="font-weight:bold;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7" class="text-right" ><label>JUMLAH BAYAR</label></td>
+                                        <td id="show-grand-total" class="text-right" style="font-weight:bold;"></td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer" >
-                    <a class="btn btn-danger btn-sm" data-dismiss="modal" ><i class="fa fa-close" ></i> Close</a>
+                    <a class="btn btn-success btn-sm" id="btn-cetak-nota" ><i class="fa fa-print" ></i> CETAK NOTA</a>
+                    <a class="btn btn-danger btn-sm" data-dismiss="modal" ><i class="fa fa-close" ></i> CLOSE</a>
                 </div>
             </div> 
         </div> 
@@ -163,7 +207,74 @@
 
 <script type="text/javascript">
 (function ($) {
+    //VIEW DATA PENJUALAN
+    $('.btn-show-jual').click(function(){
+        var jual_id = $(this).parent().parent().data('id');
 
+        //clear table
+        $('#table-show-barang tbody').empty();  
+
+        //get data jual
+        $.get('penjualan/jual/get-jual/' + jual_id,null,function(datares){
+            var data_jual = JSON.parse(datares);
+
+            //tampilkan data jual ke modal
+            $('#show-no-inv').text(data_jual.no_inv);
+            $('#show-tgl').text(data_jual.tgl_formatted);
+            $('#show-salesman').text(data_jual.salesman);
+            $('#show-customer').text(data_jual.customer);
+            $('#show-grand-total').text(numeral(data_jual.grand_total).format('0,0'));
+            $('#show-total').text(numeral(data_jual.total).format('0,0'));
+            $('#show-disc').text(numeral(data_jual.disc).format('0,0'));
+            
+            if(data_jual.tipe == 'K'){
+                $('#show-pembayaran').text('KREDIT/TEMPO');
+            }else{
+                $('#show-pembayaran').text('TUNAI/LUNAS');
+            }
+
+            if(data_jual.status == 'N'){
+                $('#show-status').text('-');
+            }else{
+                $('#show-status').text('LUNAS');
+            }
+
+            //tampilkan data detil jual / data barang
+            $.get('penjualan/jual/get-jual-barang/' + jual_id,null,function(databar){
+                var data_barang = JSON.parse(databar);
+                var table_barang = $('#table-show-barang');
+                
+                var rownum=1;
+                $.each(data_barang,function(i,data){
+                    var newrow = "<tr>\n\
+                                    <td class='text-right'  >" + rownum++ + "</td>\n\
+                                    <td>" + data.kode + "</td>\n\
+                                    <td>" + data.nama_full + "</td>\n\
+                                    <td class='text-right'>" + data.qty + "</td>\n\
+                                    <td>" + data.satuan + "</td>\n\
+                                    <td class='text-right'  >" + numeral(data.harga_satuan).format('0,0') + "</td>\n\
+                                    <td class='text-right' >" + numeral(data.harga_salesman).format('0,0') + "</td>\n\
+                                    <td class='text-right' >" + numeral(data.total).format('0,0') + "</td>\n\
+                                  </tr>";
+
+                    $('#table-show-barang tbody').append(newrow);
+
+                    //tampilkan modal
+                    $('#modal-show-jual').modal('show');
+                });
+            });            
+        });
+    });
+    //END VIEW DATA PENJUALAN
+
+    //CETAK NOTA
+    $('#btn-cetak-nota').click(function(){
+        if(confirm('Anda akan mencetak nota ini?')){
+            alert('cetak nota');    
+        }
+        
+    });
+    //END OF CETAK NOTA
 
 // END OF JQUERY
 })(jQuery);
