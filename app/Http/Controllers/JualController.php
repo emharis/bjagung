@@ -11,7 +11,7 @@ class JualController extends Controller {
     public function index() {
         // $data = \DB::table('VIEW_PEMBELIAN')->orderBy('tgl','desc')->get();
 // date_format(`b`.`tgl`,'%d-%m-%Y') AS `tgl_formatted`
-        $jual = \DB::table('view_jual')
+        $jual = \DB::table('VIEW_JUAL')
                     ->orderBy('created_at','desc')->get();
 
         return view('penjualan.jual.index', [
@@ -41,9 +41,13 @@ class JualController extends Controller {
         }
         $tgl_indo = $hari . ", ". date('d-m-Y');
 
-        return view('penjualan.jual.pos',[
+        return view('penjualan.jual.jual',[
                 'tgl_indo' => $tgl_indo
             ]);
+
+        // return view('penjualan.jual.pos',[
+        //         'tgl_indo' => $tgl_indo
+        //     ]);
     }
 
     //get data barang JSON
@@ -243,7 +247,7 @@ class JualController extends Controller {
         //END OF TRANSACTION INSERT JUAL
         });
 
-        echo 'Penjualan Sukses';
+        // echo 'Penjualan Sukses';
 
         return redirect('penjualan/jual/pos');
     }
@@ -260,6 +264,20 @@ class JualController extends Controller {
         $jual_barang = \DB::table('VIEW_JUAL_BARANG')->where('jual_id',$jual_id)->get();
         return json_encode($jual_barang);
     }
+
+    //TAMPILKAN FORM EDIT JUAL
+    public function edit($id){
+        $jual = \DB::table('VIEW_JUAL')
+                    ->find($id);
+
+        $jual_barang = \DB::table('VIEW_JUAL_BARANG')->where('jual_id',$id)->get();
+
+        // return view('penjualan.jual.edit', [
+        return view('penjualan.jual.edit2', [
+            'jual' => $jual,
+            'jual_barang' => $jual_barang,
+        ]);
+    } 
 
 //==================================================================================
 //END OF CODE JualController.php

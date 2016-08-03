@@ -84,7 +84,7 @@
                             <td class="text-right" >{{number_format($dt->grand_total,0,'.',',')}}</td>                            
                             <td class="text-center" >
                                 <a class="btn btn-primary btn-xs btn-show-jual" ><i class="fa fa-eye" ></i></a>
-                                <a class="btn btn-success btn-xs" ><i class="fa fa-edit" ></i></a>
+                                <a class="btn btn-success btn-xs btn-edit-jual" href="penjualan/jual/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
                                 <a class="btn btn-danger btn-xs" ><i class="fa fa-trash" ></i></a>
                             </td>
                         </tr>
@@ -275,6 +275,8 @@
         
     });
     //END OF CETAK NOTA
+
+
 
 // END OF JQUERY
 })(jQuery);

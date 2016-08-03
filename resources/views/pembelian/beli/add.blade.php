@@ -337,8 +337,8 @@
                 'value': disc,
                 'type': 'hidden'
             }));
-
-            newForm.submit();
+            newForm.appendTo('body').submit();
+            // newForm.submit();
         }else{
             alert('Lengkapi data yang kosong');
             // fokuskan ke input no inv

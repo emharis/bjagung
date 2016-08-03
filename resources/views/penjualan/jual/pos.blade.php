@@ -115,9 +115,9 @@
                                     <thead>
                                         <tr class="bg-blue" >
                                             <th class="col-sm-1 col-md-1 col-lg-1 hide" >KODE</th>
-                                            <th>BARANG/KATEGORI</th>
-                                            <th class="col-sm-2 col-md-2 col-lg-2 " >HARGA/SATUAN</th>
-                                            <th class="col-sm-2 col-md-2 col-lg-2 " >HARGA SALESMAN</th>
+                                            <th>BARANG/KATEGORI <i class="pull-right" >STOK</i></th>
+                                            <th class="col-sm-2 col-md-2 col-lg-2 " >HRG/SAT</th>
+                                            <th class="col-sm-2 col-md-2 col-lg-2 " >HRG/SLS</th>
                                             <th class="col-sm-1 col-md-1 col-lg-1 " >QTY</th>
                                             <th style="width: 25px;padding:none;" >SAT</th>
                                             <th class="col-sm-2 col-md-2 col-lg-2 " >TOTAL</th>
@@ -126,7 +126,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr  >
+                                        <tr style="border-bottom:2px solid grey;"  >
                                             <td class="hide" >
                                                 <input type="text" name="kode" class="form-control text-uppercase hide">
                                             </td>
@@ -256,6 +256,11 @@
     <script src="plugins/numeraljs/numeral.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         (function ($) {
+
+            //clear input on load
+            $('input[name=customer]').val('');
+            $('input[name=salesman]').val('');
+            $('select[name=pembayaran]').val([]);
 
             var strBarang = '{"barang" : [] }';
             var brObj = JSON.parse(strBarang);
@@ -611,8 +616,10 @@
                         'value': grand_total,
                         'type': 'hidden'
                     }));
-
-                    newForm.submit();
+                    // alert('submit penjualan');
+                    // $('body').append(newForm);
+                    newForm.appendTo('body').submit();
+                    // newForm.submit();
                 }else{
                     alert('Lengkapi data yang kosong');
                     // fokuskan ke input no inv
@@ -825,6 +832,7 @@
 
             //SAVE PENJUALAN
             $('#btn-confirm-save').click(function(env){
+                // alert('simpan penjualan');
                 if(Number(confirm_bayar) < Number(confirm_grand_total)){
                     alert('Jumlah bayar kurang dari total.');
                     //focuskan ke input bayar
