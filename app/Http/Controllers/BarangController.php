@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 
 class BarangController extends Controller {
 
+    // fungsi index pertama kali view dijalankan
     public function index() {
         $data = \DB::table('VIEW_BARANG')
                 ->orderBy('kategori', 'asc')
