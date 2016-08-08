@@ -25,9 +25,17 @@ class BeliController extends Controller {
     }
 
     public function getBarang(Request $request){
-        $barangs = \DB::table('VIEW_STOK_BARANG')->select('id as data','nama_full as value','kode','satuan as sat')
-            ->where('nama_full','like','%'.$request->get('nama').'%')
-            ->get();
+        // $barangs = \DB::table('VIEW_STOK_BARANG')->select('id as data','nama_full as value','kode','satuan as sat')
+        //     ->where('nama_full','like','%'.$request->get('nama').'%')
+        //     ->get();
+
+        $barangs = \DB::select('select id as data,concat(kode," ", nama_full) as value,id,nama_full as nama, kode,satuan as sat
+            from VIEW_STOK_BARANG 
+            where stok > 0 
+            and harga_jual_current > 0
+            and (nama_full like "%'.$request->get('nama').'%"
+            or kode like "%'.$request->get('nama').'%")');
+
         // $barangs['nama'] = $request->input('nama');
         $data_barang = ['query'=>'Unit','suggestions' => $barangs];
         echo json_encode($data_barang);

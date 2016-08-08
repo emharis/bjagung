@@ -137,7 +137,7 @@
                                 <thead>
                                     <tr>
                                         <th>NO</th>
-                                        <th>KODE</th>
+                                        <th class="hide">KODE</th>
                                         <th>KATEGORI/BARANG</th>
                                         <th>QTY</th>
                                         <th>SAT</th>

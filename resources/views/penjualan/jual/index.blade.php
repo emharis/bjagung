@@ -85,7 +85,7 @@
                             <td class="text-center" >
                                 <a class="btn btn-primary btn-xs btn-show-jual" ><i class="fa fa-eye" ></i></a>
                                 <a class="btn btn-success btn-xs btn-edit-jual" href="penjualan/jual/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
-                                <a class="btn btn-danger btn-xs" ><i class="fa fa-trash" ></i></a>
+                                <a class="btn btn-danger btn-xs btn-delete-jual" ><i class="fa fa-trash" ></i></a>
                             </td>
                         </tr>
                         @endforeach
@@ -275,6 +275,41 @@
         
     });
     //END OF CETAK NOTA
+
+    // DELETE DATA JUAL
+    $('.btn-delete-jual').click(function(e){
+        if(confirm('Anda akan menghapus data ini?')){
+            var row = $(this).parent().parent();
+            var jual_id = row.data('id');
+            
+
+            var newForm = jQuery('<form>', {
+                            'action': 'penjualan/delete',
+                            'method': 'POST'
+                        }).append(jQuery('<input>', {
+                            'name': 'jual_id',
+                            'value': jual_id,
+                            'type': 'hidden'
+                        }));
+            //submit form simpan penjualan
+            newForm.appendTo('body').submit();
+
+            // $.post('penjualan/delete',{'jual_id':jual_id},function(ref){
+            //         alert(ref);
+            //     });
+
+            // row.fadeOut(250,null,function(){
+            //     var jual_id = row.data('id');
+            //     $.post('penjualan/delete',{'jual_id':jual_id},function(ref){
+            //         alert(ref);
+            //     });
+            // });
+        }else{
+            e.preventDefault();
+            return false;
+        }
+    });
+    // END OF DELETE DATA JUAL
 
 
 

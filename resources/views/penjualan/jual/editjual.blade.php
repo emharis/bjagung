@@ -34,8 +34,8 @@
     <div class="row" >
         <div class="col-sm-12 col-md-12 col-lg-12" >
             <div class="box box-solid" >
-                <div class="box-header bg-blue" >
-                    <h3 class="box-title" ><i class="fa fa-shopping-cart" ></i> PENJUALAN</h3>
+                <div class="box-header bg-green" >
+                    <h3 class="box-title" >EDIT DATA PENJUALAN</h3>
                     <div class="pull-right" >
                         <!-- Tanggal indonesia -->
                         {{$tgl_indo}}
@@ -47,17 +47,25 @@
                             <table class="table table-bordered table-condensed" >
                                 <tbody>
                                     <tr>
+                                        <td>NO. INV</td>
+                                        <td>:</td>
+                                        <td>
+                                            {{$jual->no_inv}}
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>CUSTOMER</td>
                                         <td>:</td>
                                         <td>
                                             <div class="input-group">
-                                                <input type="text" name="customer" class="form-control text-uppercase"  autofocus >
+                                                <input type="text" name="customer" class="form-control text-uppercase" value="{{$jual->customer}}"  autofocus >
                                                 <div class="input-group-btn">
                                                   <a id="btn-clear-customer" type="button" class="btn btn-danger"><i class="fa fa-close" ></i></a>
+                                                  <a id="btn-refresh-customer" type="button" class="btn btn-success"><i class="fa fa-refresh" ></i></a>
                                                 </div><!-- /btn-group -->
                                             </div>
                                             
-                                            <input type="hidden" name="customer_id" >
+                                            <input type="hidden" name="customer_id" value="{{$jual->customer_id}}" >
                                         </td>
                                     </tr>
                                     <tr>
@@ -65,13 +73,14 @@
                                         <td>:</td>
                                         <td>
                                             <div class="input-group">
-                                                <input type="text" name="salesman" class="form-control text-uppercase" >
+                                                <input type="text" name="salesman" class="form-control text-uppercase" value="{{$jual->salesman}}" >
                                                 <div class="input-group-btn">
                                                   <a id="btn-clear-salesman" type="button" class="btn btn-danger"><i class="fa fa-close" ></i></a>
+                                                  <a id="btn-refresh-salesman" type="button" class="btn btn-success"><i class="fa fa-refresh" ></i></a>
                                                 </div><!-- /btn-group -->
                                             </div>
                                             
-                                            <input type="hidden" name="salesman_id" >
+                                            <input type="hidden" name="salesman_id" value="{{$jual->sales_id}}" >
                                         </td>
                                     </tr>
                                     
@@ -85,17 +94,32 @@
                                         <td>TANGGAL</td>
                                         <td>:</td>
                                         <td>
-                                            <input id="input-tanggal" type="text" name="tanggal" class="form-control" value="{{date('d-m-Y')}}" >
+                                            <div class="input-group">
+                                                <input id="input-tanggal" type="text" name="tanggal" class="form-control" value="{{$jual->tgl_formatted}}" >
+                                                <div class="input-group-btn">
+                                                  <a id="btn-clear-tanggal" type="button" class="btn btn-danger"><i class="fa fa-close" ></i></a>
+                                                  <a id="btn-refresh-tanggal" type="button" class="btn btn-success"><i class="fa fa-refresh" ></i></a>
+                                                </div><!-- /btn-group -->
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>PEMBAYARAN</td>
                                         <td>:</td>
                                         <td>
-                                            <select class="form-control" name="pembayaran" >\
-                                                <option value="T">TUNAI/LUNAS</option>
-                                                <option value="K">KREDIT/TEMPO</option>
-                                            </select>
+                                            <div class="input-group">
+                                                {{-- <select class="form-control" name="pembayaran" >\
+                                                    <option value="T">TUNAI/LUNAS</option>
+                                                    <option value="K">KREDIT/TEMPO</option>
+                                                </select> --}}
+                                                <?php $opsi_pembayaran = ['T'=>'TUNAI/LUNAS','K'=>'KREDIT/TEMPO']; ?>
+                                                {!! Form::select('pembayaran',$opsi_pembayaran,$jual->tipe,['class'=>'form-control']) !!}
+                                                <div class="input-group-btn">
+                                                  <a id="btn-clear-pembayaran" type="button" class="btn btn-danger"><i class="fa fa-close" ></i></a>
+                                                  <a id="btn-refresh-pembayaran" type="button" class="btn btn-success"><i class="fa fa-refresh" ></i></a>
+                                                </div><!-- /btn-group -->
+                                            </div>
+                                            
                                         </td>
                                     </tr>
                                 </tbody>
@@ -146,21 +170,50 @@
                                                 <button id="btn-cancel-add-barang" class="btn btn-danger btn-sm" ><i class="fa fa-close" ></i></button>
                                             </td>
                                         </tr>
+                                        <!-- TAMPILKAN DATA BARANG -->
+                                        <?php $rowid = 1; ?>
+                                        @foreach($jual_barang as $dt)
+                                            <tr data-idbarang="{{$dt->barang_id}}" data-kodebarang="{{$dt->kode}}" data-rowid="{{$rowid}}" class="row-barang">
+                                                <td>{{$rowid++}}.</td>
+                                                <td>
+                                                    {{$dt->kode . ' ' . $dt->nama_full}}<label class="bg-green pull-right label-stok-barang-on-row">&nbsp;&nbsp;{{$dt->stok_on_db}}&nbsp;&nbsp;</label>
+                                                </td>
+                                                <td class="text-right">
+                                                    {{number_format($dt->harga_satuan,0,'.',',')}}
+                                                </td>
+                                                <td class="text-right">
+                                                    <input type="text" class="form-control text-right input-add-harga-salesman-on-row" value="{{$dt->harga_salesman}}">
+                                                </td>
+                                                <td class="text-right">
+                                                    <input type="number" min="1" max="{{$dt->stok_on_db + $dt->qty}}" class="form-control text-right input-add-qty-on-row" value="{{$dt->qty}}"></td><td>{{$dt->satuan}}
+                                                </td>
+                                                <td class="text-right">
+                                                    {{number_format($dt->total,0,'.',',')}}
+                                                </td>
+                                                <td class="text-center">
+                                                    <a class="btn btn-danger btn-sm btn-delete-barang-on-row"><i class="fa fa-trash"></i></a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <td colspan="6" class="text-right"  >
                                                 <label>TOTAL</label>
                                             </td>
-                                            <td id="label-sub-total" class="text-right" ></td>
-                                            <td></td>
+                                            <td id="label-sub-total" style="font-weight:bold;" class="text-right" >
+                                                {{number_format($jual->total,0,'.',',')}}
+                                            </td>
+                                            <td>
+                                                
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td colspan="6" class="text-right" >
                                                 <label>DISC</label>
                                             </td>
                                             <td>
-                                                <input type="text" name="disc" class="form-control text-right">
+                                                <input type="text" name="disc" class="form-control text-right" value="{{$jual->disc}}" >
                                             </td>
                                             <td></td>
                                         </tr>
@@ -168,7 +221,9 @@
                                             <td colspan="6" class="text-right" >
                                                 <label>TOTAL BAYAR</label>
                                             </td>
-                                            <td id="label-grand-total" class="grand-total text-right" ></td>
+                                            <td id="label-grand-total" style="font-weight:bold;" class="grand-total text-right" >
+                                                {{number_format($jual->grand_total,0,'.',',')}}
+                                            </td>
                                             <td></td>
                                         </tr>
 
@@ -192,51 +247,9 @@
     </div>
     <!-- /.container -->
 
-    <div class="modal" id="modal-konfirmasi" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">PENJUALAN</h4>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-bordered" style="font-size:1.2em;" >
-                        <tbody>
-                            <tr>
-                                <td><label>TOTAL</label></td>
-                                <td><label>:</label></td>
-                                <td class="text-right" ><label class="grand-total" ></labebl></td>
-                            </tr>
-                            <tr>
-                                <td><label>BAYAR</label></td>
-                                <td>:</td>
-                                <td>
-                                    <input style="font-size:1em;" type="text" name="bayar" class="form-control grand-total text-right" >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label>KEMBALI</label></td>
-                                <td>:</td>
-                                <td id="kembalian" class="text-right" >
-                                    0
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="text-center" >
-                                    <button id="btn-confirm-save" class="btn btn-primary btn-sm " >SAVE</button>
-                                    <button id="btn-confirm-save-print" class="btn btn-success btn-sm " >SAVE & PRINT</button>
-                                    <a id="btn-confirm-cancel-save" data-dismiss="modal" class="btn btn-default btn-sm" >cancel</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- <div class="modal-footer" >
-                    <a class="btn btn-danger btn-sm" data-dismiss="modal" ><i class="fa fa-close" ></i> Close</a>
-                </div> -->
-            </div> 
-        </div> 
-    </div>
+    <!-- DATA JSON JUAL & DATA BARANG -->
+    <div class="hide" id="json-data-jual" >{{json_encode($jual)}}</div>
+    <div class="hide" id="json-data-jual-barang" >{{json_encode($jual_barang)}}</div>
 @stop
 
 @section('scripts')
@@ -256,7 +269,13 @@
             // =====================================================
             var STR_BARANG = '{"barang" : [] }';
             var OBJ_BARANG = JSON.parse(STR_BARANG);
+            //get data barang dari data json
+            OBJ_BARANG.barang = JSON.parse($('#json-data-jual-barang').text());
+
             var OBJ_JUAL = {"customer_id":"", "salesman_id":"","tanggal":"","pembayaran":""};
+            //get data jual dari data json
+            OBJ_JUAL = JSON.parse($('#json-data-jual').text());
+
             var TBL_BARANG = $('#table-barang');
             // =====================================================
             // END DECLARATION MEMBER VARIABLES
@@ -266,11 +285,16 @@
             // -----------------------------------------------------
             // SET DEFAULT INPUT
             // =====================================================
-            $('input[name=customer]').val('');
-            $('input[name=salesman]').val('');
-            $('select[name=pembayaran]').val([]);
-            $('input[name=input-add-barang]').val('');
-            $('input[name=input-add-qty]').val('');
+            // $('input[name=customer]').val('');
+            // $('input[name=salesman]').val('');
+            // $('select[name=pembayaran]').val([]);
+            // $('input[name=input-add-barang]').val('');
+            // $('input[name=input-add-qty]').val('');
+
+            $('input[name=customer]').attr('disabled','disabled');
+            $('input[name=salesman]').attr('disabled','disabled');
+            $('input[name=tanggal]').attr('disabled','disabled');
+            $('select[name=pembayaran]').attr('disabled','disabled');
             $('input[name=input-add-harga-salesman]').val('');
             $('input[name=input-add-qty]').attr('disabled','disabled');
             $('input[name=input-add-harga-salesman]').attr('disabled','disabled');
@@ -287,6 +311,10 @@
                 vMax:'9999999999'
             });
             $('input[name=disc]').autoNumeric('init',{
+                vMin:'0',
+                vMax:'9999999999'
+            });
+            $('.input-add-harga-salesman-on-row').autoNumeric('init',{
                 vMin:'0',
                 vMax:'9999999999'
             });
@@ -373,7 +401,7 @@
 
 
             // =====================================================
-            // CLEAR CUSTOMER & SALESMAN
+            // CLEAR CUSTOMER & SALESMAN & TANGGAL & PEMBAYARAN
             // -----------------------------------------------------            
             // clear customer
             $('#btn-clear-customer').click(function(){
@@ -398,8 +426,75 @@
                 $('input[name=salesman]').focus();
             });
             // end of clear salesman
+            // +++++++++++++++++++++++++++++++++++++++++++++++++++++
+            // clear tanggal
+            $('#btn-clear-tanggal').click(function(){
+                //clear data tanggal
+                $('input[name=tanggal]').val('');
+                //enable kan input tanggal
+                $('input[name=tanggal]').removeAttr('disabled');
+                //focuskan input tanggal
+                $('input[name=tanggal]').focus();
+            });
+            // end of clear tanggal
+            // +++++++++++++++++++++++++++++++++++++++++++++++++++++
+            // clear pembayaran
+            $('#btn-clear-pembayaran').click(function(){
+                //clear data pembayaran
+                $('select[name=pembayaran]').val([]);
+                //enable kan input pembayaran
+                $('select[name=pembayaran]').removeAttr('disabled');
+                //focuskan input pembayaran
+                $('select[name=pembayaran]').focus();
+            });
+            // end of clear tanggal
             // -----------------------------------------------------
-            // END CLEAR CUSTOMER & SALESMAN
+            // END OF CLEAR CUSTOMER & SALESMAN & TANGGAL & PEMBAYARAN
+            // =====================================================
+
+
+            // =====================================================
+            // REFRESH CUSTOMER & SALESMAN & TANGGAL & PEMBAYARAN
+            // -----------------------------------------------------            
+            // refresh customer
+            $('#btn-refresh-customer').click(function(){
+                //refresh data customer
+                $('input[name=customer]').val(OBJ_JUAL.customer);
+                $('input[name=customer_id]').val(OBJ_JUAL.customer_id);
+                //disablekan input customer
+                $('input[name=customer]').attr('disabled','disabled');
+            });
+            // end of refresh customer
+            // +++++++++++++++++++++++++++++++++++++++++++++++++++++
+            // refresh salesman
+            $('#btn-refresh-salesman').click(function(){
+                //refresh data salesman
+                $('input[name=salesman]').val(OBJ_JUAL.salesman);
+                $('input[name=salesman_id]').val(OBJ_JUAL.salesman_id);
+                //disablekan input salesman
+                $('input[name=salesman]').attr('disabled','disabled');
+            });
+            // end of refresh salesman
+            // +++++++++++++++++++++++++++++++++++++++++++++++++++++
+            // refresh tanggal
+            $('#btn-refresh-tanggal').click(function(){
+                //refresh data tanggal
+                $('input[name=tanggal]').val(OBJ_JUAL.tgl_formatted);
+                //disablekan input tanggal
+                $('input[name=tanggal]').attr('disabled','disabled');
+            });
+            // end of refresh tanggal
+            // +++++++++++++++++++++++++++++++++++++++++++++++++++++
+            // refresh pembayaran
+            $('#btn-refresh-pembayaran').click(function(){
+                //refresh data pembayaran
+                $('select[name=pembayaran]').val(OBJ_JUAL.tipe);
+                //disablekan input pembayaran
+                $('select[name=pembayaran]').attr('disabled','disabled');
+            });
+            // end of refresh tanggal
+            // -----------------------------------------------------
+            // END OF REFRESH CUSTOMER & SALESMAN & TANGGAL & PEMBAYARAN
             // =====================================================
 
 
@@ -470,7 +565,6 @@
             // =====================================================
             var row_id=1;
             function addBarang(){
-                //cek apakah data sudah lengkap 
                 if($('input[name=input-add-id-barang]').val() != "" && $('input[name=input-add-harga-salesman]').val() != "" && $('input[name=input-add-qty]').val() != "" ){
 
                     //get data barang
@@ -525,13 +619,13 @@
                     }else{
                         //tampilkan pesan stok tidak memenudi
                         alert('Quantity melebihi stok yang tersedia.');
+                        $('input[name=input-add-qty]').val(0);
                         $('input[name=input-add-qty]').select();
                     }
 
                 }else{
                     alert('Lengkapi data yang kosong.');
                 }
-
                 
             }
             // =====================================================
@@ -657,11 +751,11 @@
                 if(Number(qty) > Number(current_stok)){
                     alert('Quantity melebihi stok yang tersedia');
                     //set qty to 0
-                    $(this).val(0);
+                    row.children('td:first').next().next().next().next().children('input').val(1);
                     //rubah label total harga barang on row ke 0
-                    $(this).parent().next().next().text(0);
+                    row.children('td:first').next().next().next().next().next().next().text(numeral(harga_salesman).format('0,0'));
                     //focuskan
-                    $(this).select();
+                    // col_qty.children('input').select();
                 }else{
                     //rubah data di OBJ_BARANG
                     // $.each(OBJ_BARANG.barang,function(i,data){
@@ -708,7 +802,6 @@
                 if (cekHargaSalesmanOnRow($(this))){
                     $(this).focus();
                     $(this).select();
-                    return false;
                 };          
             });
             // fungsi cek harga salesman on row apakah kurang dari minimum
@@ -800,10 +893,10 @@
                     $('.row-barang').each(function(i){
                         var br_row = $(this);
                         var barang_id = br_row.data('idbarang');
-                        var nama_barang = br_row.children('td:first').next().text();
+                        var nama_barang = $.trim(br_row.children('td:first').next().text());
                         var kode = br_row.data('kodebarang');
                         var qty = br_row.children('td:first').next().next().next().next().children('input').val();
-                        var harga_satuan = br_row.children('td:first').next().next().text();
+                        var harga_satuan = $.trim(br_row.children('td:first').next().next().text());
                         harga_satuan = harga_satuan.replace(/\./g, "");
                         harga_satuan = harga_satuan.replace(/,/g, "");
 
@@ -811,7 +904,7 @@
                         harga_salesman = harga_salesman.replace(/\./g, "");
                         harga_salesman = harga_salesman.replace(/,/g, "");
 
-                        var current_stok = br_row.children('td:first').next().children('label').text();
+                        var current_stok = $.trim(br_row.children('td:first').next().children('label').text());
                         var jumlah_harga = Number(qty) * Number(harga_salesman);
 
                         //masukkan data ke OBJ_BARANG
@@ -834,41 +927,22 @@
                     // hitung total bayar
                     total_bayar = Number(total_jumlah_harga) - Number(disc);
 
+                    //set total & total_bayar
+                    OBJ_JUAL.total = total_jumlah_harga;
+                    OBJ_JUAL.disc = disc;
+                    OBJ_JUAL.grand_total = total_bayar;
+
                     //simpan data ke database
                     var newForm = jQuery('<form>', {
-                            'action': 'penjualan/jual/insert',
+                            'action': 'penjualan/jual/update',
                             'method': 'POST'
                         }).append(jQuery('<input>', {
-                            'name': 'customer',
-                            'value': OBJ_JUAL.customer_id,
-                            'type': 'hidden'
-                        })).append(jQuery('<input>', {
-                            'name': 'salesman',
-                            'value': OBJ_JUAL.salesman_id,
-                            'type': 'hidden'
-                        })).append(jQuery('<input>', {
-                            'name': 'tanggal',
-                            'value': OBJ_JUAL.tanggal,
-                            'type': 'hidden'
-                        })).append(jQuery('<input>', {
-                            'name': 'pembayaran',
-                            'value': OBJ_JUAL.pembayaran,
+                            'name': 'jual_obj',
+                            'value': JSON.stringify(OBJ_JUAL),
                             'type': 'hidden'
                         })).append(jQuery('<input>', {
                             'name': 'barang',
                             'value': JSON.stringify(OBJ_BARANG),
-                            'type': 'hidden'
-                        })).append(jQuery('<input>', {
-                            'name': 'disc',
-                            'value': disc,
-                            'type': 'hidden'
-                        })).append(jQuery('<input>', {
-                            'name': 'total',
-                            'value': total_jumlah_harga,
-                            'type': 'hidden'
-                        })).append(jQuery('<input>', {
-                            'name': 'grand_total',
-                            'value': total_bayar,
                             'type': 'hidden'
                         }));
                         //disable tombol save
@@ -877,6 +951,8 @@
                         newForm.appendTo('body').submit();
                         // alert('Simpan Penjualan');
                         $('#btn-save').removeClass('disabled');
+
+                        // alert('Simpan Update');
 
                 }else{
                     alert('Lengkapi data yang kosong.');

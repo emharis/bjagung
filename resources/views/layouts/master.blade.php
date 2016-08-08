@@ -50,7 +50,7 @@
 
             <footer class="main-footer">
                 <div class="pull-right hidden-xs">
-                    <b>Dikembangkan oleh</b> Datamatic Tech Id
+                    <b>Datamatic Tech Id</b>
                 </div>
                 <strong>Copyright &copy; 2016 <a href="">Baja Agung</a>.</strong> All rights reserved.
             </footer>

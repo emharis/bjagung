@@ -88,7 +88,10 @@ Route::group(['middleware' => ['web']], function () {
     Route::group(['prefix' => 'penjualan'], function () {        
         //PENJUALAN
         Route::get('jual', ['as' => 'penjualan.jual', 'uses' => 'JualController@index']);
+        Route::get('clear-jual', ['as' => 'penjualan.clear-jual', 'uses' => 'JualController@getClearJual']);
+        Route::post('post-clear-jual', ['as' => 'penjualan.post-clear-jual', 'uses' => 'JualController@postClearJual']);
         Route::post('jual/insert', ['as' => 'penjualan.jual.insert', 'uses' => 'JualController@insert']);
+        Route::post('jual/update', ['as' => 'penjualan.jual.update', 'uses' => 'JualController@update']);
         Route::get('jual/pos', ['as' => 'penjualan.jual.pos', 'uses' => 'JualController@pos']);
         Route::get('jual/get-barang', ['as' => 'penjualan.jual.get-barang', 'uses' => 'JualController@getBarang']);
         Route::get('jual/get-barang-by-kode', ['as' => 'penjualan.jual.get-barang-by-kode', 'uses' => 'JualController@getBarangByKode']);
@@ -97,6 +100,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('jual/get-jual/{id}', ['as' => 'penjualan.jual.get-jual', 'uses' => 'JualController@getJual']);
         Route::get('jual/get-jual-barang/{id}', ['as' => 'penjualan.jual.get-jual-barang', 'uses' => 'JualController@getJualBarang']);
         Route::get('jual/edit/{id}', ['as' => 'penjualan.jual.edit', 'uses' => 'JualController@edit']);
+        Route::post('delete', ['as' => 'penjualan.delete', 'uses' => 'JualController@delete']);
     });
     
     

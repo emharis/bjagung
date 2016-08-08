@@ -180,102 +180,6 @@
 
 </section><!-- /.content -->
 
-<!-- modal show detil Penjualan -->
-<!-- <div class="modal" id="modal-show-jual" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">DATA PENJUALAN</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row" >
-                        <div class="col-sm-4 col-md-4 col-lg-4" >
-                            <table class="table table-bordered table-condensed" >
-                                <tbody>
-                                    <tr>
-                                        <td><label>NO. INV</label></td>
-                                        <td>:</td>
-                                        <td id="show-no-inv" ></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label>TANGGAL</label></td>
-                                        <td>:</td>
-                                        <td id="show-tgl" ></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label>SALESMAN</label></td>
-                                        <td>:</td>
-                                        <td id="show-salesman" ></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-sm-3 col-md-3 col-lg-3" ></div>
-                        <div class="col-sm-5 col-md-5 col-lg-5" >
-                            <table class="table table-bordered table-condensed" >
-                                <tbody>
-                                    <tr>
-                                        <td><label>CUSTOMER</label></td>
-                                        <td>:</td>
-                                        <td id="show-customer" ></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label>PEMBAYARAN</label></td>
-                                        <td>:</td>
-                                        <td id="show-pembayaran" ></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label>STATUS</label></td>
-                                        <td>:</td>
-                                        <td id="show-status" ></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12" >
-                            <table id="table-show-barang" class="table table-bordered table-striped table-hover table-condensed" >
-                                <thead>
-                                    <tr>
-                                        <th>NO</th>
-                                        <th>KODE</th>
-                                        <th>KATEGORI/BARANG</th>
-                                        <th>QTY</th>
-                                        <th>SAT</th>
-                                        <th>HARGA/SAT</th>
-                                        <th>HARGA SALESMAN</th>
-                                        <th>TOTAL</th>
-                                    </tr>
-                                </thead>
-                                <tbody >
-                                    
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="7" class="text-right" ><label>TOTAL</label></td>
-                                        <td id="show-total" class="text-right" style="font-weight:bold;"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="7" class="text-right" ><label>DISC</label></td>
-                                        <td id="show-disc" class="text-right" style="font-weight:bold;"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="7" class="text-right" ><label>JUMLAH BAYAR</label></td>
-                                        <td id="show-grand-total" class="text-right" style="font-weight:bold;"></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer" >
-                    <a class="btn btn-success btn-sm" id="btn-cetak-nota" ><i class="fa fa-print" ></i> CETAK NOTA</a>
-                    <a class="btn btn-danger btn-sm" data-dismiss="modal" ><i class="fa fa-close" ></i> CLOSE</a>
-                </div>
-            </div> 
-        </div> 
-    </div> -->
-
     <div id="data-jual" class="hide" >{{json_encode($jual)}}</div>
     <div id="data-jual-barang" class="hide" >{{json_encode($jual_barang)}}</div>
 
@@ -299,7 +203,7 @@
     var jual_barang_obj_edited = JSON.parse($('#data-jual-barang').text());
 
 
-    //SET AUTOCOMPLETE & EDIT CUSTOMER
+    // SET AUTOCOMPLETE & EDIT CUSTOMER
     $('input[name=customer]').autocomplete({
         serviceUrl: 'penjualan/jual/get-customer',
         params: {  'nama': function() {
@@ -307,7 +211,7 @@
                     }
                 },
         onSelect:function(suggestions){
-            //update data jual object
+            // update data jual object
             jual_obj_edited.customer = suggestions.value;
             jual_obj_edited.customer_id = suggestions.data;
         }
@@ -325,49 +229,49 @@
         }
 
     });
-    //END OF SET AUTOCOMPLETE
+    // END OF SET AUTOCOMPLETE
 
-    //SET DATE PICKER
+    // SET DATE PICKER
     $('input[name=tgl]').datepicker({
         format: 'dd-mm-yyyy',
         todayHighlight: true,
         autoclose: true
     }).on('changeDate',function(env){
-        //update ke jual obj
+        // update ke jual obj
         jual_obj_edited.tgl = $(this).val();
         jual_obj_edited.tgl_formatted = $(this).val();
     });
-    //END OF SET DATEPICKER
+    // END OF SET DATEPICKER
 
-    //RESET CUSTOMER
+    // RESET CUSTOMER
     $('#btn-reset-customer').click(function(){
         $('input[name=customer]').val(jual_obj.customer);
-        //update di data object
+        // update di data object
         jual_obj_edited.customer = jual_obj.customer;
         jual_obj_edited.customer_id = jual_obj.customer_id;
     });
-    //END OF RESET CUSTOMER
+    // END OF RESET CUSTOMER
 
-    //RESET SALESMAN
+    // RESET SALESMAN
     $('#btn-reset-salesman').click(function(){
         $('input[name=salesman]').val(jual_obj.salesman);
-        //update di data object
+        // update di data object
         jual_obj_edited.salesman = jual_obj.salesman;
         jual_obj_edited.sales_id = jual_obj.sales_id;
 
     });
-    //END OF RESET SALESMAN
+    // END OF RESET SALESMAN
 
-    //RESET SALESMAN
+    // RESET SALESMAN
     $('#btn-reset-tgl').click(function(){
         $('input[name=tgl]').val(jual_obj.tgl_formatted);
-        //update jual obj
+        // update jual obj
         jual_obj_edited.tgl = jual_obj.tgl;
         jual_obj_edited.tgl_formatted = jual_obj.tgl_formatted;
     });
-    //END OF RESET SALESMAN
+    // END OF RESET SALESMAN
 
-    //EDIT QTY
+    // EDIT QTY
     var on_edit = false;
     var qty_default;
     var stok_on_db = 0;
@@ -377,18 +281,18 @@
             qty_default = $(this).text();
             var col = $(this);
 
-            //stok on db
+            // stok on db
             stok_on_db = $(this).parent().data('stokondb');
             stok_on_db = Number(qty) + stok_on_db;
 
-            //get stok qty dari database di tambahkan dengan qty yg mau di edit
+            // get stok qty dari database di tambahkan dengan qty yg mau di edit
 
 
-            //ganti content column dengan input text
+            // ganti content column dengan input text
             col.html('<input type="text" name="input-edit-qty" class="form-control text-right" value="' + qty + '" >');
-            //focuskan
+            // focuskan
             $('input[name=input-edit-qty]').select();
-            //set on edit mode
+            // set on edit mode
             on_edit = true;
         }else{
             $('input[name=input-edit-qty]').focus();
@@ -405,38 +309,38 @@
         }
     });
 
-    //Input Edit on Edit
+    // Input Edit on Edit
     $(document).on('keypress','input[name=input-edit-qty]',function(env){
         if(env.keyCode == 13){
             var col = $(this).parent();
             var new_qty = $(this).val();
             var barang_id = $(this).parent().parent().data('id');
-            //get harga salesman
+            // get harga salesman
             var harga_salesman = col.next().next().next().text();
             harga_salesman = harga_salesman.replace(/\./g, "");
             harga_salesman = harga_salesman.replace(/,/g, "");
 
-            //cek number
+            // cek number
             if(Number(new_qty)){
-                //cek new_qty tidak melebihi stok yang ada
+                // cek new_qty tidak melebihi stok yang ada
                 if(Number(new_qty) <= Number(stok_on_db)){
-                    //rubah qty di json obj
+                    // rubah qty di json obj
                     $.each(jual_barang_obj_edited,function(i,brg){
                         if(brg.barang_id == barang_id){
-                            //update qty
+                            // update qty
                             brg.qty = new_qty;
-                            //ganti input dengan text quatity
+                            // ganti input dengan text quatity
                             col.text(new_qty);
-                            //hitung kembali total harga
+                            // hitung kembali total harga
                             var total = harga_salesman * new_qty;
                             col.next().next().next().next().text(numeral(total).format('0,0'));
-                            //update total di json_obj
+                            // update total di json_obj
                             brg.total = total;
 
-                            //hitung total & grand total
+                            // hitung total & grand total
                             hitungTotalGrandTotal();
 
-                            //set edit mode
+                            // set edit mode
                             on_edit = false;
                         }
                     });
@@ -454,7 +358,7 @@
             
         }else if(env.keyCode == 27){
             $(this).parent().text(qty_default);
-            //set edit mode
+            // set edit mode
             on_edit = false;
         }
     });
@@ -463,12 +367,12 @@
     $(document).on('keyup','input[name=input-edit-qty]',function(env){
         if(env.keyCode == 27){
             $(this).parent().text(qty_default);
-            //set edit mode
+            // set edit mode
             on_edit = false;
         }
     });
 
-    //hitung total dan grand total
+    // hitung total dan grand total
     var new_grand_total=0;
     var new_total=0;
     function hitungTotalGrandTotal(){
@@ -480,16 +384,16 @@
         });
         new_grand_total = Number(new_total) - Number(jual_obj_edited.disc);
 
-        //set ke jual_barang_object
+        // set ke jual_barang_object
         jual_barang_obj_edited.total = new_total;
         jual_barang_obj_edited.grand_total = new_grand_total;
 
         $('#col-total').text(numeral(new_total).format('0,0'));
         $('#col-jumlah-bayar').text(numeral(new_grand_total).format('0,0'));
     }
-    //END OF EDIT QTY
+    // END OF EDIT QTY
 
-    //EDIT HARGA SALESMAN
+    // EDIT HARGA SALESMAN
     var hrg_sls_default = 0;
     $('.col-hrg-sls').dblclick(function(env){
         if(!on_edit){
@@ -499,11 +403,11 @@
 
             hrg_sls_default = hrg_sls;
             var col = $(this);
-            //ganti content column dengan input text
+            // ganti content column dengan input text
             col.html('<input type="text" name="input-edit-hrg-sls" class="form-control text-right" value="' + hrg_sls + '" >');
-            //focuskan
+            // focuskan
             $('input[name=input-edit-hrg-sls]').select();
-            //set on edit mode
+            // set on edit mode
             on_edit = true;
         }else{
             $('input[name=input-edit-hrg-sls]').focus();
@@ -514,42 +418,42 @@
     $(document).on('keyup','input[name=input-edit-hrg-sls]',function(env){
         var col = $(this).parent();
         if(env.keyCode == 13){
-            //set harga salesman baru
+            // set harga salesman baru
             var hrg_sls_baru = $(this).val();
             var qty = col.prev().prev().prev().text();
             var barang_id = $(this).parent().parent().data('id');
-            //set ke table
+            // set ke table
             col.text(numeral(hrg_sls_baru).format('0,0'));
-            //hitung total harga barang
+            // hitung total harga barang
             var total_harga_baru = Number(qty) * Number(hrg_sls_baru);
-            //set total harga baru ke table
+            // set total harga baru ke table
             col.next().text(numeral(total_harga_baru).format('0,0'));
 
-            //rubah harga di json obj
+            // rubah harga di json obj
             $.each(jual_barang_obj_edited,function(i,brg){
                 if(brg.barang_id == barang_id){
-                    //update qty
+                    // update qty
                     brg.harga_salesman = hrg_sls_baru;
-                    //update total di json_obj
+                    // update total di json_obj
                     brg.total = total_harga_baru;
 
-                    //hitung total & grand total
+                    // hitung total & grand total
                     hitungTotalGrandTotal();
 
-                    //set edit mode
+                    // set edit mode
                     on_edit = false;
                 }
             });
         }else if(env.keyCode == 27){
             col.text(numeral(hrg_sls_default).format('0,0'));
 
-            //set false on edit mode
+            // set false on edit mode
             on_edit = false;
         }
     });
-    //END OF EDIT HARGA SALESMAN
+    // END OF EDIT HARGA SALESMAN
 
-    //EDIT DISC
+    // EDIT DISC
     var disc_default=0;
     $('#col-disc').dblclick(function(env){
         if(!on_edit){
@@ -557,11 +461,11 @@
             disc_default = disc_default.replace(/\./g, "");
             disc_default = disc_default.replace(/,/g, "");
             var col = $(this);
-            //ganti content column dengan input text
+            // ganti content column dengan input text
             col.html('<input type="text" name="input-edit-disc" class="form-control text-right" value="' + disc_default + '" >');
-            //focuskan
+            // focuskan
             $('input[name=input-edit-disc]').select();
-            //set on edit mode
+            // set on edit mode
             on_edit = true;
         }else{
             $('input[name=input-edit-disc]').focus();
@@ -576,60 +480,60 @@
         if(env.keyCode == 13){
             var disc_baru = $(this).val();
 
-            //update ke table
+            // update ke table
             col.html('<label>' + numeral(disc_baru).format('0,0') + '</label>');
 
-            //update ke jual object
+            // update ke jual object
             jual_obj_edited.disc = disc_baru;
 
-            //hitung ulang grand total
+            // hitung ulang grand total
             hitungTotalGrandTotal();
 
-            //set on edit false
+            // set on edit false
             on_edit = false;
         }else if(env.keyCode == 27){
-            //cancel edit disc
-            //update ke table
+            // cancel edit disc
+            // update ke table
             
             col.html('<label>' + numeral(disc_default).format('0,0') + '</label>');
 
-            //set on edit false
+            // set on edit false
             on_edit = false;
         }
     });
-    //END OF EDIT DISC
+    // END OF EDIT DISC
 
-    //SELECT CHANGE TIPE
+    // SELECT CHANGE TIPE
     $('select[name=tipe]').change(function(){
-        //update jual obj
+        // update jual obj
         jual_obj_edited.tipe = $(this).val();
     });
-    //END OF SELECT CHANGE TIPE
+    // END OF SELECT CHANGE TIPE
 
-    //RESET TIPE
+    // RESET TIPE
     $('#btn-reset-tipe').click(function(env){
         $('select[name=tipe]').val(jual_obj.tipe);
-        //reset jual obj
+        // reset jual obj
         jual_obj_edited.tipe = jual_obj.tipe;
     });
-    //END OF RESET TIPE
+    // END OF RESET TIPE
 
-    //CANCEL EDIT DATA JUAL
+    // CANCEL EDIT DATA JUAL
     $('#btn-cancel').click(function(){
         if(confirm('Anda akan membatalkan perubahan data ini?')){
             location.href = "penjualan/jual";
         }
     });
-    //END OF CANCEL EDIT DATA JUAL
+    // END OF CANCEL EDIT DATA JUAL
 
-    //SUBMIT/SAVE EDIT
+    // SUBMIT/SAVE EDIT
     $('#btn-save').click(function(){
          $.each(jual_barang_obj_edited,function(i,brg){
             alert(brg.qty);
             alert(brg.harga_salesman);
          });
     });
-    //END OF SUBMIT/SAVE EDIT
+    // END OF SUBMIT/SAVE EDIT
 
 // END OF JQUERY
 })(jQuery);

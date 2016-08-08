@@ -113,16 +113,6 @@ class JualController extends Controller {
 
     //save penjualan
     public function insert(Request $request){
-        // echo 'input data penjualan <br/>';
-        // echo $request->input('customer') . '<br/>';
-        // echo $request->input('salesman') . '<br/>';
-        // echo $request->input('tanggal') . '<br/>';
-        // echo $request->input('pembayaran') . '<br/>';
-        // echo $request->input('disc') . '<br/>';
-        // echo $request->input('barang') . '<br/>';
-
-
-
         \DB::transaction(function()use($request){
 
             //generate tanggal
@@ -252,6 +242,145 @@ class JualController extends Controller {
         return redirect('penjualan/jual/pos');
     }
 
+    // UPDATE DATA PENJUALAN
+    public function update(Request $req){
+        \DB::transaction(function()use($req){
+
+            echo 'Update Data Penjualan' . '<br/>';
+            echo '==================================' . '<br/>';
+            
+            $jual_new = json_decode( $req->jual_obj);
+            $barang_new = json_decode($req->barang)->barang;
+
+            //data penjualan asli/original
+            $jual_org = \DB::table('jual')->find($jual_new->id);
+            $barang_org = \DB::table('jual_barang')->where('jual_id',$jual_org->id)->get();
+
+            // kembalikan stok
+            foreach($barang_org as $dt){
+                \DB::table('stok')->where('barang_id',$dt->barang_id)->update(['current_stok'=>\DB::raw('current_stok + ' . $dt->qty)]);
+            }
+
+            // hapus stok moving
+            \DB::table('stok_moving')->where('jual_id',$jual_new->id)->delete();
+            // hapus data barang penjualan
+            \DB::table('jual_barang')->where('jual_id',$jual_new->id)->delete();
+            //hapus data piutang
+            \DB::table('piutang')->where('jual_id',$jual_new->id)->delete();
+
+            // update data penjualan/jual
+            // generate tanggal
+            $tgl = $jual_new->tanggal;
+            $arr_tgl = explode('-',$tgl);
+            $_tgl = new \DateTime();
+            $_tgl->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);
+
+            \DB::table('jual')->where('id',$jual_new->id)->update([
+                'tgl' => $_tgl,
+                'customer_id' => $jual_new->customer_id,
+                'sales_id' => $jual_new->salesman_id,
+                'disc' => $jual_new->disc,
+                'tipe' => $jual_new->pembayaran,
+                'total' => $jual_new->total,
+                'grand_total' => $jual_new->grand_total,
+                'no_inv' => $jual_new->no_inv,
+            ]);
+
+            //inputkan data barang
+            foreach($barang_new as $dt){
+                 //insert ke table jual_barang
+                \DB::table('jual_barang')->insert([
+                        'jual_id' => $jual_new->id,
+                        'barang_id' => $dt->id,
+                        'qty' => $dt->qty,
+                        'harga_satuan' => $dt->harga_satuan,
+                        'harga_salesman' => $dt->harga_salesman,
+                        'total' => $dt->harga_salesman * $dt->qty,
+                    ]);
+
+                //Pengurangan/Update data STOK
+                $stoks = \DB::table('stok')
+                            ->where('barang_id',$dt->id)
+                            ->where('current_stok','>',0)
+                            ->orderBy('created_at','asc')
+                            ->get();
+
+                $qty_barang_di_jual = $dt->qty;
+
+                foreach($stoks as $st){ 
+                    if($qty_barang_di_jual > 0 ){
+                        if($st->current_stok == $qty_barang_di_jual ){
+                            //input ke stok moving
+                            \DB::table('stok_moving')->insert([
+                                    'stok_id' => $st->id,
+                                    'jumlah' => $qty_barang_di_jual,
+                                    'tipe' => 'O',
+                                    'jual_id' => $jual_new->id
+                                ]);
+                            //update stok current
+                            \DB::table('stok')->whereId($st->id)->update([
+                                    'current_stok' => 0 
+                                ]);
+                            $qty_barang_di_jual = 0;
+                        }else if($st->current_stok > $qty_barang_di_jual){
+                            //input ke stok moving
+                            \DB::table('stok_moving')->insert([
+                                    'stok_id' => $st->id,
+                                    'jumlah' => $qty_barang_di_jual,
+                                    'tipe' => 'O',
+                                    'jual_id' => $jual_new->id
+                                ]);
+                            //update stok current
+                            $sisa_stok = $st->current_stok;
+                            \DB::table('stok')->whereId($st->id)->update([
+                                    'current_stok' => ($st->current_stok - $qty_barang_di_jual)  
+                                ]);
+                            $qty_barang_di_jual = 0;
+                        }else{
+                            //input ke stok moving
+                            \DB::table('stok_moving')->insert([
+                                    'stok_id' => $st->id,
+                                    'jumlah' => $st->current_stok,
+                                    'tipe' => 'O',
+                                    'jual_id' => $jual_new->id
+                                ]);
+                            //update stok current
+                            $sisa_stok = $st->current_stok;
+                            \DB::table('stok')->whereId($st->id)->update([
+                                    'current_stok' => 0
+                                ]);
+                            $qty_barang_di_jual = $qty_barang_di_jual - $st->current_stok;
+                        }
+                    }
+                //END OF FOREACH STOK
+                }
+            }
+
+            // cek apakah pembayaran kredit atau tunai
+            if($jual_new->pembayaran == 'K'){
+                //masukkan daftar piutang
+                \DB::table('piutang')->insert([
+                        'jual_id' => $jual_new->id,
+                        'customer_id' => $jual_new->customer_id,
+                        'total' => $jual_new->grand_total,
+                        'sisa_bayar' => $jual_new->grand_total,
+                    ]);
+            }
+
+            // end of transaction 
+
+        });       
+
+        // echo json_encode($jual_old);
+        // echo '<br/>';
+        // echo json_encode($jual_new);
+
+        // echo '<br/>';
+        // echo $req->barang;
+
+        return redirect('penjualan/jual');
+    }
+
 
     //GET DATA PENJUALAN
     public function getJual($id){
@@ -272,12 +401,96 @@ class JualController extends Controller {
 
         $jual_barang = \DB::table('VIEW_JUAL_BARANG')->where('jual_id',$id)->get();
 
+        $day = date('N');
+        $hari = "";
+        if($day == 1){
+            $hari = "Senin";
+        }else if($day == 2){
+            $hari = "Selasa";
+        }else if($day == 3){
+            $hari = "Rabu";
+        }else if($day == 4){
+            $hari = "Kamis";
+        }else if($day == 5){
+            $hari = "Jumat";
+        }else if($day == 6){
+            $hari = "Sabtu";
+        }else if($day == 7){
+            $hari = "Minggu";
+        }
+        $tgl_indo = $hari . ", ". date('d-m-Y');
+
         // return view('penjualan.jual.edit', [
-        return view('penjualan.jual.edit2', [
+        return view('penjualan.jual.editjual', [
             'jual' => $jual,
             'jual_barang' => $jual_barang,
+            'tgl_indo' => $tgl_indo,
         ]);
     } 
+
+
+    public function getClearJual(){
+        return view('penjualan.jual.clearjual', []);
+    }
+
+    public function postClearJual(){
+        echo 'Clear Data Penjualan';
+
+        \DB::transaction(function(){
+            $juals = \DB::table('jual')->get();
+            foreach($juals as $jl){
+                $jual_barangs = \DB::table('jual_barang')->where('jual_id',$jl->id)->get();
+
+                //hapus piutang 
+                \DB::table('piutang_cicil')->delete();
+                \DB::table('piutang')->delete();
+
+                //kembalikan stok barang & hapus data detil penjualan/barang
+                foreach($jual_barangs as $jlb){
+                    \DB::table('stok')->where('barang_id',$jlb->barang_id)->update(['current_stok'=>\DB::raw('current_stok + ' . $jlb->qty)]);
+
+                }
+                
+                //hapus stok moving
+                \DB::table('stok_moving')->where('jual_id',$jl->id)->delete();
+
+            }   
+            //hapus data jual_barang
+            \DB::table('jual_barang')->delete();    
+            //hapus data jual
+            \DB::table('jual')->delete(); 
+        });
+        
+    }
+
+    // FUNGSI DELETE DATA JUAL
+    function delete(Request $req){
+        \DB::transaction(function()use($req){
+            $jual_id = $req->jual_id;
+            // delete piutang & cicil
+            \DB::table('piutang')->where('jual_id',$jual_id)->delete();
+            // kembalikan stok
+            $jual_barangs = \DB::table('jual_barang')->where('jual_id',$jual_id)->get();
+            //kembalikan stok barang & hapus data detil penjualan/barang
+            foreach($jual_barangs as $jlb){
+                \DB::table('stok')->where('barang_id',$jlb->barang_id)->update(['current_stok'=>\DB::raw('current_stok + ' . $jlb->qty)]);
+
+            }
+            //hapus stok moving
+            \DB::table('stok_moving')->where('jual_id',$jual_id)->delete();
+            //hapus data jual_barang
+            \DB::table('jual_barang')->where('jual_id',$jual_id)->delete();
+            //hapus data jual
+            \DB::table('jual')->where('id',$jual_id)->delete();
+            
+        });
+
+        return redirect('penjualan/jual');
+        
+    }
+    // END OF FUNGSI DELETE DATA JUAL
+
+
 
 //==================================================================================
 //END OF CODE JualController.php
