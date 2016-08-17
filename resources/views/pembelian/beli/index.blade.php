@@ -73,9 +73,9 @@
                                 <label>{{number_format($dt->grand_total,0,'.',',') }}</label>
                             </td>
                             <td class="text-center" >
-                                <a class="btn btn-success btn-xs btn-show" href="pembelian/beli/show/{{$dt->id}}" ><i class="fa fa-eye" ></i></a>&nbsp;&nbsp; |
-                                <a class="btn-edit" href="pembelian/beli/edit/{{$dt->id}}" >edit</a> | 
-                                <a class="btn-delete" href="pembelian/beli/delete/{{$dt->id}}" >delete</a>
+                                <a class="btn btn-primary btn-xs btn-show" href="pembelian/beli/show/{{$dt->id}}" ><i class="fa fa-eye" ></i></a>
+                                <a class="btn-edit btn btn-xs btn-success" href="pembelian/beli/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a> 
+                                <a class="btn-delete btn btn-xs btn-danger" href="pembelian/beli/delete/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
                             </td>
                         </tr>
                         @endforeach
@@ -137,7 +137,7 @@
                                 <thead>
                                     <tr>
                                         <th>NO</th>
-                                        <th class="hide">KODE</th>
+                                        <th >KODE</th>
                                         <th>KATEGORI/BARANG</th>
                                         <th>QTY</th>
                                         <th>SAT</th>

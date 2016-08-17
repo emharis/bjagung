@@ -150,6 +150,30 @@
     </div><!-- /.box -->
 
 </section><!-- /.content -->
+
+<!-- MODAL DELETE DATA -->
+<div class="modal modal-danger" id="modal-delete" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">DELETE</h4>
+            </div>
+        <div class="modal-body">
+            <p>Anda akan menghapus data ini?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-outline" data-dismiss="modal" id="btn-modal-delete-yes" >Yes</button>
+        </div>
+        </div>
+    <!-- /.modal-content -->
+    </div>
+  <!-- /.modal-dialog -->
+</div>
+
 @stop
 
 @section('scripts')
@@ -160,7 +184,7 @@
 
 <script type="text/javascript">
 (function ($) {
-    //format datatable
+    // format datatable
     var tableData = $('#table-datatable').DataTable({
         "aaSorting": [[5, "desc"]],
         "columns": [
@@ -179,44 +203,44 @@
         }
     });
 
-    //tampilkan form new customer
+    // tampilkan form new customer
     $('#btn-add').click(function () {
-        //tampilkan form new customer
+        // tampilkan form new customer
         $('#form-add').hide();
         $('#form-add').removeClass('hide');
         $('#form-add').slideDown(250, null, function () {
-            //fokuskan
+            // fokuskan
             $('#form-add input[name=nama]').focus();
         });
-        //sembunyikan table data
+        // sembunyikan table data
 //        $('#table-datatable').fadeOut(200);
         $('#table-data').hide();
-        //disable btn add
+        // disable btn add
         $('#btn-add').addClass('disabled');
     });
 
-    //cancel add new
+    // cancel add new
     $('#btn-cancel-add').click(function () {
         $('#form-add').slideUp(250, null, function () {
-            //clear input
+            // clear input
             $('#form-add input').val(null);
         });
 
-        //tampilkan table data
+        // tampilkan table data
         $('#table-data').fadeIn(200);
 
-        //enable kan btn add
+        // enable kan btn add
         $('#btn-add').removeClass('disabled');
 
         return false;
     });
 
-    //submit add new
+    // submit add new
     $('#form-add').ajaxForm({
         success: function (datares) {
             var data = JSON.parse(datares);
 
-            //tampilkan data ke table
+            // tampilkan data ke table
             var telp = "";
             if (data.telp_2 != "") {
                 telp = data.telp + " / " + data.telp_2;
@@ -237,24 +261,24 @@
                     </td>'
             ]).draw(false);
 
-            //close form add
+            // close form add
             $('#btn-cancel-add').click();
 
         }
     });
 
-    //=============================================================================================
+    // =============================================================================================
 
-    //edit customer
+    // edit customer
     $(document).on('click', '.btn-edit', function () {
         var url = $(this).attr('href');
         var id = $(this).data('id');
 
-        //get data customer
+        // get data customer
         $.get('master/customer/get-customer/' + id, null, function (datares) {
             var data = JSON.parse(datares);
 
-            //tampilkan data ke modal edit
+            // tampilkan data ke modal edit
             $('#form-edit input[name=id]').val(data.id);
             $('#form-edit input[name=nama]').val(data.nama);
             $('#form-edit input[name=nama_kontak]').val(data.nama_kontak);
@@ -262,18 +286,18 @@
             $('#form-edit input[name=telp_2]').val(data.telp_2);
             $('#form-edit input[name=alamat]').val(data.alamat);
 
-            //tampilkan form edit
+            // tampilkan form edit
             $('#form-edit').removeClass('hide');
             $('#form-edit').hide();
             $('#form-edit').slideDown(250, null, function () {
-                //fokuskan ke input
+                // fokuskan ke input
                 $('#form-edit input[name=nama]').focus();
             });
 
-            //sembunyikan tabel data
+            // sembunyikan tabel data
             $('#table-data').fadeOut(200);
 
-            //disable button add
+            // disable button add
             $('#btn-add').addClass('disabled');
 
         });
@@ -281,23 +305,23 @@
         return false;
     });
 
-    //cancel edit
+    // cancel edit
     $('#btn-cancel-edit').click(function () {
         $('#form-edit').slideUp(250, null, function () {
-            //clear input
+            // clear input
             $('#form-edit input').val(null);
         });
 
-        //tampilkan table data
+        // tampilkan table data
         $('#table-data').fadeIn(200);
 
-        //enable kan btn add
+        // enable kan btn add
         $('#btn-add').removeClass('disabled');
 
         return false;
     });
 
-    //submit edit 
+    // submit edit 
     $('#form-edit').ajaxForm({
         success: function (datares) {
             var data = JSON.parse(datares);
@@ -312,38 +336,62 @@
                 telp = data.telp;
             }
 
-            //update data row
+            // update data row
             tdOpsi.prev().html(data.created_at);
             tdOpsi.prev().prev().html(data.alamat);
             tdOpsi.prev().prev().prev().html(telp);
             tdOpsi.prev().prev().prev().prev().html(data.nama_kontak);
             tdOpsi.prev().prev().prev().prev().prev().html(data.nama);
-            //close form add
+            // close form add
             $('#btn-cancel-edit').click();
         }
     });
 
-    //delete customer
-    $('.btn-delete').click(function () {
+    // delete customer
+    var row_for_delete;
+    var url_for_delete;
+    var id_for_delete;
+
+    $(document).on('click','.btn-delete', function () {
         var id = $(this).data('id');
         var url = $(this).attr('href');
         var row = $(this).parent().parent();
 
-        if (confirm('Anda akan menghapus data ini..?')) {
-            $.get(url, null, function () {
-                //delete row
-                row.fadeOut(250, null, function () {
-                    //delete row dari jquery datatable
-                    tableData
-                            .row(row)
-                            .remove()
-                            .draw();
+        url_for_delete = url;
+        row_for_delete = row;
+        id_for_delete = id;
 
-                });
-            });
-        }
+        // tampilkan modal confirm delete
+        $('#modal-delete').modal('show');
+
+        // if (confirm('Anda akan menghapus data ini..?')) {
+        //     $.get(url, null, function () {
+        //         // delete row
+        //         row.fadeOut(250, null, function () {
+        //             // delete row dari jquery datatable
+        //             tableData
+        //                     .row(row)
+        //                     .remove()
+        //                     .draw();
+
+        //         });
+        //     });
+        // }
 
         return false;
+    });
+
+    // BUTTON MODAL DELETE YES CLICK
+    $('#btn-modal-delete-yes').click(function(){
+        // delete data users
+        $.get(url_for_delete, null, function () {
+            // delete row
+            row_for_delete.fadeOut(250, null, function () {
+                // delete row dari jquery datatable
+                tableData.row(row_for_delete).remove().draw();
+
+            });
+        });
     });
 
 })(jQuery);

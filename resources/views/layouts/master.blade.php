@@ -28,6 +28,18 @@
             <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
 
+        <style>
+            table.table-bordered    {
+                border-color: #AFAFB6;
+            }
+            table.table-bordered > thead > tr > th {
+                border-color: #CACACA;
+            }
+            table.table-bordered > tbody > tr > td{
+                border-color:#DDDDDD;
+            }
+        </style>
+
         @yield('styles')
     </head>
     <body class="hold-transition skin-blue sidebar-mini {{$sidebar_collapse->value == '1' ? 'sidebar-collapse' : ''}}">
@@ -69,15 +81,17 @@
         <script src="js/app.min.js"></script>
         <!-- AdminLTE for demo purposes -->
         <!--<script src="js/demo.js"></script>-->
-        <script>
-(function ($) {
-    $('a.sidebar-toggle').click(function () {
-        //update status sidebar toggle
-        $.get('sidebar-update');
-    });
-})(jQuery);
-        </script>
         @yield('scripts')
+        
+        <script>
+            (function ($) {
+                $('a.sidebar-toggle').click(function () {
+                    //update status sidebar toggle
+                    $.get('sidebar-update');
+                });
+            })(jQuery);
+        </script>
+        
 
     </body>
 </html>

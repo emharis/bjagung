@@ -1,15 +1,10 @@
-@extends('layouts.master')
-
-@section('styles')
 <!--Bootsrap Data Table-->
 <link rel="stylesheet" href="plugins/datatables/dataTables.bootstrap.css">
-@append
 
-@section('content')
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Master Supplier
+        Suppliers
     </h1>
 </section>
 
@@ -22,173 +17,35 @@
             <a class="btn btn-primary btn-sm" id="btn-add-supplier" ><i class="fa fa-plus" ></i> Add Supplier</a>
             <div class="clearfix" ></div>
             <br/>
-            <!-- Form add supplier -->
-            <form class="hide" id="form-add-supplier" name="form-add-supplier" method="POST" action="master/supplier/insert" >
-                <table class="table table-bordered table-condensed" >
-                    <tbody>
-                        <tr>
-                            <td class="col-sm-2 col-md-2 col-lg-2" >Nama</td>
-                            <td>
-                                <input autocomplete="off" required type="text" class="form-control" name="nama" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Kontak</td>
-                            <td>
-                                <input autocomplete="off" type="text" class="form-control" name="nama_kontak" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Telp</td>
-                            <td>
-                                <div class="row" >
-                                    <div class="col-sm-6 col-md-6 col-lg-6" >
-                                        <input autocomplete="off" type="text" class="form-control" name="telp" />
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 col-lg-6" >
-                                        <input autocomplete="off" type="text" class="form-control" name="telp_2" />
-                                    </div>
-                                </div>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Alamat</td>
-                            <td>
-                                <input autocomplete="off" type="text" class="form-control" name="alamat" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Rekening</td>
-                            <td>
-                                <input autocomplete="off" type="text" class="form-control" name="rek" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Jatuh Tempo/Minggu</td>
-                            <td>
-                                <div class="row" >
-                                    <div class="col-sm-8 col-md-8 col-lg-8" >
-                                        <input autocomplete="off" type="range" min="0" max="10" step="1" value="1"  name="jatuh_tempo" />
-                                        <small id="jatuh_tempo_label_add" >1</small>
-                                    </div>
-
-                                </div>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <button type="submit" class="btn btn-primary btn-sm" >Save</button>
-                                <a href="#" class="btn btn-danger btn-sm" id="btn-cancel-add-supplier" >Cancel</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
-            <!--End of Form add Supplier-->
-
-            <!--Form Edit Supplier-->
-            <form method="POST" action="master/supplier/update-supplier" name="form-edit-supplier" id="form-edit-supplier" class="hide" >
-                <input type="hidden" name="id" />
-                <table class="table table-bordered table-condensed" >
-                    <tbody>
-                        <tr>
-                            <td>Nama</td>
-                            <td>
-                                <input required type="text" name="nama" class="form-control" autocomplete="OFF" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Kontak</td>
-                            <td>
-                                <input autocomplete="off" type="text" class="form-control" name="nama_kontak" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Telp</td>
-                            <td>
-                                <div class="row" >
-                                    <div class="col-sm-6 col-md-6 col-lg-6" >
-                                        <input autocomplete="off" type="text" class="form-control" name="telp" />
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 col-lg-6" >
-                                        <input autocomplete="off" type="text" class="form-control" name="telp_2" />
-                                    </div>
-                                </div>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Alamat</td>
-                            <td>
-                                <input autocomplete="off" type="text" class="form-control" name="alamat" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Rekening</td>
-                            <td>
-                                <input autocomplete="off" type="text" class="form-control" name="rek" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Jatuh Tempo/Minggu</td>
-                            <td>
-                                <div class="row" >
-                                    <div class="col-sm-8 col-md-8 col-lg-8" >
-                                        <input autocomplete="off" type="range" min="0" max="10" step="1" value="1"  name="jatuh_tempo" />
-                                        <small id="jatuh_tempo_label_edit" >1</small>
-                                    </div>
-
-                                </div>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <button type="submit" class="btn btn-primary btm-sm">Save</button>
-                                <a id="btn-cancel-edit" class="btn btn-danger btn-sm" >Cancel</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
-            <!--End of Form edit Supplier-->
-
+           
             <!--table data supplier-->
-            <div id="table-data" class="table-responsive" >
-                <table class="table table-bordered table-condensed" id="table-datatable" >
-                    <thead>
-                        <tr>
-                            <th class="col-sm-1 col-md-1 col-lg-1" >No</th>
-                            <th>Nama</th>
-                            <th>Kontak</th>
-                            <th>Telp</th>
-                            <th>Alamat</th>
-                            <th>Date</th>
-                            <th class="col-sm-1 col-md-1 col-lg-1" ></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($data as $dt)
-                        <tr>
-                            <td class="text-right" ></td>
-                            <td>{{$dt->nama}}</td>
-                            <td>{{$dt->nama_kontak}}</td>
-                            <td>{!! $dt->telp . '<br/>' .$dt->telp_2 !!}</td>
-                            <td>{{$dt->alamat}}</td>
-                            <td>{{$dt->created_at}}</td>
-                            <td class="text-center" >
-                                <a title="edit data" data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-supplier" href="master/supplier/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
-                                <a title="delete data" data-id="{{$dt->id}}" class="btn btn-danger btn-xs btn-delete-supplier" href="master/supplier/delete-supplier/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+            <table class="table table-bordered table-condensed" id="table-datatable" >
+                <thead>
+                    <tr>
+                        <th class="col-sm-1 col-md-1 col-lg-1" >No</th>
+                        <th>Nama</th>
+                        <th>Kontak</th>
+                        <th>Telp</th>
+                        <th>Alamat</th>
+                        <th class="col-sm-1 col-md-1 col-lg-1" ></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($data as $dt)
+                    <tr>
+                        <td class="text-right" ></td>
+                        <td>{{$dt->nama}}</td>
+                        <td>{{$dt->nama_kontak}}</td>
+                        <td>{!! $dt->telp . '<br/>' .$dt->telp_2 !!}</td>
+                        <td>{{$dt->alamat}}</td>
+                        <td class="text-center" >
+                            <a title="edit data" data-id="{{$dt->id}}" class="btn btn-success btn-xs btn-edit-supplier" href="master/supplier/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
+                            <a title="delete data" data-id="{{$dt->id}}" class="btn btn-danger btn-xs btn-delete-supplier" href="master/supplier/delete-supplier/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
             <!--end of table data-->
 
         </div><!-- /.box-body -->
@@ -217,9 +74,7 @@
     </div>
   <!-- /.modal-dialog -->
 </div>
-@stop
 
-@section('scripts')
 <!--Datatable-->
 <script src="plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="plugins/datatables/dataTables.bootstrap.min.js"></script>
@@ -229,10 +84,9 @@
 (function ($) {
     //format datatable
     var tableData = $('#table-datatable').DataTable({
-        "aaSorting": [[5, "desc"]],
+        "aaSorting": [[0, "desc"]],
         "columns": [
             {className: "text-right"},
-            null,
             null,
             null,
             null,
@@ -440,4 +294,3 @@
 
 })(jQuery);
 </script>
-@append

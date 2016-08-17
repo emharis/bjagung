@@ -304,7 +304,7 @@
         if(qty > 0 && harga_satuan > 0){
             var newrow = $('<tr>').attr('data-rowid',ROW_BARANG_ID).attr('data-kode',$('input[name=kode]').val()).addClass('row-barang').attr('data-idbarang',$('input[name=id_barang]').val());
             newrow.append($('<td>').text(nama));
-            newrow.append($('<td>').html($('<input>').attr('type','number').addClass('form-control').addClass('input-qty-on-row').addClass('text-right').val(qty)));
+            newrow.append($('<td>').html($('<input>').attr('min',1).attr('type','number').addClass('form-control').addClass('input-qty-on-row').addClass('text-right').val(qty)));
             newrow.append($('<td>').text(satuan));
             newrow.append($('<td>').html($('<input>').addClass('form-control').addClass('input-harga-on-row').addClass('text-right').val(numeral(harga_satuan).format('0,0') )));
             newrow.append($('<td>').addClass('text-right').text(numeral(total_harga).format('0,0')));
@@ -385,10 +385,25 @@
             }else{
                 is_first_focus = false;
             }
+        }else{
+            // hitung jumlah harga barang
+            hitungJumlahHargaBarang();
         }
     });
     // ------------------------------------------------------------------
     // END OF INPUT QTY KEY UP EVENT
+    // ==================================================================
+
+
+    // ==================================================================
+    // INPUT QTY ON CHANGED
+    // ------------------------------------------------------------------
+    $(document).on('input','input[name=qty]',function(e){
+            // hitung jumlah harga barang
+            hitungJumlahHargaBarang();
+    });
+    // ------------------------------------------------------------------
+    // END OF INPUT QTY ON CHANGE
     // ==================================================================
 
 
@@ -400,6 +415,33 @@
     });
     // ------------------------------------------------------------------
     // END OF BUTTON ADD BARANG CLICK
+    // ==================================================================
+
+
+    // ==================================================================
+    // BUTTON CANCEL ADD BARANG CLICK
+    // ------------------------------------------------------------------
+    $('#btn-cancel-add-barang').click(function(){
+        // clear input
+        $('input[name=kode]').val('');
+        $('input[name=nama]').val('');
+        $('input[name=harga]').val('');
+        // clear total
+        $('input[name=harga]').parent().next().html('');
+        $('input[name=qty]').val('');
+        // clear satuan
+        $('input[name=qty]').parent().next().html('');
+        // disablekan input qty dan harga
+        $('input[name=qty], input[name=harga]').attr('disabled','disabled'); 
+        // enablekan input nama
+        $('input[name=nama]').removeAttr('disabled');
+        // fokuskan ke input nama
+        $('input[name=nama]').focus();
+        // normalkan is_first_focus
+        is_first_focus = true;
+    });
+    // ------------------------------------------------------------------
+    // END OF BUTTON CANCEL ADD BARANG CLICK
     // ==================================================================
 
 
@@ -454,8 +496,12 @@
     // DELETE BUTTON ON ROW CLICK
     // ------------------------------------------------------------------
     $(document).on('click','.btn-delete-barang-on-row',function(){
+        var row = $(this).parent().parent();
         if(confirm('Anda akan menghapus data ini?')){
-            alert('hapus barang');
+            row.fadeOut(250,null,function(){
+                row.remove();
+                hitungTotalAndTotalBayar();
+            });
         }
     });
     // ------------------------------------------------------------------
@@ -475,10 +521,44 @@
 
 
     // ==================================================================
+    // INPUT QTY ON ROW CHANGED
+    // ------------------------------------------------------------------
+    $(document).on('input','.input-qty-on-row',function(){
+        hitungJumlahHargaOnRow($(this).parent().parent());
+    });
+    // ------------------------------------------------------------------
+    // END OF INPUT QTY ON ROW CHANGED
+    // ==================================================================
+
+
+    // ==================================================================
+    // INPUT HARGA ON ROW CHANGED
+    // ------------------------------------------------------------------
+    $(document).on('keyup','.input-harga-on-row',function(){
+        hitungJumlahHargaOnRow($(this).parent().parent());
+    });
+    // ------------------------------------------------------------------
+    // END OF INPUT HARGA ON ROW CHANGED
+    // ==================================================================
+
+
+    // ==================================================================
     // INPUT DISC ON KEYUP
     // ------------------------------------------------------------------
     $('input[name=disc]').keyup(function(){
-        hitungTotalAndTotalBayar();
+        //cek apakah diskon melebihi total bayar
+        var total = $('#label-total').autoNumeric('get');
+        var disc = $(this).val();
+        disc = disc.replace(/\./g, "");
+        disc = disc.replace(/,/g, "");
+
+        if(Number(disc) > Number(total)){
+            alert('Discount melebihi total harga');
+            $(this).val(0);
+            $(this).select();
+        }else{
+            hitungTotalAndTotalBayar();
+        }
     });
     // ------------------------------------------------------------------
     // END OF INPUT DISC ON KEYUP
@@ -510,10 +590,11 @@
 
             // set OBJ_BARANG
             $('#table-barang > tbody > tr.row-barang').each(function(i){
-                var first_col = $(this).children('td:first');
-                var row_id = first_col.data('rowid');
-                var id_barang = first_col.data('idbarang');
-                var kode = first_col.data('kode');
+                row = $(this);
+                var first_col = row.children('td:first');
+                var row_id = row.data('rowid');
+                var id_barang = row.data('idbarang');
+                var kode = row.data('kode');      
                 var nama = first_col.text();
                 var qty = first_col.next().children('input').val();
                 var satuan = first_col.next().next().text().trim();
@@ -542,14 +623,29 @@
             OBJ_BELI.disc = disc;
             OBJ_BELI.total_bayar = total_bayar;
 
-            $.each(OBJ_BARANG.barang,function(i,data){
-                alert(i);
-                alert(data.nama_barang);
-            });
+            // $.each(OBJ_BARANG.barang,function(i,data){
+            //     alert(i);
+            //     alert(data.nama_barang);
+            // });
 
-            alert("TOTAL " + OBJ_BELI.total);
-            alert("DISC " + OBJ_BELI.disc);
-            alert("TOTAL BAYAR " + OBJ_BELI.total_bayar);
+            // alert("TOTAL " + OBJ_BELI.total);
+            // alert("DISC " + OBJ_BELI.disc);
+            // alert("TOTAL BAYAR " + OBJ_BELI.total_bayar);
+
+            // Simpan Data Pembelian ke Database
+            var newForm = jQuery('<form>', {
+                'action': 'pembelian/beli/insert',
+                'method': 'POST'
+            }).append(jQuery('<input>', {
+                'name': 'obj_beli',
+                'value': JSON.stringify(OBJ_BELI),
+                'type': 'hidden'
+            })).append(jQuery('<input>', {
+                'name': 'obj_barang',
+                'value': JSON.stringify(OBJ_BARANG),
+                'type': 'hidden'
+            }));
+            newForm.appendTo('body').submit();
 
         }else{
             alert('Lengkapi data yang kosong.');
@@ -558,287 +654,6 @@
     // ------------------------------------------------------------------
     // END OF BUTTON SAVE CLICK
     // ==================================================================
-
-
-
-    // set autocomplete
-    
-    // autocomplete dengan kode
-    // $('input[name=kode]').autocomplete({
-    //     serviceUrl: 'pembelian/beli/get-barang-by-kode',
-    //     params: {  'nama': function() {
-    //                     return $('input[name=kode]').val();
-    //                 }
-    //             },
-    //     onSelect:function(suggestions){
-    //         // set kode dan satuan
-    //         $('input[name=nama]').val(suggestions.nama);
-    //         $('input[name=qty]').parent().next().html(suggestions.sat);
-    //         $('input[name=id_barang]').val(suggestions.data);
-    //         // fokuskan ke qty
-    //         $('input[name=qty]').focus();
-    //     }
-
-    // });
-
-
-    // FUNGSI HITUNG TOTAL HARGA BARANG ON ADD
-    
-    // END OF FUNGSI HITUNG TOTAL HARGA BARANG ON ADD
-
-    // function hitungGrandTotal(){
-    //     var grandTotal = 0;
-    //     var total = 0;
-    //     var disc = $('input[name=disc]').val();
-    //     disc = disc.replace(/\./g, "");
-    //     disc = disc.replace(/,/g, "");
-
-
-    //      $.each(OBJ_BARANG.barang,function(i,data){
-    //         total += data.harga * data.qty;
-    //      });
-
-    //      grandTotal = total - disc;
-
-    //      $('#label-total').autoNumeric('set',total);
-    //      $('#label-total-bayar').autoNumeric('set',grandTotal);
-    //      // $('#label-total').html(grandTotal);
-    // }
-
-    
-
-
-    // // save with button save
-    // $('#btn-save').click(function(event) {
-    //     // cek submit
-    //     var inv = $('input[name=no_inv]').val() ;
-    //     var tgl = $('input[name=tanggal]').val() ;
-    //     var sup = $('select[name=supplier]').val() ;
-    //     var pemb = $('select[name=pembayaran]').val() ;
-    //     var disc = $('input[name=disc]').autoNumeric('get') ;
-    //     if(inv != "" && tgl != "" && sup != "" && pemb != "" && OBJ_BARANG.barang.length > 0 ){
-    //         var newForm = jQuery('<form>', {
-    //             'action': 'pembelian/beli/insert',
-    //             'method': 'POST'
-    //         }).append(jQuery('<input>', {
-    //             'name': 'tanggal',
-    //             'value': tgl,
-    //             'type': 'hidden'
-    //         })).append(jQuery('<input>', {
-    //             'name': 'no_inv',
-    //             'value': inv,
-    //             'type': 'hidden'
-    //         })).append(jQuery('<input>', {
-    //             'name': 'supplier',
-    //             'value': sup,
-    //             'type': 'hidden'
-    //         })).append(jQuery('<input>', {
-    //             'name': 'tipe',
-    //             'value': pemb,
-    //             'type': 'hidden'
-    //         })).append(jQuery('<input>', {
-    //             'name': 'barang',
-    //             'value': JSON.stringify(OBJ_BARANG),
-    //             'type': 'hidden'
-    //         })).append(jQuery('<input>', {
-    //             'name': 'disc',
-    //             'value': disc,
-    //             'type': 'hidden'
-    //         }));
-    //         newForm.appendTo('body').submit();
-    //         // newForm.submit();
-    //     }else{
-    //         alert('Lengkapi data yang kosong');
-    //         // fokuskan ke input no inv
-    //         $('input[name=no_inv]').focus();
-    //     }
-
-    //     return false;
-    // });
-
-    // // edit quantity
-    // var edit_state = false;
-    // var default_value_edit_qty=0;
-    // $(document).on('dblclick','.td-qty',function(event) {
-    //     if(!edit_state){
-    //         if($(this).children('input').length == 0){
-    //             var text = $(this).text();
-    //             default_value_edit_qty = text;
-    //             // ganti dengan textbox
-    //             $(this).html('<input type="text" name="edit_qty" value="' + text + '" class="text-right form-control" >');
-    //             // focuskan
-    //             $('input[name=edit_qty]').focus().select();                
-
-    //             // set edit state
-    //             setEditState(true);
-    //         }
-    //     }
-    // });
-
-    // // binding dan prevent untuk lost focus
-    // $(document).on('blur','input[name=edit_qty],input[name=edit_harga]',function(e){
-    //     $(this).focus();
-    // });
-
-    // // fungsi set edit state
-    // function setEditState(val){
-    //     edit_state = val;
-    //     if(val){
-    //         // jika dalam mode edit
-    //         // // disable tombol save
-    //         $('#btn-save').addClass('disabled');
-    //     }else{
-    //         // jika dalam mode normal
-    //         // // enable tombol save
-    //         $('#btn-save').removeClass('disabled');
-    //     }
-    // }
-
-    // // save edit quantity
-    // $(document).on('keyup','input[name=edit_qty]',function(e){
-    //     if(e.keyCode == 13){
-    //         // ganti text qty
-    //         var rowObj = $(this).parent().parent();
-    //         var qty_text = $(this).val();
-    //         var barangId = rowObj.data('id');
-
-    //         // ganti input dengan text quantity
-    //         $(this).parent().html(qty_text);
-
-    //         // hitung ulang total
-    //         hitungUlangTotalHarga(rowObj);
-
-    //         // rubah data yang ada di array json
-    //         $.each(OBJ_BARANG.barang,function(i,data){
-    //             if(data.id == barangId){
-    //                 data.qty = qty_text;
-    //             }
-    //         });
-
-    //         // hitung ulang grandtotal
-    //         hitungGrandTotal();
-
-    //         // edit state to false
-    //         setEditState(false);
-
-    //     }else if(e.keyCode == 27){
-    //         // cancel edit
-    //         $(this).parent().html(default_value_edit_qty);
-
-    //         // edit state to false
-    //         setEditState(false);
-    //     }
-    // });
-
-    // // test button
-    // $('#btn-test').click(function(){
-    //     $.each(OBJ_BARANG.barang,function(i,data){
-    //            alert(data.harga); 
-    //         });
-    //     return false;
-    // });
-
-    // // hitung ulang total harga
-    // function hitungUlangTotalHarga(rowObj){
-    //     var qty = rowObj.children('td:first').next().next().text();
-        
-    //     var harga = rowObj.children('td:first').next().next().next().next().text();
-    //     // normalize harga dari titik dan koma
-    //     harga = harga.replace(/\./g, "");
-    //     harga = harga.replace(/,/g, "");
-    //     // hitung total
-    //     var total = qty*harga;
-    //     // ganti total ke row table
-    //     var tdtotal = rowObj.children('td:first').next().next().next().next().next();
-    //     tdtotal.text(numeral(total).format('0,0'));
-
-    // }
-
-    // // edit harga satuan
-    // var default_value_edit_harga=0;
-    // $(document).on('dblclick','.td-harga',function(event) {
-    //     if(!edit_state){
-    //         if($(this).children('input').length == 0){
-    //             var text_harga = $(this).text();
-    //             // normalize text_harga
-    //             text_harga = text_harga.replace(/\./g, "");
-    //             text_harga = text_harga.replace(/,/g, "");
-    //             // set default harga
-    //             default_value_edit_harga = text_harga;
-    //             // ganti dengan textbox
-    //             $(this).html('<input type="text" name="edit_harga" value="' + text_harga + '" class="text-right form-control" >');
-    //             // focuskan
-    //             $('input[name=edit_harga]').focus().select();                
-
-    //             // set edit state
-    //             setEditState(true);
-    //         }
-    //     }
-    // });
-    // // simpan perubahan harga
-    // $(document).on('keyup','input[name=edit_harga]',function(e){
-    //     if(e.keyCode == 13){
-    //         // ganti text qty
-    //         var rowObj = $(this).parent().parent();
-    //         var harga_text = $(this).val();
-    //         var barangId = rowObj.data('id');
-
-    //         // ganti input dengan text quantity
-    //         $(this).parent().html(numeral(harga_text).format('0,0'));
-
-    //         // hitung ulang total
-    //         hitungUlangTotalHarga(rowObj);
-
-    //         // rubah data yang ada di array json
-    //         $.each(OBJ_BARANG.barang,function(i,data){
-    //             if(data.id == barangId){
-    //                 data.harga = harga_text;
-    //             }
-    //         });
-
-    //         // hitung ulang grandtotal
-    //         hitungGrandTotal();
-
-    //         // edit state to false
-    //         setEditState(false);
-
-    //     }else if(e.keyCode == 27){
-    //         // cancel edit
-    //         $(this).parent().html(numeral(default_value_edit_harga).format('0,0'));
-
-    //         // edit state to false
-    //         setEditState(false);
-    //     }
-    // });
-
-    // // perhitungan discount key up
-    // $('input[name=disc]').keyup(function(){
-    //     hitungGrandTotal();
-    // });
-
-    // // delete barang
-    // $(document).on('click','.btn-delete',function(e){
-    //     var trObj = $(this).parent().parent();
-    //     // hapus dari array object
-    //     var ind;
-    //     $.each(OBJ_BARANG.barang,function(i,data){
-    //         if(data.id == trObj.data('id')){
-    //             ind = i;
-    //         }
-    //     });
-    //     // delete from OBJ_BARANG
-    //     OBJ_BARANG.barang.splice(ind,1);
-
-    //     // remove row object
-    //     trObj.fadeOut(250,null,function(){
-    //         trObj.remove();
-    //         // hitung ulang grand total
-    //         hitungGrandTotal();
-    //     });
-
-    //     return false;
-    // });
-
 
 
 

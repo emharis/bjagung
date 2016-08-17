@@ -11,17 +11,79 @@
   |
  */
 
-Route::get('/', ['uses' => 'HomeController@index']);
+// Route::get('/', ['uses' => 'HomeController@index']);
 
 Route::get('sidebar-update', function() {
     $value = \DB::table('appsetting')->whereName('sidebar_collapse')->first()->value;
     \DB::table('appsetting')->whereName('sidebar_collapse')->update(['value' => $value == 1 ? '0' : '1']);
 });
 
-Route::group(['middleware' => ['web']], function () {
+// Tampilkan View Login
+Route::get('/', function() {
+    return redirect('login');
+});
+
+Route::get('login', function () {
+    return view('login');
+});
+
+Route::post('login', function() {
+    //            //register user
+    //            \DB::table('users')->insert([
+    //                'username' => Request::input('username'),
+    //                'email' => 'admin@localhost.com',
+    //                'password' => bcrypt(Request::input('password')),
+    //                'verified' => 1,
+    //            ]);
+    //auth user
+    Auth::attempt(['username' => Request::input('username'), 'password' => Request::input('password')]);
+
+    if (Request::ajax()) {
+        if (Auth::check()) {
+            return "true";
+        } else {
+            return "false";
+        }
+    } else {
+        if (Auth::check()) {
+            return redirect('home');
+        } else {
+            return redirect('login');
+        }
+    }
+});
+
+// Logout
+Route::get('logout', function() {
+    Auth::logout();
+    return redirect('login');
+});
+
+Route::group(['middleware' => ['web','auth']], function () {
+
+
+    // INVENTORY 
+    Route::group(['prefix' => 'inventory'], function () {
+        Route::get('barang','InvbarangController@index');
+        Route::get('barang/edit/{id}','InvbarangController@edit');
+        Route::get('barang/add','InvbarangController@add');
+        Route::get('barang/cek-kode/{kode}','InvbarangController@cekKode');
+        Route::post('barang/create-kategori','InvbarangController@createKategori');
+        Route::post('barang/insert','InvbarangController@insert');
+        Route::post('barang/delete','InvbarangController@delete');
+    });
+    // END OF INVENTORY
+
 
     Route::get('home', ['as' => 'home', 'uses' => 'HomeController@index']);
     Route::group(['prefix' => 'master'], function () {
+        // Users
+        Route::get('users', ['as' => 'master.users', 'uses' => 'UserController@index']);
+        Route::post('users/insert', ['as' => 'master.users.insert', 'uses' => 'UserController@insert']);
+        Route::get('users/get-user/{id}', ['as' => 'master.users.get-user', 'uses' => 'UserController@getUser']);
+        Route::post('users/update-user', ['as' => 'master.users.update-user', 'uses' => 'UserController@updateUser']);
+        Route::post('users/delete', ['as' => 'master.users.delete', 'uses' => 'UserController@delete']);
+
         //kategori
         Route::get('kategori', ['as' => 'master.kategori', 'uses' => 'KategoriController@index']);
         Route::get('kategori/get-kategori/{id}', ['as' => 'master.kategori.get-kategori', 'uses' => 'KategoriController@getKategori']);
@@ -102,6 +164,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('jual/edit/{id}', ['as' => 'penjualan.jual.edit', 'uses' => 'JualController@edit']);
         Route::post('delete', ['as' => 'penjualan.delete', 'uses' => 'JualController@delete']);
     });
+
+    // Pengaturan Stok Manual
+    Route::get('stok', ['as' => 'stok', 'uses' => 'StokController@index']);
     
     
 });

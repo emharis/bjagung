@@ -16,7 +16,7 @@ class BeliController extends Controller {
         ]);
     }
 
-    //tampilkan halaman tambah barang
+    // tampilkan halaman tambah barang
     public function add(){
     	$suppliers = \DB::table('supplier')->get();
         return view('pembelian.beli.add',[
@@ -37,7 +37,7 @@ class BeliController extends Controller {
             or kode like "%'.$request->get('nama').'%")');
 
         // $barangs['nama'] = $request->input('nama');
-        $data_barang = ['query'=>'Unit','suggestions' => $barangs];
+        $data_barang = ['query' => 'Unit','suggestions' => $barangs];
         echo json_encode($data_barang);
     }
 
@@ -46,97 +46,184 @@ class BeliController extends Controller {
             ->where('kode','like','%'.$request->get('nama').'%')
             ->get();
         // $barangs['nama'] = $request->input('nama');
-        $data_barang = ['query'=>'Unit','suggestions' => $barangs];
+        $data_barang = ['query' => 'Unit','suggestions' => $barangs];
         echo json_encode($data_barang);
     }
 
-    public function insert(Request $request){
+    // public function insert(Request $request){
 
+    //     $grandTotal = 0;
+
+    //     \DB::transaction(function()use($request,$grandTotal){
+    //         // insert ke master pembelian
+    //         $tgl = $request->input('tanggal');
+    //         $arr_tgl = explode('-',$tgl);
+    //         $_tgl = new \DateTime();
+    //         $_tgl->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);
+
+    //         $status = $request->input('tipe') == 'T' ? 'Y' : 'N';
+
+    //         // insert into table beli
+    //         $id = \DB::table('beli')->insertGetId([
+    //                 'no_inv' => $request->input('no_inv'),
+    //                 'tgl' => $_tgl,
+    //                 'supplier_id' => $request->input('supplier'),
+    //                 'tipe' => $request->input('tipe'),
+    //                 'status' => $status,
+    //                 'disc' => $request->input('disc'),
+    //             ]);
+    //         // insert detil barang
+    //         $barang = json_decode($request->input('barang'));
+    //         $total = 0;
+    //         foreach($barang->barang as $dt){
+    //             // input ke table beli_barang
+    //             \DB::table('beli_barang')->insert([
+    //                     'beli_id' => $id,
+    //                     'barang_id' => $dt->id,
+    //                     'qty' => $dt->qty,
+    //                     'harga' => $dt->harga,
+    //                     'total' => $dt->qty * $dt->harga
+    //                 ]);
+    //             $total += $dt->qty * $dt->harga;
+
+    //             // inputkan ke tabel stok
+    //             $stokid = \DB::table('stok')->insertGetId([
+    //                     'tgl' => $_tgl,
+    //                     'barang_id' => $dt->id,
+    //                     'stok_awal' => $dt->qty,
+    //                     'current_stok' => $dt->qty,
+    //                     'tipe' => 'B',
+    //                     'harga' => $dt->harga,
+    //                     'beli_id' => $id,
+    //                 ]);
+
+    //             // input ke stok_moving
+    //             \DB::table('stok_moving')->insert([
+    //                     'stok_id' => $stokid,
+    //                     'jumlah' => $dt->qty,
+    //                     'tipe' => 'I',
+    //                 ]);
+
+    //             // hitung grand total
+    //             $grandTotal = $total - $request->input('disc');
+    //             // update table beli
+            
+    //             \DB::table('beli')->whereId($id)->update([
+    //                     'total' => $total,
+    //                     'grand_total' => $grandTotal,
+    //                 ]);
+
+    //             // jika poembayaran adalah kredit/tempo maka masukkan ke table hutang
+    //             if($request->input('tipe') == 'K'){
+    //                 $hutang_id = \DB::table('hutang')->insertGetId([
+    //                         'beli_id' => $id,
+    //                         'supplier_id' => $request->input('supplier'),
+    //                         'grand_total' => $grandTotal,
+    //                         'sisa_bayar' => $grandTotal,
+    //                     ]);
+    //             }
+    //         }
+           
+
+    //     // end of insert transaction    
+    //     });
+
+    //     if (!$request->ajax()) {
+    //         return redirect('pembelian/beli');
+    //     } else {
+    //         // return json_encode(\DB::table('customer')->find($id));
+    //     }
+
+    // // ==================================================================    
+    // // END OF INSERT METHOD
+    // }
+
+    // FUNGSI INSERT DATA BARANG
+    // ==================================================================    
+    public function insert(Request $req){
         $grandTotal = 0;
 
-        \DB::transaction(function()use($request,$grandTotal){
-            //insert ke master pembelian
-            $tgl = $request->input('tanggal');
+        \DB::transaction(function()use($req,$grandTotal){
+            $obj_beli = json_decode($req->obj_beli);
+            $obj_barang = json_decode($req->obj_barang);
+
+            echo json_encode($obj_beli);
+            echo '<br/>';
+            echo json_encode($obj_barang);
+
+            // extrack tanggal transaksi
+            $tgl = $obj_beli->tanggal;
             $arr_tgl = explode('-',$tgl);
             $_tgl = new \DateTime();
             $_tgl->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);
 
-            $status = $request->input('tipe') == 'T' ? 'Y' : 'N';
+            $status = $obj_beli->pembayaran == 'T' ? 'Y' : 'N';
 
-            //insert into table beli
+            // insert into table beli
             $id = \DB::table('beli')->insertGetId([
-                    'no_inv' => $request->input('no_inv'),
+                    'no_inv' => $obj_beli->no_inv,
                     'tgl' => $_tgl,
-                    'supplier_id' => $request->input('supplier'),
-                    'tipe' => $request->input('tipe'),
+                    'supplier_id' => $obj_beli->supplier_id,
+                    'tipe' => $obj_beli->pembayaran,
                     'status' => $status,
-                    'disc' => $request->input('disc'),
+                    'total' => $obj_beli->total,
+                    'disc' => $obj_beli->disc,
+                    'grand_total' => $obj_beli->total_bayar,
                 ]);
-            //insert detil barang
-            $barang = json_decode($request->input('barang'));
-            $total = 0;
-            foreach($barang->barang as $dt){
-                //input ke table beli_barang
+            // insert detil barang
+            foreach($obj_barang->barang as $dt){
+                // input ke table beli_barang
                 \DB::table('beli_barang')->insert([
-                        'beli_id' => $id,
-                        'barang_id' => $dt->id,
-                        'qty' => $dt->qty,
-                        'harga' => $dt->harga,
-                        'total' => $dt->qty * $dt->harga
-                    ]);
-                $total += $dt->qty * $dt->harga;
+                    'beli_id' => $id,
+                    'barang_id' => $dt->id,
+                    'qty' => $dt->qty,
+                    'harga' => $dt->harga_satuan,
+                    'total' => $dt->qty * $dt->harga_satuan
+                ]);
 
-                //inputkan ke tabel stok
+                // inputkan ke tabel stok
                 $stokid = \DB::table('stok')->insertGetId([
-                        'tgl' => $_tgl,
-                        'barang_id' =>$dt->id,
-                        'stok_awal' =>$dt->qty,
-                        'current_stok' =>$dt->qty,
-                        'tipe' =>'B',
-                        'harga' =>$dt->harga,
-                        'beli_id' =>$id,
-                    ]);
+                    'tgl' => $_tgl,
+                    'barang_id' => $dt->id,
+                    'stok_awal' => $dt->qty,
+                    'current_stok' => $dt->qty,
+                    'tipe' => 'B',
+                    'harga' => $dt->harga_satuan,
+                    'beli_id' => $id,
+                ]);
 
-                //input ke stok_moving
+                // input ke stok_moving
                 \DB::table('stok_moving')->insert([
-                        'stok_id' => $stokid,
-                        'jumlah' => $dt->qty,
-                        'tipe' => 'I',
-                    ]);
+                    'stok_id' => $stokid,
+                    'jumlah' => $dt->qty,
+                    'tipe' => 'I',
+                ]);
 
-                //hitung grand total
-                $grandTotal = $total - $request->input('disc');
-                //update table beli
-            
-                \DB::table('beli')->whereId($id)->update([
-                        'total' => $total,
-                        'grand_total' => $grandTotal,
-                    ]);
-
-                //jika poembayaran adalah kredit/tempo maka masukkan ke table hutang
-                if($request->input('tipe') == 'K'){
+                // jika poembayaran adalah kredit/tempo maka masukkan ke table hutang
+                if($obj_beli->pembayaran == 'K'){
                     $hutang_id = \DB::table('hutang')->insertGetId([
-                            'beli_id' => $id,
-                            'supplier_id' => $request->input('supplier'),
-                            'grand_total' => $grandTotal,
-                            'sisa_bayar' => $grandTotal,
-                        ]);
+                        'beli_id' => $id,
+                        'supplier_id' => $obj_beli->supplier_id,
+                        'grand_total' => $obj_beli->total_bayar,
+                        'sisa_bayar' => $obj_beli->total_bayar,
+                    ]);
                 }
             }
            
 
-        //end of insert transaction    
+        // end of insert transaction    
         });
 
-        if (!$request->ajax()) {
+        if (!$req->ajax()) {
             return redirect('pembelian/beli');
         } else {
             // return json_encode(\DB::table('customer')->find($id));
         }
 
-    //==================================================================    
-    //END OF INSERT METHOD
+    // end of fungsi insert data barang    
     }
+    // ==================================================================    
+    // END OF FUNGSI INSERT DATA BARANG
 
     public function show($id,Request $request){
         $master_beli = \DB::table('VIEW_PEMBELIAN')->find($id);
@@ -150,7 +237,7 @@ class BeliController extends Controller {
         echo json_encode($data);
     }
     
-    //edit data pembelian
+    // edit data pembelian
     public function edit($id, Request $request){
         $beli = \DB::table('VIEW_PEMBELIAN')->find($id);
         $beli_barang = \DB::table('VIEW_BELI_BARANG')->where('beli_id',$id)->get();
@@ -169,10 +256,10 @@ class BeliController extends Controller {
             ]);
     }
 
-    //simpan edit
+    // simpan edit
     public function update(Request $request){
         \DB::transaction(function()use($request){
-            //insert ke master pembelian
+            // insert ke master pembelian
             $tgl = $request->input('tanggal');
             $arr_tgl = explode('-',$tgl);
             $_tgl = new \DateTime();
@@ -182,20 +269,20 @@ class BeliController extends Controller {
 
             // $status = $request->input('tipe') == 'T' ? 'Y' : 'N';
 
-            //hapus data lama
-            ////hapus data hutang
+            // hapus data lama
+            // // hapus data hutang
             \DB::table('hutang')->where('beli_id',$beli_id)->delete();
-            ////hapus stok & stok_moving
+            // // hapus stok & stok_moving
             \DB::table('stok')->where('beli_id',$beli_id)->delete();
-            ////hapus beli barang
+            // // hapus beli barang
             \DB::table('beli_barang')->where('beli_id',$beli_id)->delete();
 
 
-            //insert data terbaru
+            // insert data terbaru
             // $barang = json_decode($request->input('barang'));
             $total = 0;
             foreach($barang as $dt){
-                //input ke table beli_barang
+                // input ke table beli_barang
                 \DB::table('beli_barang')->insert([
                         'beli_id' => $beli_id,
                         'barang_id' => $dt->id,
@@ -205,35 +292,35 @@ class BeliController extends Controller {
                     ]);
                 $total += $dt->qty * $dt->harga;
 
-                //inputkan ke tabel stok
+                // inputkan ke tabel stok
                 $stokid = \DB::table('stok')->insertGetId([
                         'tgl' => $_tgl,
-                        'barang_id' =>$dt->id,
-                        'stok_awal' =>$dt->qty,
-                        'current_stok' =>$dt->qty,
-                        'tipe' =>'B',
-                        'harga' =>$dt->harga,
-                        'beli_id' =>$beli_id,
+                        'barang_id' => $dt->id,
+                        'stok_awal' => $dt->qty,
+                        'current_stok' => $dt->qty,
+                        'tipe' => 'B',
+                        'harga' => $dt->harga,
+                        'beli_id' => $beli_id,
                     ]);
 
-                //input ke stok_moving
+                // input ke stok_moving
                 \DB::table('stok_moving')->insert([
                         'stok_id' => $stokid,
                         'jumlah' => $dt->qty,
                         'tipe' => 'I',
                     ]);
 
-                //hitung grand total
+                // hitung grand total
                 $grandTotal = $total - $request->input('disc');
 
-                //update table beli            
+                // update table beli            
                 \DB::table('beli')->whereId($beli_id)->update([
                         'total' => $total,
                         'disc' => $request->input('disc'),
                         'grand_total' => $grandTotal,
                     ]);
 
-                //jika poembayaran adalah kredit/tempo maka masukkan ke table hutang
+                // jika poembayaran adalah kredit/tempo maka masukkan ke table hutang
                 if($request->input('tipe') == 'K'){
                     $hutang_id = \DB::table('hutang')->insertGetId([
                             'beli_id' => $beli_id,
@@ -244,7 +331,7 @@ class BeliController extends Controller {
                 }
             }
 
-            // //get data pembelian
+            // // get data pembelian
             // $beli_on_db = \DB::table('beli')->find($request->id_pembelian);
             // $beli_barang_on_db = \DB::table('beli_barang')->where('beli_id',$beli_on_db->id)->get();
             // $stok_on_db = \DB::table('stok')->where('beli_id',$beli_on_db->id)->get();
@@ -264,12 +351,12 @@ class BeliController extends Controller {
             //     }
 
             //     if($adakah){
-            //         //jika ada di database maka di cek jumlah qty, harga satuan, jika berbeda harus di  rubah
-            //         //langsung rubah qty, harga satuan, total
+            //         // jika ada di database maka di cek jumlah qty, harga satuan, jika berbeda harus di  rubah
+            //         // langsung rubah qty, harga satuan, total
             //         // \DB::table('beli_barang')->where('id',$blbr->id)->update([
-            //         //         'qty'=>$barang[$barang_index]->qty,
-            //         //         'harga'=>'',
-            //         //         'total'=>'',
+            //         //         'qty' => $barang[$barang_index]->qty,
+            //         //         'harga' => '',
+            //         //         'total' => '',
             //         //     ]);
 
             //          echo 'update data beli_barang ' . $barang[$barang_index]->qty . ' ' . $barang[$barang_index]->harga . '<br/>'; 
@@ -289,11 +376,11 @@ class BeliController extends Controller {
             //         'status' => $status,
             //         'disc' => $request->input('disc'),
             //     ]);
-            // //insert detil barang
+            // // insert detil barang
             // 
             // $total = 0;
             // foreach($barang->barang as $dt){
-            //     //input ke table beli_barang
+            //     // input ke table beli_barang
             //     \DB::table('beli_barang')->insert([
             //             'beli_id' => $id,
             //             'barang_id' => $dt->id,
@@ -303,34 +390,34 @@ class BeliController extends Controller {
             //         ]);
             //     $total += $dt->qty * $dt->harga;
 
-            //     //inputkan ke tabel stok
+            //     // inputkan ke tabel stok
             //     $stokid = \DB::table('stok')->insertGetId([
             //             'tgl' => $_tgl,
-            //             'barang_id' =>$dt->id,
-            //             'stok_awal' =>$dt->qty,
-            //             'current_stok' =>$dt->qty,
-            //             'tipe' =>'B',
-            //             'harga' =>$dt->harga,
-            //             'beli_id' =>$id,
+            //             'barang_id' => $dt->id,
+            //             'stok_awal' => $dt->qty,
+            //             'current_stok' => $dt->qty,
+            //             'tipe' => 'B',
+            //             'harga' => $dt->harga,
+            //             'beli_id' => $id,
             //         ]);
 
-            //     //input ke stok_moving
+            //     // input ke stok_moving
             //     \DB::table('stok_moving')->insert([
             //             'stok_id' => $stokid,
             //             'jumlah' => $dt->qty,
             //             'tipe' => 'I',
             //         ]);
 
-            //     //hitung grand total
+            //     // hitung grand total
             //     $grandTotal = $total - $request->input('disc');
-            //     //update table beli
+            //     // update table beli
             
             //     \DB::table('beli')->whereId($id)->update([
             //             'total' => $total,
             //             'grand_total' => $grandTotal,
             //         ]);
 
-            //     //jika poembayaran adalah kredit/tempo maka masukkan ke table hutang
+            //     // jika poembayaran adalah kredit/tempo maka masukkan ke table hutang
             //     if($request->input('tipe') == 'K'){
             //         $hutang_id = \DB::table('hutang')->insertGetId([
             //                 'beli_id' => $id,
@@ -342,7 +429,7 @@ class BeliController extends Controller {
             // }
            
 
-        //end of insert transaction    
+        // end of insert transaction    
         });
 
         if (!$request->ajax()) {
@@ -352,22 +439,22 @@ class BeliController extends Controller {
         }
     }
 
-    //Hapus data pembelian
+    // Hapus data pembelian
     public function delete($id,Request $request){
         \DB::transaction(function()use($id){
-            //get data pembelian
+            // get data pembelian
             $pembelian = \DB::table('beli')->find($id);
-            //hapus data hutang dan otomatis data cicil akan ikut terhapus jika ada 
+            // hapus data hutang dan otomatis data cicil akan ikut terhapus jika ada 
             \DB::table('hutang')->where('beli_id',$id)->delete();
-            //hapus data stok dan otomatis data stok moving akan terhapus
+            // hapus data stok dan otomatis data stok moving akan terhapus
             \DB::table('stok')->where('beli_id',$id)->delete();
-            //hapus data pembelian
+            // hapus data pembelian
             \DB::table('beli')->delete($id);
         });
 
         return redirect('pembelian/beli');
     }
 
-//==================================================================================
-//end of code
+// ==================================================================================
+// end of code
 }

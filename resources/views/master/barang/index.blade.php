@@ -182,6 +182,31 @@
     </div><!-- /.box -->
 
 </section><!-- /.content -->
+
+
+<!-- MODAL DELETE DATA -->
+<div class="modal modal-danger" id="modal-delete" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">DELETE</h4>
+            </div>
+        <div class="modal-body">
+            <p>Anda akan menghapus data ini?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-outline" data-dismiss="modal" id="btn-modal-delete-yes" >Yes</button>
+        </div>
+        </div>
+    <!-- /.modal-content -->
+    </div>
+  <!-- /.modal-dialog -->
+</div>
+
 @stop
 
 @section('scripts')
@@ -363,26 +388,50 @@
     });
 
     //delete barang
+    var row_for_delete;
+    var url_for_delete;
+    var id_for_delete; 
+
     $(document).on('click', '.btn-delete-barang', function () {
 //        var id = $(this).data('id');
         var url = $(this).attr('href');
         var row = $(this).parent().parent();
-        if (confirm('Anda akan menghapus data ini..?')) {
-//            location.href = url;
-            //delete by ajax
-            $.get(url, null, function () {
-                //delete row
-                row.fadeOut(250, null, function () {
-                    //delete row dari jquery datatable
-                    tableData
-                            .row(row)
-                            .remove()
-                            .draw();
-                });
-            });
-        }
+
+        url_for_delete = url;
+        row_for_delete = row;
+
+        // tampilkan modal confirm delete
+        $('#modal-delete').modal('show');
+
+//         if (confirm('Anda akan menghapus data ini..?')) {
+// //            location.href = url;
+//             //delete by ajax
+//             $.get(url, null, function () {
+//                 //delete row
+//                 row.fadeOut(250, null, function () {
+//                     //delete row dari jquery datatable
+//                     tableData
+//                             .row(row)
+//                             .remove()
+//                             .draw();
+//                 });
+//             });
+//         }
 
         return false;
+    });
+
+    // BUTTON MODAL DELETE YES CLICK
+    $('#btn-modal-delete-yes').click(function(){
+        //delete data users
+        $.get(url_for_delete, null, function () {
+            //delete row
+            row_for_delete.fadeOut(250, null, function () {
+                //delete row dari jquery datatable
+                tableData.row(row_for_delete).remove().draw();
+
+            });
+        });
     });
 
     //checkbox change
