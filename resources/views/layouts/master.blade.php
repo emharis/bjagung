@@ -10,9 +10,10 @@
         <!-- Bootstrap 3.3.5 -->
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+        {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> --}}
+        <link rel="stylesheet" href="css/font-awesome.min.css">
         <!-- Ionicons -->
-        <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+        <link rel="stylesheet" href="css/ionicons.min.css">
         <!-- Theme style -->
         <link rel="stylesheet" href="css/AdminLTE.min.css">
         <!-- AdminLTE Skins. Choose a skin from the css/skins
@@ -20,6 +21,8 @@
         <link rel="stylesheet" href="css/skins/_all-skins.min.css">
         <!-- FAVICON -->
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        <!-- Bootstrap Arrow Button -->
+        <link rel="stylesheet" href="bootstrap/css/bootstrap-arrow-button.css">
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -29,6 +32,10 @@
         <![endif]-->
 
         <style>
+            .table > tbody > tr > td, .table > thead > tr > th{
+                vertical-align: middle;
+            }
+
             table.table-bordered    {
                 border-color: #AFAFB6;
             }
@@ -37,6 +44,61 @@
             }
             table.table-bordered > tbody > tr > td{
                 border-color:#DDDDDD;
+            }
+            /*Table Stipe color*/
+            .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+               background-color: #EEF0F0;
+            }
+
+            /*table border*/
+            /*.table-bordered > tbody > tr > td, .table-bordered > tbody > tr > th {
+               border-top: none;
+               border-bottom: none;
+            }*/
+
+            /*table hover*/
+            /*.table-hover > tbody > tr:hover > th {
+              background-color: red;
+            }*/
+
+            .table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th {
+              background-color: #3C8DBC;
+              color:#eeeeee;
+            }
+
+            /*clear table top border */
+            .table-clear > tbody > tr > td, .table-clear > thead > tr > th{
+                border-top: none;
+            }
+
+            /*jadikan button flat tanpa rounding*/
+            .btn {
+              border-radius:1;
+            }
+
+            /*ganti warna button-primary hover di header box*/
+            .box .box-header > a.btn.btn-primary:hover {
+                background-color: #367fa9;
+                /*background-color: red;*/
+            }
+
+            /*ganti warna button-danger hover di header box*/
+            .box .box-header > a.btn.btn-danger:hover {
+                background-color: #d73925;
+                /*background-color: red;*/
+            }
+
+            /*format autocomplete input*/
+            .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+            .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+            .autocomplete-selected { background: #FFE291; }
+            .autocomplete-suggestions strong { font-weight: normal; color: red; }
+            .autocomplete-group { padding: 2px 5px; }
+            .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+
+            /*Content Header di perkecil*/
+            .content-header > h1{
+                font-size: 18px;
             }
         </style>
 

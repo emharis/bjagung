@@ -169,6 +169,7 @@ class BeliController extends Controller {
                     'total' => $obj_beli->total,
                     'disc' => $obj_beli->disc,
                     'grand_total' => $obj_beli->total_bayar,
+                    'user_id' => \Auth::user()->id
                 ]);
             // insert detil barang
             foreach($obj_barang->barang as $dt){
@@ -178,7 +179,8 @@ class BeliController extends Controller {
                     'barang_id' => $dt->id,
                     'qty' => $dt->qty,
                     'harga' => $dt->harga_satuan,
-                    'total' => $dt->qty * $dt->harga_satuan
+                    'total' => $dt->qty * $dt->harga_satuan,
+                    'user_id' => \Auth::user()->id
                 ]);
 
                 // inputkan ke tabel stok
@@ -190,6 +192,7 @@ class BeliController extends Controller {
                     'tipe' => 'B',
                     'harga' => $dt->harga_satuan,
                     'beli_id' => $id,
+                    'user_id' => \Auth::user()->id
                 ]);
 
                 // input ke stok_moving
@@ -197,6 +200,7 @@ class BeliController extends Controller {
                     'stok_id' => $stokid,
                     'jumlah' => $dt->qty,
                     'tipe' => 'I',
+                    'user_id' => \Auth::user()->id
                 ]);
 
                 // jika poembayaran adalah kredit/tempo maka masukkan ke table hutang
@@ -206,6 +210,7 @@ class BeliController extends Controller {
                         'supplier_id' => $obj_beli->supplier_id,
                         'grand_total' => $obj_beli->total_bayar,
                         'sisa_bayar' => $obj_beli->total_bayar,
+                        'user_id' => \Auth::user()->id
                     ]);
                 }
             }

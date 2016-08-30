@@ -33,7 +33,7 @@
         <p class="login-box-msg">Sign in to start your session</p>
         <form action="login" method="post">
           <div class="form-group has-feedback">
-            <input type="text" class="form-control" placeholder="Username" name="username">
+            <input type="text" class="form-control" placeholder="Username" name="username" autofocus>
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">

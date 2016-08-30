@@ -8,56 +8,60 @@ use App\Http\Controllers\Controller;
 
 class SatuanController extends Controller {
 
+
+    // fungsi tampilkan halaman satuan
     public function index() {
-        $data = \DB::table('VIEW_SATUAN')->orderBy('created_at','desc')->get();
+        $data = \DB::table('VIEW_SATUAN')
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-        return view('master.satuan.index', [
-            'data' => $data
+        return view('inventory.satuan.satuan', [
+            'data' => $data,
         ]);
     }
 
-    //insert new data satuan
-    public function insert(Request $request) {
-        $id = \DB::table('satuan')->insertGetId([
-            'nama' => $request->input('nama')
-        ]);
-
-        if (!$request->ajax()) {
-            return redirect('master/satuan');
-        } else {
-            return json_encode(\DB::table('satuan')->find($id));
-        }
+    // Fungsi add satuan/ tampilkan form add
+    public function add(){
+        return view('inventory.satuan.addsatuan');
     }
 
-    //get data satuan
-    public function getSatuan($id) {
-        $data = \DB::table('satuan')->find($id);
-
-        return json_encode($data);
-    }
-
-    //update data satuan
-    public function updateSatuan(Request $request) {
+    // Fungsi insert data ke database
+    public function insert(Request $req){
         \DB::table('satuan')
-                ->whereId($request->input('id'))
-                ->update([
-                    'nama' => $request->input('nama')
-        ]);
+            ->insert([
+                    'nama'=>$req->nama,
+                    'user_id' => \Auth::user()->id
+                ]);
 
-        if (!$request->ajax()) {
-            return redirect('master/satuan');
-        } else {
-            return json_encode(\DB::table('satuan')->find($request->input('id')));
-        }
+        return redirect('inventory/satuan');
     }
 
-    //delete satuan
-    public function deleteSatuan($id, Request $request) {
-        \DB::table('satuan')->delete($id);
+    // Fungsi Edit/ Tampilkan Form Edit
+    public function edit($id){
+        $data = \DB::table('VIEW_SATUAN')->find($id);
 
-        if (!$request->ajax()) {
-            return redirect('master/satuan');
-        }
+        return view('inventory.satuan.editsatuan',[
+                'data' => $data,
+            ]);
+    }
+
+    // Simpan perubahan data ke database
+    public function update(Request $req){
+        \DB::table('satuan')
+            ->where('id',$req->id)
+            ->update([
+                    'nama' => $req->nama
+                ]);
+
+        return redirect('inventory/satuan');
+    }
+
+    // Delete satuan dari dattabase
+    public function delete(Request $req){
+        \DB::table('satuan')
+            ->delete($req->id);
+
+        return redirect('inventory/satuan');
     }
 
 }

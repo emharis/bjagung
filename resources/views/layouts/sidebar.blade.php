@@ -8,7 +8,7 @@
             <li class="{{Request::is('home') ? 'active':''}}" >
                 <a href="home"> <i class="fa fa-home"></i> <span>Home</span> </a>
             </li>
-            <li class="treeview {{Request::is('master/*') ? 'active':''}}" >
+            {{-- <li class="treeview {{Request::is('master/*') ? 'active':''}}" >
                 <a href="#">
                     <i class="fa fa-th-large"></i>
                     <span>Master</span>
@@ -56,7 +56,7 @@
                 <ul class="treeview-menu">
                     <li class="{{Request::is('penjualan/beli*') ? 'active':''}}" ><a href="penjualan/jual"><i class="fa fa-circle-o"></i> Penjualan</a></li>                    
                 </ul>
-            </li>
+            </li> --}}
 
             <!--MENU BARU MENGGUNAKAN AJAX-->
             
@@ -72,6 +72,7 @@
                     <li class="{{Request::is('inventory/barang*') ? 'active':''}}" ><a href="inventory/barang"><i class="fa fa-circle-o"></i> Barang</a></li>  
                     <li class="{{Request::is('inventory/kategori*') ? 'active':''}}" ><a href="inventory/kategori"><i class="fa fa-circle-o"></i> Kategori</a></li>        
                     <li class="{{Request::is('inventory/satuan*') ? 'active':''}}" ><a href="inventory/satuan"><i class="fa fa-circle-o"></i> Satuan</a></li>        
+                    <li class="{{Request::is('inventory/adjustment*') ? 'active':''}}" ><a href="inventory/adjustment"><i class="fa fa-circle-o"></i> Inventory Adjustment</a></li>        
                 </ul>
             </li>
             <!--Menu Purchase-->
@@ -82,9 +83,9 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="" >
-                        
-                    </li>       
+                    <li class="{{Request::is('purchase/order*') ? 'active':''}}" ><a href="purchase/order"><i class="fa fa-circle-o"></i> Purchase Orders</a></li> 
+                    <li class="{{Request::is('purchase/supplier*') ? 'active':''}}" ><a href="purchase/supplier"><i class="fa fa-circle-o"></i> Supplier</a></li>      
+                         
                 </ul>
             </li>
             <!--Menu Sales-->
@@ -96,7 +97,23 @@
                 </a>
                 <ul class="treeview-menu">
                     <li class="" >
-                        
+                        <li class="{{Request::is('sales/order*') ? 'active':''}}" ><a href="sales/order"><i class="fa fa-circle-o"></i> Sales Orders</a></li>
+                        <li class="{{Request::is('sales/customer*') ? 'active':''}}" ><a href="sales/customer"><i class="fa fa-circle-o"></i> Customer</a></li>
+                        <li class="{{Request::is('sales/salesman*') ? 'active':''}}" ><a href="sales/salesman"><i class="fa fa-circle-o"></i> Salesman</a></li>         
+                    </li>  
+                </ul>
+            </li>
+            <!--Menu Invoicing-->
+            <li class="treeview" >
+                <a href="#">
+                    <i class="fa fa-newspaper-o"></i>
+                    <span>Invoicing</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="" >
+                        <li class="{{Request::is('invoice/customer-invoice*') ? 'active':''}}" ><a href="invoice/customer-invoice"><i class="fa fa-circle-o"></i> Customer Invoices</a></li>
+                        <li class="{{Request::is('invoice/supplier-bill*') ? 'active':''}}" ><a href="invoice/supplier-bill"><i class="fa fa-circle-o"></i> Supplier Bills</a></li>         
                     </li>  
                 </ul>
             </li>

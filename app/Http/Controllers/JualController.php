@@ -145,6 +145,7 @@ class JualController extends Controller {
                                     'total' => $request->input('total'),
                                     'grand_total' => $request->input('grand_total'),
                                     'no_inv' => $no_inv,
+                                    'user_id' => \Auth::user()->id
                                 ]);
 
             $barang = json_decode($request->input('barang'));
@@ -159,6 +160,7 @@ class JualController extends Controller {
                         'harga_satuan' => $dt->harga_satuan,
                         'harga_salesman' => $dt->harga_salesman,
                         'total' => $dt->harga_salesman * $dt->qty,
+                        'user_id' => \Auth::user()->id
                     ]);
 
                 //Pengurangan/Update data STOK
@@ -180,7 +182,8 @@ class JualController extends Controller {
                                     'stok_id' => $st->id,
                                     'jumlah' => $qty_barang_di_jual,
                                     'tipe' => 'O',
-                                    'jual_id' => $jual_id
+                                    'jual_id' => $jual_id,
+                                    'user_id' => \Auth::user()->id
                                 ]);
                             //update stok current
                             \DB::table('stok')->whereId($st->id)->update([
@@ -193,7 +196,8 @@ class JualController extends Controller {
                                     'stok_id' => $st->id,
                                     'jumlah' => $qty_barang_di_jual,
                                     'tipe' => 'O',
-                                    'jual_id' => $jual_id
+                                    'jual_id' => $jual_id,
+                                    'user_id' => \Auth::user()->id
                                 ]);
                             //update stok current
                             $sisa_stok = $st->current_stok;
@@ -207,7 +211,8 @@ class JualController extends Controller {
                                     'stok_id' => $st->id,
                                     'jumlah' => $st->current_stok,
                                     'tipe' => 'O',
-                                    'jual_id' => $jual_id
+                                    'jual_id' => $jual_id,
+                                    'user_id' => \Auth::user()->id
                                 ]);
                             //update stok current
                             $sisa_stok = $st->current_stok;
@@ -231,6 +236,7 @@ class JualController extends Controller {
                         'customer_id' => $request->input('customer'),
                         'total' => $request->input('total') - $request->input('disc'),
                         'sisa_bayar' => $request->input('total') - $request->input('disc'),
+                        'user_id' => \Auth::user()->id
                     ]);
             }
 

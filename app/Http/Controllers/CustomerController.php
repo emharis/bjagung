@@ -8,64 +8,70 @@ use App\Http\Controllers\Controller;
 
 class CustomerController extends Controller {
 
+
+    // fungsi tampilkan halaman customer
     public function index() {
-        $data = \DB::table('customer')->get();
+        $data = \DB::table('VIEW_CUSTOMER')
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-        return view('master.customer.index', [
-            'data' => $data
+        return view('sales.customer.customer', [
+            'data' => $data,
         ]);
     }
 
-    //insert new data customer
-    public function insert(Request $request) {
-        $id = \DB::table('customer')->insertGetId([
-            'nama' => $request->input('nama'),
-            'nama_kontak' => $request->input('nama_kontak'),
-            'telp' => $request->input('telp'),
-            'telp_2' => $request->input('telp_2'),
-            'alamat' => $request->input('alamat'),
-        ]);
-
-        if (!$request->ajax()) {
-            return redirect('master/customer');
-        } else {
-            return json_encode(\DB::table('customer')->find($id));
-        }
+    // Fungsi add customer/ tampilkan form add
+    public function add(){
+        return view('sales.customer.addcustomer');
     }
 
-    //get data customer
-    public function getCustomer($id) {
-        $data = \DB::table('customer')->find($id);
-
-        return json_encode($data);
-    }
-
-    //update data customer
-    public function updateCustomer(Request $request) {
+    // Fungsi insert data ke database
+    public function insert(Request $req){
         \DB::table('customer')
-                ->whereId($request->input('id'))
-                ->update([
-                    'nama' => $request->input('nama'),
-                    'nama_kontak' => $request->input('nama_kontak'),
-                    'telp' => $request->input('telp'),
-                    'telp_2' => $request->input('telp_2'),
-                    'alamat' => $request->input('alamat'),
-        ]);
+            ->insert([
+                    'nama'=>$req->nama,
+                    'nama_kontak'=>$req->nama_kontak,
+                    'telp'=>$req->telp,
+                    'telp_2'=>$req->telp2,
+                    'alamat'=>$req->alamat,
+                    'note'=>$req->note,
+                    'user_id' => \Auth::user()->id
+                ]);
 
-        if (!$request->ajax()) {
-            return redirect('master/customer');
-        } else {
-            return json_encode(\DB::table('customer')->find($request->input('id')));
-        }
+        return redirect('sales/customer');
     }
 
-    //delete customer
-    public function deleteCustomer($id, Request $request) {
-        \DB::table('customer')->delete($id);
+    // Fungsi Edit/ Tampilkan Form Edit
+    public function edit($id){
+        $data = \DB::table('VIEW_CUSTOMER')->find($id);
 
-        if (!$request->ajax()) {
-            return redirect('master/customer');
-        }
+        return view('sales.customer.editcustomer',[
+                'data' => $data,
+            ]);
+    }
+
+    // Simpan perubahan data ke database
+    public function update(Request $req){
+        \DB::table('customer')
+            ->where('id',$req->id)
+            ->update([
+                    'nama'=>$req->nama,
+                    'nama_kontak'=>$req->nama_kontak,
+                    'telp'=>$req->telp,
+                    'telp_2'=>$req->telp2,
+                    'alamat'=>$req->alamat,
+                    'note'=>$req->note,
+                ]);
+
+        return redirect('sales/customer');
+    }
+
+    // Delete customer dari dattabase
+    public function delete(Request $req){
+        \DB::table('customer')
+            ->delete($req->id);
+
+        return redirect('sales/customer');
     }
 
 }

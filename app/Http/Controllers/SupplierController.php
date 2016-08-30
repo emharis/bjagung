@@ -7,69 +7,73 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 class SupplierController extends Controller {
-    
+
+
+    // fungsi tampilkan halaman supplier
     public function index() {
-        $data = \DB::table('supplier')->orderBy('created_at','desc')->get();
+        $data = \DB::table('VIEW_SUPPLIER')
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-        return view('master.supplier.index', [
-            'data' => $data
+        return view('purchase.supplier.supplier', [
+            'data' => $data,
         ]);
     }
 
-    //insert new data supplier
-    public function insert(Request $request) {
-        $id = \DB::table('supplier')->insertGetId([
-            'nama' => $request->input('nama'),
-            'nama_kontak' => $request->input('nama_kontak'),
-            'telp' => $request->input('telp'),
-            'telp_2' => $request->input('telp_2'),
-            'alamat' => $request->input('alamat'),
-            'jatuh_tempo' => $request->input('jatuh_tempo'),
-            'rek' => $request->input('rek'),
-        ]);
-
-        if (!$request->ajax()) {
-            return redirect('master/supplier');
-        }else{
-            return json_encode(\DB::table('supplier')->find($id));
-        }
+    // Fungsi add supplier/ tampilkan form add
+    public function add(){
+        return view('purchase.supplier.addsupplier');
     }
 
-    //get data supplier
-    public function getSupplier($id) {
-        $data = \DB::table('supplier')->find($id);
-
-        return json_encode($data);
-    }
-
-    //update data supplier
-    public function updateSupplier(Request $request) {
+    // Fungsi insert data ke database
+    public function insert(Request $req){
         \DB::table('supplier')
-                ->whereId($request->input('id'))
-                ->update([
-                    'nama' => $request->input('nama'),
-                    'nama_kontak' => $request->input('nama_kontak'),
-                    'telp' => $request->input('telp'),
-                    'telp_2' => $request->input('telp_2'),
-                    'alamat' => $request->input('alamat'),
-                    'jatuh_tempo' => $request->input('jatuh_tempo'),
-                    'rek' => $request->input('rek'),
-        ]);
+            ->insert([
+                    'nama'=>$req->nama,
+                    'nama_kontak'=>$req->nama_kontak,
+                    'telp'=>$req->telp,
+                    'telp_2'=>$req->telp2,
+                    'alamat'=>$req->alamat,
+                    'jatuh_tempo'=>$req->tempo,
+                    'note'=>$req->note,
+                    'user_id' => \Auth::user()->id
+                ]);
 
-        if (!$request->ajax()) {
-            return redirect('master/supplier');
-        }else{
-            return json_encode(\DB::table('supplier')->find($request->input('id')));
-        }
+        return redirect('purchase/supplier');
     }
 
-    //delete supplier
-    public function deleteSupplier($id, Request $request) {
-        \DB::table('supplier')->delete($id);
+    // Fungsi Edit/ Tampilkan Form Edit
+    public function edit($id){
+        $data = \DB::table('VIEW_SUPPLIER')->find($id);
 
-        if (!$request->ajax()) {
-            return redirect('master/supplier');
-        }
+        return view('purchase.supplier.editsupplier',[
+                'data' => $data,
+            ]);
+    }
+
+    // Simpan perubahan data ke database
+    public function update(Request $req){
+        \DB::table('supplier')
+            ->where('id',$req->id)
+            ->update([
+                    'nama'=>$req->nama,
+                    'nama_kontak'=>$req->nama_kontak,
+                    'telp'=>$req->telp,
+                    'telp_2'=>$req->telp2,
+                    'alamat'=>$req->alamat,
+                    'jatuh_tempo'=>$req->tempo,
+                    'note'=>$req->note,
+                ]);
+
+        return redirect('purchase/supplier');
+    }
+
+    // Delete supplier dari dattabase
+    public function delete(Request $req){
+        \DB::table('supplier')
+            ->delete($req->id);
+
+        return redirect('purchase/supplier');
     }
 
 }
