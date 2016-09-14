@@ -1,4 +1,4 @@
-@extends('layouts.master')
+ @extends('layouts.master')
 
 @section('styles')
 <!--Bootsrap Data Table-->
@@ -10,7 +10,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Purchase Order
+        Sales Order
     </h1>
 </section>
 
@@ -20,7 +20,7 @@
     <!-- Default box -->
     <div class="box box-solid">
         <div class="box-body">
-            <a class="btn btn-primary btn-sm" id="btn-add" href="purchase/order/add" ><i class="fa fa-plus" ></i> Add Purchase Order</a>
+            <a class="btn btn-primary btn-sm" id="btn-add" href="sales/order/add" ><i class="fa fa-plus" ></i> Add Sales Order</a>
             <div class="clearfix" ></div>
             <br/>
 
@@ -28,41 +28,56 @@
             <table class="table table-bordered table-condensed table-striped table-hover" id="table-order" >
                 <thead>
                     <tr>
-                        <th style="width:50px;" >No</th>
-                        <th  >REFERENCE</th>
-                        <th  >SUPPLIER REFERENCE</th>
-                        <th  >DATE</th>
-                        <th>SUPPLIER</th>
+                        <th style="width:50px;" >NO</th>
+                        <th class="col-lg-1" >REFERENCE</th>
+                        {{-- <th class="col-lg-1" >INV NO.</th> --}}
+                        <th class="col-lg-1" >DATE</th>
+                        <th>CUSTOMER</th>
+                        <th>SALESPERSON</th>
                         <th>TOTAL</th>
                         <th class="col-lg-1" >STATUS</th>
                         <th style="width:65px;" ></th>
                     </tr>
                 </thead>
                 <tbody>
+                    <?php $rownum=1; ?>
                     @foreach($data as $dt)
-                    <tr data-rowid="{{$rownum}}" data-orderid="{{$dt->id}}">
-                        <td>{{$rownum++}}</td>
-                        <td>{{$dt->po_num}}</td>
-                        <td>{{$dt->no_inv}}</td>
-                        <td>{{$dt->tgl_formatted}}</td>
-                        <td>{{$dt->supplier}}</td>
-                        <td>
-                            {{number_format($dt->grand_total,0,'.',',')}}
-                        </td>
-                        <td>
-                            @if($dt->status == 'O')
-                                Open
-                            @elseif($dt->status == 'V')
-                                Validated
-                            @endif
-                        </td>
-                        <td>
-                            <a class="btn btn-success btn-xs btn-edit-order" href="purchase/order/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
-                            {{-- @if($dt->ref == 0)
-                            <a class="btn btn-danger btn-xs btn-delete-order" ><i class="fa fa-trash" ></i></a>
-                            @endif --}}
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>
+                                {{$rownum++}}
+                            </td>
+                            <td>
+                                {{$dt->so_no}}
+                            </td>
+                            {{-- <td>
+                                {{$dt->no_inv}}
+                            </td> --}}
+                            <td>
+                                {{$dt->tgl_formatted}}
+                            </td>
+                            <td>
+                                {{$dt->customer}}
+                            </td>
+                            <td>
+                                {{$dt->nama_salesman_full}}
+                            </td>
+                            <td>
+                                {{number_format($dt->total,0,'.',',')}}
+                            </td>
+                            <td>
+                                @if($dt->status == 'O')
+                                    Open
+                                @else
+                                    Validated
+                                @endif
+                            </td>
+                            <td>
+                                <a class="btn btn-success btn-xs" href="sales/order/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
+                                @if($dt->status == 'O')
+                                <a class="btn btn-danger btn-xs btn-delete-so" href="sales/order/delete/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
+                                @endif
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -118,6 +133,7 @@
         "columns": [
             {className: "text-right"},
             null,
+            // null,
             null,
             null,
             null,
@@ -127,45 +143,17 @@
         ]
     });
 
-    // DELETE KATEGORI
-    $(document).on('click', '.btn-delete-order', function(){
-        //set data rowid dan order id
-        var rowid = $(this).parent().parent().data('rowid');
-        var orderid = $(this).parent().parent().data('orderid');
-        
-        $('#btn-modal-delete-yes').data('rowid',rowid);
-        $('#btn-modal-delete-yes').data('orderid',orderid);
-        // tampilkan modal delete
-        $('#modal-delete').modal('show');
+    // DELETE DATA SALES ORDER
+    $('.btn-delete-so').click(function(){
+        if(confirm('Anda akan menghapus data ini?')){
+
+        }else{
+            return false;
+        }
     });
+    // END OF DELETE DATA SALES ORDER
 
-    // modal delete klik yes
-    $(document).on('click', '#btn-modal-delete-yes', function(){
-        var rowid = $(this).data('rowid');
-        var orderid = $(this).data('orderid');
-        // delete data order dari database
-        $.post('purchase/order/delete',{
-            'id' : orderid
-        },function(){
-            // hapus row order
-            var row = $('#table-order > tbody > tr[data-rowid=' + rowid + ']');
-            row.fadeOut(250,null,function(){
-                TBL_KATEGORI.row(row).remove().draw();
-
-                // reorder row number
-                var rownum=1;
-                TBL_KATEGORI.rows().iterator( 'row', function ( context, index ) {
-                    this.cell(index,0).data(rownum++);
-                    // this.invalidate();
-                } );
-                
-                TBL_KATEGORI.draw();
-            });
-        });
-
-    });
-    // END OF DELETE KATEGORI
-
+   
 })(jQuery);
 </script>
 @append

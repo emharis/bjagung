@@ -10,7 +10,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Salesman
+        Salesperson
     </h1>
 </section>
 
@@ -20,7 +20,7 @@
     <!-- Default box -->
     <div class="box box-solid">
         <div class="box-body">
-            <a class="btn btn-primary btn-sm" id="btn-add" href="sales/salesman/add" ><i class="fa fa-plus" ></i> Add Salesman</a>
+            <a class="btn btn-primary btn-sm" id="btn-add" href="sales/salesman/add" ><i class="fa fa-plus" ></i> Add Salesperson</a>
             <div class="clearfix" ></div>
             <br/>
 

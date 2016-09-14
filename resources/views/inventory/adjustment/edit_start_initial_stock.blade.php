@@ -37,7 +37,13 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="inventory/adjustment" >Inventory Adjustment</a> <i class="fa fa-angle-double-right" ></i> Edit Start Inventory
+        {{-- <a href="inventory/adjustment" >Inventory Adjustment</a> <i class="fa fa-angle-double-right" ></i> Edit Start Inventory --}}
+        <a href="inventory/adjustment" >Inventory Adjustment</a> 
+        <i class="fa fa-angle-double-right" ></i> 
+        {{$adjustment_data->inventory_reference}}
+        {{-- <a href="inventory/adjustment/edit/{{$adjustment_data->id}}" >{{$adjustment_data->inventory_reference}}</a>  --}}
+        {{-- <i class="fa fa-angle-double-right" ></i>  --}}
+        {{-- Start Inventory --}}
     </h1>
 </section>
 
@@ -65,8 +71,10 @@
       <div class="box-body" >
         <div class="row" >
           <div class="col-lg-12" >
-            <label>Inventory Reference</label>
-            <h3 style="margin-top:0;" ><label>{{$adjustment_data->inventory_reference}}<label></h3>
+            {{-- PAGE TITLE --}}
+            <label> <small>Inventory Reference</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$adjustment_data->inventory_reference}}</h4></label>
+            {{-- <label>Inventory Reference</label>
+            <h3 style="margin-top:0;" ><label>{{$adjustment_data->inventory_reference}}<label></h3> --}}
 
             <table class="table " >
               <tbody>
@@ -88,20 +96,6 @@
                     {{date('d-m-Y',strtotime($adjustment_data->tgl))}}
                   </td>
                 </tr>
-                {{-- <tr>
-                  <td class="col-lg-2"  >
-                    <label>Product</label>
-                  </td>
-                  <td>
-                    All of products
-                  </td>
-                  <td class="col-lg-2" >
-                    
-                  </td>
-                  <td>
-                    
-                  </td>
-                </tr> --}}
               </tbody>
             </table>
           </div>

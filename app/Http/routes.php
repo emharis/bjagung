@@ -18,6 +18,23 @@ Route::get('sidebar-update', function() {
     \DB::table('appsetting')->whereName('sidebar_collapse')->update(['value' => $value == 1 ? '0' : '1']);
 });
 
+Route::get('test',function(){
+    $brg = \DB::table('barang')->limit(14)->get();
+    $limit = 8;
+    $counter = 1;
+    foreach($brg as $dt){
+        if($counter++ < (8+1)){
+            echo $dt->nama . '<br>';    
+        }else{
+            echo '================= <br>';
+            $counter = 1;
+        }
+
+        
+    }
+
+});
+
 // Tampilkan View Login
 Route::get('/', function() {
     return redirect('login');
@@ -140,6 +157,7 @@ Route::group(['middleware' => ['web','auth']], function () {
         Route::get('order/invoice/{id}','PurchaseOrderController@poInvoice');
         Route::get('order/reg-payment/{id}','PurchaseOrderController@regPayment');
         Route::post('order/save-payment','PurchaseOrderController@savePayment');
+        Route::post('order/delete-payment','PurchaseOrderController@deletePayment');
 
         Route::get('order/test',function(){
             $date = new DateTime();
@@ -172,8 +190,59 @@ Route::group(['middleware' => ['web','auth']], function () {
         Route::post('salesman/delete','SalesmanController@delete');
         // END OF SALESMAN
 
+        // SALES ORDER
+        Route::get('order','SalesOrderController@index');
+        Route::get('order/delete/{id}','SalesOrderController@delete');
+        Route::get('order/add','SalesOrderController@add');
+        Route::get('order/get-customer','SalesOrderController@getCustomer');
+        Route::get('order/get-salesperson','SalesOrderController@getSalesperson');
+        Route::get('order/get-product','SalesOrderController@getProduct');
+        Route::post('order/insert','SalesOrderController@insert');
+        Route::get('order/edit/{id}','SalesOrderController@edit');
+        Route::post('order/update','SalesOrderController@update');
+        Route::post('order/validate','SalesOrderController@validateSo');
+        Route::get('order/invoice/{id}','SalesOrderController@toInvoice');
+        Route::get('order/reg-payment/{id}','SalesOrderController@regPayment');
+        Route::post('order/save-payment','SalesOrderController@savePayment');
+        Route::post('order/delete-payment','SalesOrderController@deletePayment');
+        Route::get('order/show-invoice-multi/{so_master_id}','SalesOrderController@showInvoiceMulti');
+        // END OF SALES ORDER
+
     });
     // END OF SALES
+
+    // INVOICE 
+    Route::group(['prefix' => 'invoice'], function () {
+
+        // CUSTOMER INVOICE
+        Route::get('customer-invoice','CustomerInvoiceController@index');
+        Route::get('customer-invoice/show/{id}','CustomerInvoiceController@show');
+        Route::get('customer-invoice/delete-payment/{payment_id}','CustomerInvoiceController@deletePayment');
+        Route::get('customer-invoice/reg-payment/{invoice_id}','CustomerInvoiceController@registerPayment');        
+        // END OF CUSTOMER INVOICE
+
+        // SUPPLIER BILL
+        Route::get('supplier-bill','SupplierBillController@index');
+        Route::get('supplier-bill/show/{id}','SupplierBillController@showBill');
+        Route::get('supplier-bill/reg-payment/{bill_id}','SupplierBillController@registerPayment');
+        Route::get('supplier-bill/delete-payment/{payment_bill_id}','SupplierBillController@deletePayment');
+        // END OF SUPPLIER BILL
+
+    });
+    // END OF INVOICE
+
+    // GENERAL API
+    Route::group(['prefix'=>'api'],function(){
+        // Save/Register Payment of invoice
+        Route::post('reg-customer-payment','ApiController@regCustomerPayment');
+
+        // delete customer payment
+        Route::post('delete-customer-payment','ApiController@deleteCustomerPayment');
+
+        // Save Register Payment of supplier bill
+        Route::post('reg-supplier-payment','ApiController@regSupplierPayment');
+    });
+    // END OF GENERAL API
 
 
     Route::get('home', ['as' => 'home', 'uses' => 'HomeController@index']);

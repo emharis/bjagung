@@ -37,37 +37,44 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="inventory/adjustment" >Inventory Adjustment</a> <i class="fa fa-angle-double-right" ></i> Start Inventory
+        <a href="inventory/adjustment" >Inventory Adjustment</a> 
+        <i class="fa fa-angle-double-right" ></i> 
+        <a href="inventory/adjustment/edit/{{$adjustment_data->id}}" >{{$adjustment_data->inventory_reference}}</a> 
+        <i class="fa fa-angle-double-right" ></i> 
+        Start Inventory
     </h1>
 </section>
 
 <!-- Main content -->
 <section class="content">
 
-  <form method="POST" action="inventory/adjustment/save-start" >
+  <form name="form-start-inventory" method="POST" action="inventory/adjustment/save-start" >
     <input type="hidden" name="inventory_adjustment_id" value="{{$adjustment_data->id}}" >
     <div class="box box-solid" >
       <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;" >
-              
-              <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
-              <a class="btn {{$adjustment_data->status == 'V' ? 'bg-blue' : 'bg-gray'}} btn-arrow-right pull-right disabled" >Validated</a>
+        {{-- PAGE TITLE --}}
+        <label> <small>Inventory Reference</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$adjustment_data->inventory_reference}}</h4></label>
 
-              <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
+        {{-- <label>Inventory Reference</label> --}}
+            {{-- <h3 style="margin-top:0;" ><label>{{$adjustment_data->inventory_reference}}<label></h3> --}}
+        
+        {{-- STATUS TITLE --}}
+        <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
+        <a class="btn {{$adjustment_data->status == 'V' ? 'bg-blue' : 'bg-gray'}} btn-arrow-right pull-right disabled" >Validated</a>
 
-              <a class="btn {{$adjustment_data->status == 'P' ? 'bg-blue' : 'bg-gray'}} btn-arrow-right pull-right disabled" >In Progress</a>
+        <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
 
-              <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
+        <a class="btn {{$adjustment_data->status == 'P' ? 'bg-blue' : 'bg-gray'}} btn-arrow-right pull-right disabled" >In Progress</a>
 
-              <a class="btn {{$adjustment_data->status == 'D' ? 'bg-blue' : 'bg-gray'}} btn-arrow-right pull-right disabled" >Draft</a>
-              
+        <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
 
-            </div>
+        <a class="btn {{$adjustment_data->status == 'D' ? 'bg-blue' : 'bg-gray'}} btn-arrow-right pull-right disabled" >Draft</a>
+                
+
+      </div>
       <div class="box-body" >
         <div class="row" >
           <div class="col-lg-12" >
-            <label>Inventory Reference</label>
-            <h3 style="margin-top:0;" ><label>{{$adjustment_data->inventory_reference}}<label></h3>
-
             <table class="table " >
               <tbody>
                 <tr>
@@ -146,7 +153,7 @@
 
       <div class="box-footer" >
         <button type="submit" class="btn btn-primary" id="btn-save" >Save</button>
-        <a class="btn btn-danger" href="inventory/adjustment" >Cancel</a>
+        <a class="btn btn-danger" href="inventory/adjustment/edit/{{$adjustment_data->id}}" >Cancel</a>
       </div>
     </div>
   </form>
@@ -213,7 +220,7 @@
           return $('input', td).prop('checked') ? '1' : '0';
       } );
   }
-  $('#table-barang').DataTable({
+  var tableBarang = $('#table-barang').DataTable({
         "columns": [
             null,
             { "orderDataType": "dom-checkbox" },
@@ -237,7 +244,34 @@
       $(this).parent().next().next().next().children('input').val('').addClass('hide');
       $(this).parent().next().next().next().next().children('input').val('').addClass('hide');
     }
-  })
+  });
+
+  $('form[name=form-start-inventory]').submit(function(){
+    // beforeSerialize: function($form, options) { 
+      // $('form[name=form-start-inventory]').unbind('submit');
+      // tableBarang.$('input').each(function(){
+      //   var elm = $(this);
+      //   elm.addClass('hide');
+      //   $('form[name=form-start-inventory]').append(elm);
+      // });
+
+      var startForm = $('<form>').attr('method','POST').attr('action','inventory/adjustment/save-start');
+      startForm.append($('<input>').attr('type','hidden').attr('name','inventory_adjustment_id').val($('input[name=inventory_adjustment_id]').val()));
+
+      // $('form[name=form-start-inventory]').unbind('submit');
+      tableBarang.$('input').each(function(){
+        var elm = $(this);
+        elm.addClass('hide');
+        startForm.append(elm);
+      });
+
+      startForm.submit();
+
+    //   alert('before serialize');                  
+    // }
+
+    return false;
+  });
                         
 })(jQuery);
 </script>

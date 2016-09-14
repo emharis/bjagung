@@ -87,8 +87,9 @@ class PurchaseOrderController extends Controller {
 
         // echo $except_data_string;
     }
-    // END OF GET DATA SUPPLIER
+    // END OF GET DATA PRODUCT
 
+    // INSERT PURCHASE ORDER
     public function insert(Request $req){
         // echo 'insert open po <br/>';
         // echo $req->po_master . '<br/>';
@@ -156,6 +157,7 @@ class PurchaseOrderController extends Controller {
         });
 
     }
+    // END OF PURCHASE ORDER
 
     // EDIT PURCHASE ORDER
     public function edit($id){
@@ -300,7 +302,7 @@ class PurchaseOrderController extends Controller {
                                 ->where('name','supplier_bill_counter')
                                 ->first();
             // generate bill number
-            $bill_no = "BILL/" . date('Y') . "000" . "/" . $supplier_bill_counter->value++;
+            $bill_no = "BILL/" . date('Y') . "/000"  . $supplier_bill_counter->value++;
             // insert into table supplier_bill as invoice data 
 
             \DB::table('supplier_bill')
@@ -311,7 +313,7 @@ class PurchaseOrderController extends Controller {
                         'subtotal' => $po_master->subtotal,
                         'disc' => $po_master->disc,
                         'total' => $po_master->total,
-                        'amount_de' => $po_master->total,
+                        'amount_due' => $po_master->total,
                         'bill_date' => $bill_date,
                         'due_date' => $due_date,
                     ]);
@@ -330,6 +332,7 @@ class PurchaseOrderController extends Controller {
 
     // PURCHASE ORDER INVOICE
     // menampilkan halaman invoice untuk PO
+    // $id = po_master_id / beli->id
     public function poInvoice($id){
         // get po_master
         $po_master = \DB::table('VIEW_BELI')->find($id);
@@ -346,10 +349,19 @@ class PurchaseOrderController extends Controller {
                             )
                     ->first();
 
+        // get payments
+        $payments = \DB::table('supplier_bill_payment')
+                        ->where('supplier_bill_id',$sup_bill->id)
+                        ->select('supplier_bill_payment.*',
+                                \DB::raw("date_format(`tanggal`,'%d-%m-%Y') as payment_date_formatted")
+                            )
+                        ->get();
+
         return view('purchase.order.orderinvoice',[
                 'po_master' => $po_master,
                 'po_barang' => $po_barang,
                 'sup_bill' => $sup_bill,
+                'payments' => $payments
             ]);
 
     }
@@ -375,9 +387,108 @@ class PurchaseOrderController extends Controller {
     // END OF REGISTER PAYMENT
 
     // SAVE PAYMENT
-    public function savePayment(){
-        echo 'save payment';
+    public function savePayment(Request $req){
+        return \DB::transaction(function()use($req){
+            $po_master = \DB::table('beli')
+                                ->find($req->po_master_id);
+            $sup_bill = \DB::table('supplier_bill')
+                    ->where('beli_id',$po_master->id)
+                    ->select('supplier_bill.*',
+                                \DB::raw("date_format(`bill_date`,'%d-%m-%Y') as bill_date_formatted"),
+                                \DB::raw("date_format(`due_date`,'%d-%m-%Y') as due_date_formatted")
+                            )
+                    ->first();
+            
+            // generate tanggal
+            $tgl = $req->payment_date;
+            $arr_tgl = explode('-',$tgl);
+            $payment_date = new \DateTime();
+            $payment_date->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);
+
+            // // generate total
+            $total = $req->payment_amount;
+            $total = str_replace(",", "", $total);
+            $total = str_replace(".", "", $total);
+
+            // cek if amount_due lebih besar atau sama dengan payment_due
+
+            if($total <= $sup_bill->amount_due ){
+                // generate payment number
+                ////get supplier_payment_counter
+                $payment_counter = \DB::table('appsetting')
+                                    ->whereName('supplier_payment_counter')
+                                    ->first()->value;
+                // genereate reference
+                $payment_number_reference = "SUPP.OUT./" . date('Y') . '/000' . $payment_counter;
+                //// update payment counter ke database
+                \DB::table('appsetting')
+                    ->whereName('supplier_payment_counter')
+                    ->update([
+                            'value' => \DB::raw('value + 1')
+                        ]);
+
+
+                // save payment to table
+                \DB::table('supplier_bill_payment')
+                    ->insert([
+                            'tanggal' => $payment_date,
+                            'supplier_bill_id' => $sup_bill->id,
+                            'total' => $total,
+                            'payment_number' => $payment_number_reference
+                        ]);
+                        
+                // update amount due di table supplier_bill
+                \DB::table('supplier_bill')
+                    ->where('id',$sup_bill->id)
+                    ->update([
+                            'amount_due' => ($sup_bill->amount_due - $total)
+                        ]);   
+
+                // jika amount_due nya 0 maka set status ke paid
+                if(($sup_bill->amount_due - $total) == 0){
+                    // update status
+                    \DB::table('supplier_bill')
+                        ->where('id',$sup_bill->id)
+                        ->update([
+                                'status' => 'P'
+                            ]);
+                }
+
+            }            
+
+            return redirect('purchase/order/invoice/' . $po_master->id);
+
+        });
     }
     // END OF SAVE PAYMENT
+
+    // DELETE PAYMENT
+    public function deletePayment(Request $req){
+        return \DB::transaction(function()use($req){
+            // get payment
+            $payment = \DB::table('supplier_bill_payment')
+                        ->find($req->payment_id);
+
+            // kembalikan payment_amount
+            \DB::table('supplier_bill')
+                ->where('id',$payment->supplier_bill_id)
+                ->update([
+                        'amount_due' => \DB::raw('amount_due + ' . $payment->total),
+                        'status' => 'O'
+                    ]);
+
+            // delete payment from database
+            \DB::table('supplier_bill_payment')
+                ->where('id',$req->payment_id)
+                ->delete();
+
+            // 
+
+
+            return redirect()->back();
+        });
+
+    }
+    // END OF DELETE PAYMENT
 
 }

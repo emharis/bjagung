@@ -33,38 +33,41 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="purchase/order" >Purchase Order</a> <i class="fa fa-angle-double-right" ></i> {{$po_master->po_num}}
+        <a href="invoice/supplier-bill" >Supplier Bills</a> 
+        <i class="fa fa-angle-double-right" ></i> 
+        {{$sup_bill->bill_no}}
     </h1>
 </section>
 
 <!-- Main content -->
 <section class="content">
     {{-- data hidden  --}}
-    <input type="hidden" name="po_master_id" value="{{$po_master->id}}">
+    <input type="hidden" name="supplier_bill_id" value="{{$sup_bill->id}}">
 
-    <!-- Default box -->
-    <div class="box box-solid">
-        <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;" >
-            {{-- <a class="btn btn-primary" style="margin-top:0;" id="btn-validate-po" >Validate</a> --}}
-            {{-- header --}}
-            <label> <small>Purchase Order</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$po_master->po_num}}</h4></label>
-
-            <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
-            <a class="btn  btn-arrow-right pull-right disabled {{$po_master->status == 'V' ? 'bg-blue' : 'bg-gray'}}" >Validated</a>
-
-            <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
-
-            <a class="btn btn-arrow-right pull-right disabled {{$po_master->status == 'O' ? 'bg-blue' : 'bg-gray'}}" >Open</a>
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#tab_1" data-toggle="tab">Invoices</a></li>
+          <li><a href="#tab_2" data-toggle="tab">Payments</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="tab_1">
+            <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;" >
+            <label> <small>Invoice</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$sup_bill->bill_no}}</h4></label>
 
             <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
+            <a class="btn  btn-arrow-right pull-right disabled {{$sup_bill->status == 'P' ? 'bg-blue' : 'bg-gray'}}" >Paid</a>
 
-            <a class="btn btn-arrow-right pull-right disabled bg-gray" >Draft</a>
+            <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
+
+            <a class="btn btn-arrow-right pull-right disabled {{$sup_bill->status == 'O' ? 'bg-blue' : 'bg-gray'}}" >Open</a>
+
+            {{-- <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
+
+            <a class="btn btn-arrow-right pull-right disabled bg-gray" >Draft PO</a> --}}
         </div>
         <div class="box-body">
 
-            <div class="row" >
-                <div class="col-lg-10" >
-                    <table class="table" >
+            <table class="table" >
                 <tbody>
                     <tr>
                         <td class="col-lg-2">
@@ -76,11 +79,10 @@
                         </td>
                         <td class="col-lg-2" ></td>
                         <td class="col-lg-2" >
-                            <label>Order Date</label>
+                            <label>Source Document</label>
                         </td>
                         <td class="col-lg-2" >
-                            {{-- <input type="text" name="tanggal" class="input-tanggal form-control" value="{{$po_master->tgl_formatted}}" required> --}}
-                            {{$po_master->tgl_formatted}}
+                            {{$sup_bill->po_num}}
                         </td>
                     </tr>
                     <tr>
@@ -88,36 +90,36 @@
                             <label>Supplier Reference</label>
                         </td>
                         <td class="col-lg-4" >
-                            {{-- <input type="text" name="no_inv" class="form-control" value="{{$po_master->no_inv}}" > --}}
-                            {{$po_master->no_inv}}
+                            {{$sup_bill->no_inv}}
                         </td>
                         <td class="col-lg-2" ></td>
-                        <td class="col-lg-2 hide" >
-                            <label>Jatuh Tempo</label>
+                        <td class="col-lg-2" >
+                            <label>Bill Date</label>
                         </td>
-                        <td class="col-lg-2 hide" >
+                        <td class="col-lg-2" >
+                            {{-- <input type="text" name="tanggal" class="input-tanggal form-control" value="{{$po_master->tgl_formatted}}" required> --}}
+                            {{$sup_bill->bill_date_formatted}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-lg-2">
+                            <label></label>
+                        </td>
+                        <td class="col-lg-4" >
+                             
+                        </td>
+                        <td class="col-lg-2" ></td>
+                        <td class="col-lg-2" >
+                            <label>Due Date</label>
+                        </td>
+                        <td class="col-lg-2" >
                             {{-- <input type="text" name="jatuh_tempo"  class="input-tanggal form-control" value="{{$po_master->jatuh_tempo_formatted}}" > --}}
-                            {{$po_master->jatuh_tempo_formatted}}
+                            {{-- {{$po_master->jatuh_tempo_formatted}} --}}
+                            {{$sup_bill->due_date_formatted}}
                         </td>
                     </tr>
                 </tbody>
             </table>
-                </div>
-                <div class="col-lg-2" >
-                     {{-- modul invoices --}}
-                    <a class="btn btn-app pull-right" href="purchase/order/invoice/{{$po_master->id}}" >
-                        <span class="badge bg-green">1</span>
-                        <i class="fa fa-newspaper-o"></i> Invoices
-                    </a>
-                </div>
-            </div>
-            
-           
-
-            {{-- <label>Purchase Order</label> --}}
-            {{-- <h3 style="margin-top:0;" ><label>{{$po_master->po_num}}<label></h3> --}}
-
-            
 
             <h4 class="page-header" style="font-size:14px;color:#3C8DBC"><strong>PRODUCT DETAILS</strong></h4>
 
@@ -135,94 +137,148 @@
                 <tbody>
                     <?php $rownum=1; ?>
                     @foreach($po_barang as $dt)
-                        <tr class="row-product"  >
-                            <td class="text-right" >{{$rownum++}}</td>
+                        <tr>
+                            <td class="text-right">{{$rownum++}}</td>
                             <td>
-                                {{-- <input autocomplete="off" type="text"  data-barangid="{{$dt->barang_id}}" data-kode="" class="text-uppercase form-control input-product input-sm input-clear"  value="{{$dt->nama_barang_full}}" readonly > --}}
                                 {{$dt->nama_barang_full}}
                             </td>
                             <td class="text-right" >
-                                {{-- <input type="number" autocomplete="off" min="1" class="form-control text-right input-quantity input-sm input-clear" value="{{$dt->qty}}" > --}}
                                 {{$dt->qty}}
                             </td>
                             <td class="text-right" >
-                                {{-- <input autocomplete="off" type="text" class="text-right form-control input-unit-price input-sm input-clear" value="{{$dt->harga}}" > --}}
                                 {{number_format($dt->harga,0,'.',',')}}
                             </td>
                             <td class="text-right" >
-                                {{-- <input autocomplete="off" type="text" readonly  class="text-right form-control input-subtotal input-sm input-clear" value="{{$dt->subtotal}}" > --}}
                                 {{number_format($dt->subtotal,0,'.',',')}}
                             </td>
-                            {{-- <td class="text-center" >
-                                <a href="#" class="btn-delete-row-product" ><i class="fa fa-trash" ></i></a>
-                            </td> --}}
                         </tr>
                     @endforeach
-                    {{-- <tr id="row-btn-add-item">
-                        <td></td>
-                        <td colspan="5" >
-                            <a id="btn-add-item" href="#">Add an item</a>
-                        </td>
-                    </tr> --}}
-                    {{-- <tr>
-                        <td></td>
-                        <td colspan="5" >
-                            <button type="submit" class="btn btn-primary" id="btn-save" >Save</button>
-                            <a class="btn btn-danger" id="btn-cancel-save" >Cancel</a>
-                        </td>
-                    </tr> --}}
-                    
                 </tbody>
             </table>
 
-            <div class="row" >
-                <div class="col-lg-8" >
-                    {{-- <textarea name="note" class="form-control" rows="4" style="margin-top:5px;" placeholder="Note" >{{$po_master->note}}</textarea> --}}
-                    <br/>
-                    <label>Note :</label> <i>{{$po_master->note}}</i>
+                <div class="row" >
+                    <div class="col-lg-8" >
+                        {{-- <textarea name="note" class="form-control" rows="4" style="margin-top:5px;" placeholder="Note" >{{$po_master->note}}</textarea> --}}
+                        {{-- <br/>
+                        <label>Note :</label> <i>{{$po_master->note}}</i> --}}
+                    </div>
+                    <div class="col-lg-4" >
+                        <table class="table table-condensed" >
+                            <tbody>
+                                <tr>
+                                    <td class="text-right">
+                                        <label>Subtotal :</label>
+                                    </td>
+                                    <td id="label-total-subtotal" class=" text-right" >
+                                        {{$sup_bill->subtotal}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right" >
+                                        <label>Disc :</label>
+                                    </td>
+                                    <td class="text-right" id="label-disc" >
+                                       {{-- <input style="font-size:14px;" type="text" name="disc" class="input-sm form-control text-right input-clear" value="{{$po_master->disc}}" >  --}}
+                                       {{$sup_bill->disc}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right" style="border-top:solid darkgray 1px;" >
+                                        Total :
+                                    </td>
+                                    <td id="label-total" class=" text-right" style="font-size:18px;font-weight:bold;border-top:solid darkgray 1px;" >
+                                        {{$sup_bill->total}}
+                                    </td>
+                                </tr>
+                                @if(count($payments) > 0)
+                                @foreach($payments as $dt)
+                                    <tr style="background-color:#EEF0F0;" >
+                                        <td class="text-right" >
+                                            {{-- <a class="btn-delete-payment" data-paymentid="{{$dt->id}}" href="#" ><i class="fa fa-trash-o pull-left" ></i></a> --}}
+                                            <i>Paid on {{$dt->payment_date_formatted}}</i>
+                                        </td>
+                                        <td class="text-right" >
+                                            <i>{{number_format($dt->total,0,'.',',')}}</i>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @endif
+                                <tr>
+                                    <td class="text-right" style="border-top:solid darkgray 1px;" >
+                                        Amount Due :
+                                    </td>
+                                    <td id="label-amount-due" class=" text-right" style="font-size:18px;font-weight:bold;border-top:solid darkgray 1px;" >
+                                        {{$sup_bill->amount_due}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-12" >
+                        {{-- <button type="submit" class="btn btn-primary" id="btn-save" >Save</button> --}}
+                                <a class="btn btn-danger" href="invoice/supplier-bill" >Close</a>
+                    </div>
                 </div>
-                <div class="col-lg-4" >
-                    <table class="table table-condensed" >
-                        <tbody>
-                            <tr>
-                                <td class="text-right">
-                                    <label>Subtotal :</label>
-                                </td>
-                                <td id="label-total-subtotal" class=" text-right" >
-                                    {{$po_master->total}}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-right" >
-                                    <label>Disc :</label>
-                                </td>
-                                <td class="text-right" id="label-disc" >
-                                   {{-- <input style="font-size:14px;" type="text" name="disc" class="input-sm form-control text-right input-clear" value="{{$po_master->disc}}" >  --}}
-                                   {{$po_master->disc}}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-right" style="border-top:solid darkgray 1px;" >
-                                    Total :
-                                </td>
-                                <td id="label-total" class=" text-right" style="font-size:18px;font-weight:bold;border-top:solid darkgray 1px;" >
-                                    {{$po_master->grand_total}}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-lg-12" >
-                    {{-- <button type="submit" class="btn btn-primary" id="btn-save" >Save</button> --}}
-                            <a class="btn btn-danger" href="purchase/order" >Close</a>
-                </div>
-            </div>
+            </div><!-- /.box-body -->
+          </div><!-- /.tab-pane -->
+          <div class="tab-pane" id="tab_2">
+            {{-- PAYMENTS --}}
+            {{-- payments --}}
 
-            {{-- <a id="btn-test" href="#" >TEST</a> --}}
+            @if($sup_bill->status == 'O')
+                <a class="btn btn-primary" id="btn-reg-payment" href="invoice/supplier-bill/reg-payment/{{$sup_bill->id}}" >Register Payment</a>
+                <br/>
+                <div class="clear-fix"></div>
+                &nbsp;
+            @endif
+
+            <table class="table table-bordered" >
+                <thead>
+                    <tr>
+                        <th style="width:30px;" >NO</th>
+                        <th class="col-lg-2" >PAYMENT DATE</th>
+                        <th>REFERENCE</th>
+                        <th>PAYMENT AMOUNT</th>
+                        <th style="width:30px;" ></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $rownum=1; ?>
+                    <?php $total_payment_amount=0; ?>
+                    @foreach($payments as $dt)
+                        <tr  >  
+                            <td class="text-right" >{{$rownum++}}</td>
+                            <td>{{$dt->payment_date_formatted}}</td>
+                            <td>{{$dt->payment_number}}</td>
+                            <td class="text-right" >{{number_format($dt->total,0,'.',',')}}</td>
+                            <td>
+                                <a class="btn btn-xs btn-danger btn-delete-payment" href="invoice/supplier-bill/delete-payment/{{$dt->id}}" ><i class="fa fa-trash-o" ></i></a>
+                            </td>
+                        </tr>
+                        <?php $total_payment_amount += $dt->total; ?>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-right" >
+                            <label>TOTAL</label>
+                        </td>
+                        <td class="text-right" >
+                            {{number_format($total_payment_amount,0,'.',',')}}
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+          </div><!-- /.tab-pane -->
+        </div><!-- /.tab-content -->
+    </div>
 
 
-        </div><!-- /.box-body -->
-    </div><!-- /.box -->
+    <!-- Default box -->
+    {{-- <div class="box box-solid">
+        
+    </div> --}}<!-- /.box -->
 
 </section><!-- /.content -->
 
@@ -283,7 +339,7 @@
         vMax:'9999999999'
     });
 
-    $('#label-total-subtotal, #label-total, #label-disc').autoNumeric('init',{
+    $('#label-total-subtotal, #label-total, #label-disc, #label-amount-due').autoNumeric('init',{
             vMin:'0',
             vMax:'9999999999'
         });
@@ -291,6 +347,7 @@
     $('#label-total-subtotal').autoNumeric('set', Number($('#label-total-subtotal').autoNumeric('get')));
     $('#label-total').autoNumeric('set', Number($('#label-total').autoNumeric('get')));
     $('#label-disc').autoNumeric('set', Number($('#label-disc').autoNumeric('get')));
+    $('#label-amount-due').autoNumeric('set', Number($('#label-amount-due').autoNumeric('get')));
     // END OF AUTONUMERIC
 
     function getExceptionData(){
@@ -527,6 +584,24 @@
         validateForm.submit();
     });
     // END OF VALIDATE PO
+
+    // DELETE PAYMENT 
+    $('.btn-delete-payment').click(function(){
+        if(confirm('Anda akan menghapus data ini?')){
+            // delete payment
+            // var payment_id = $(this).data('paymentid');
+            // var deleteform = $('<form>').attr('method','POST').attr('action','purchase/order/delete-payment');
+            // deleteform.append($('<input>').attr('type','hidden').attr('name','payment_id').val(payment_id));
+            // deleteform.submit();
+
+            // posting delete payment
+        }else{
+            return false;
+        }
+
+        // return false;
+    });
+    // END OF DELETE PAYMENT
 
 })(jQuery);
 </script>

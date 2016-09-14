@@ -127,34 +127,12 @@ class InvadjustmentController extends Controller {
             'barang' => \DB::table('VIEW_STOK_BARANG')->get()
         ]);
 
-        // if($adjustment_data->inventory_of == 'I'){
-        //     if($adjustment_data->product_of == 'A'){
-        //         // initial stock -> All Product
-        //         return view('inventory/adjustment/start_initial_stock_all',[
-        //                 'adjustment_data' => $adjustment_data,
-        //                 'barang' => \DB::table('VIEW_STOK_BARANG')->get()
-        //             ]);
-        //     }            
-        // }
-
-        // if($adjustment_data->product_of == 'A'){
-        //     // start inventory All Barang
-        //     $barang = \DB::table('VIEW_STOK_BARANG')->get();
-
-        //     return view('inventory/adjustment/startinventoryall',[
-        //         'adjustment_data' => $adjustment_data,
-        //         'barang' => $barang
-        //     ]);
-        // }else{
-        //     return view('inventory/adjustment/startinventory',[
-        //         'adjustment_data' => $adjustment_data
-        //     ]);
-        // }
-
     }
 
     public function saveStart(Request $req){
         return \DB::transaction(function()use($req){
+
+            // echo json_encode($req->barang);
 
             // delete data inventory_adjustment_detail yang lama
             \DB::table('inventory_adjustment_detail')
@@ -218,7 +196,7 @@ class InvadjustmentController extends Controller {
                     'status' => 'D'
                 ]);
 
-            return redirect('inventory/adjustment/edit-start-inventory/'.$id);
+            return redirect('inventory/adjustment/edit/'.$id);
         });
     }
 

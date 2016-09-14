@@ -99,7 +99,7 @@
                     <li class="" >
                         <li class="{{Request::is('sales/order*') ? 'active':''}}" ><a href="sales/order"><i class="fa fa-circle-o"></i> Sales Orders</a></li>
                         <li class="{{Request::is('sales/customer*') ? 'active':''}}" ><a href="sales/customer"><i class="fa fa-circle-o"></i> Customer</a></li>
-                        <li class="{{Request::is('sales/salesman*') ? 'active':''}}" ><a href="sales/salesman"><i class="fa fa-circle-o"></i> Salesman</a></li>         
+                        <li class="{{Request::is('sales/salesman*') ? 'active':''}}" ><a href="sales/salesman"><i class="fa fa-circle-o"></i> Salesperson</a></li>         
                     </li>  
                 </ul>
             </li>
@@ -107,7 +107,7 @@
             <li class="treeview" >
                 <a href="#">
                     <i class="fa fa-newspaper-o"></i>
-                    <span>Invoicing</span>
+                    <span>Invoices</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">

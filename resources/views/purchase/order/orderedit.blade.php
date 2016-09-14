@@ -62,11 +62,11 @@
 
             <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
 
-            <a class="btn btn-arrow-right pull-right disabled {{$po_master->status == 'O' ? 'bg-blue' : 'bg-gray'}}" >Open PO</a>
+            <a class="btn btn-arrow-right pull-right disabled {{$po_master->status == 'O' ? 'bg-blue' : 'bg-gray'}}" >Open</a>
 
             <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
 
-            <a class="btn btn-arrow-right pull-right disabled bg-gray" >Draft PO</a>
+            <a class="btn btn-arrow-right pull-right disabled bg-gray" >Draft</a>
         </div>
         <div class="box-body">
             <label> <small>Purchase Order</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$po_master->po_num}}</h4></label>
@@ -92,7 +92,7 @@
                     </tr>
                     <tr>
                         <td class="col-lg-2">
-                            <label>No. Invoice</label>
+                            <label>Supplier Reference</label>
                         </td>
                         <td class="col-lg-4" >
                             <input type="text" name="no_inv" class="form-control" value="{{$po_master->no_inv}}" >

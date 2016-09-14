@@ -37,7 +37,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="inventory/adjustment" >Inventory Adjustment</a> <i class="fa fa-angle-double-right" ></i> Validated Inventory Adjustment
+        <a href="inventory/adjustment" >Inventory Adjustment</a> <i class="fa fa-angle-double-right" ></i> {{$adjustment_data->inventory_reference}}
     </h1>
 </section>
 
@@ -48,7 +48,11 @@
     {{-- <input type="hidden" name="inventory_adjustment_id" value="{{$adjustment_data->id}}" > --}}
     <div class="box box-solid" >
       <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;">
-        {{-- <a class="btn btn-primary" id="btn-validate-start-inventory" href="inventory/adjustment/validate/{{$adjustment_data->id}}" >Validate Inventory</a> --}}
+        {{-- PAGE TITLE --}}
+        <label> <small>Inventory Reference</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$adjustment_data->inventory_reference}}</h4></label>
+
+        {{-- <label>Inventory Reference</label> --}}
+            {{-- <h3 style="margin-top:0;" ><label>{{$adjustment_data->inventory_reference}}<label></h3> --}}
               
         <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
         <a class="btn {{$adjustment_data->status == 'V' ? 'bg-blue' : 'bg-gray'}} btn-arrow-right pull-right disabled" >Validated</a>
@@ -64,8 +68,7 @@
       <div class="box-body" >
         <div class="row" >
           <div class="col-lg-12" >
-            <label>Inventory Reference</label>
-            <h3 style="margin-top:0;" ><label>{{$adjustment_data->inventory_reference}}<label></h3>
+            
 
             <table class="table " >
               <tbody>

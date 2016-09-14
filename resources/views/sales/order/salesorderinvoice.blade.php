@@ -33,91 +33,98 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="purchase/order" >Purchase Order</a> <i class="fa fa-angle-double-right" ></i> {{$po_master->po_num}}
+        <a href="sales/order" >Sales Order</a> 
+        <i class="fa fa-angle-double-right" ></i> 
+        <a href="sales/order/edit/{{$so_master->id}}" >{{$so_master->so_no}}</a> 
+        <i class="fa fa-angle-double-right" ></i> 
+        @if($multi_invoice)
+        <a href="sales/order/invoice/{{$so_master->id}}" >Customer Invoices</a> 
+        <i class="fa fa-angle-double-right" ></i> 
+        @endif
+        {{$cust_inv->no_inv}}
     </h1>
 </section>
 
 <!-- Main content -->
 <section class="content">
     {{-- data hidden  --}}
-    <input type="hidden" name="po_master_id" value="{{$po_master->id}}">
+    <input type="hidden" name="customer_invoice_id" value="{{$cust_inv->id}}">
 
     <!-- Default box -->
     <div class="box box-solid">
         <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;" >
-            {{-- <a class="btn btn-primary" style="margin-top:0;" id="btn-validate-po" >Validate</a> --}}
-            {{-- header --}}
-            <label> <small>Purchase Order</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$po_master->po_num}}</h4></label>
+            
+        @if($cust_inv->status == "O")
+            <a class="btn btn-primary" style="margin-top:0;" id="btn-reg-payment" href="sales/order/reg-payment/{{$cust_inv->id}}" >Register Payment</a>
+        @else
+            <label> <small>Invoice</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$cust_inv->no_inv}}</h4></label>
+        @endif
 
             <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
-            <a class="btn  btn-arrow-right pull-right disabled {{$po_master->status == 'V' ? 'bg-blue' : 'bg-gray'}}" >Validated</a>
+            <a class="btn  btn-arrow-right pull-right disabled {{$cust_inv->status == 'P' ? 'bg-blue' : 'bg-gray'}}" >Paid</a>
 
             <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
 
-            <a class="btn btn-arrow-right pull-right disabled {{$po_master->status == 'O' ? 'bg-blue' : 'bg-gray'}}" >Open</a>
+            <a class="btn btn-arrow-right pull-right disabled {{$cust_inv->status == 'O' ? 'bg-blue' : 'bg-gray'}}" >Open</a>
 
-            <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
+            {{-- <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
 
-            <a class="btn btn-arrow-right pull-right disabled bg-gray" >Draft</a>
+            <a class="btn btn-arrow-right pull-right disabled bg-gray" >Draft PO</a> --}}
         </div>
         <div class="box-body">
+            {{-- header --}}
+            
+            {{-- modul invoices --}}
+            {{-- <a class="btn btn-app pull-right" href="sales/order/invoice/{{$so_master->id}}" > --}}
+                    {{-- <span class="badge bg-green">1</span> --}}
+                    {{-- <i class="fa fa-newspaper-o"></i> Invoices --}}
+                  {{-- </a> --}}
 
-            <div class="row" >
-                <div class="col-lg-10" >
-                    <table class="table" >
+            {{-- <label>Purchase Order</label> --}}
+            {{-- <h3 style="margin-top:0;" ><label>{{$so_master->no_inv}}<label></h3> --}}
+            @if($cust_inv->status == "O")
+            <label> <small>Invoice</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$cust_inv->no_inv}}</h4></label>
+            @endif
+
+            <table class="table" >
                 <tbody>
                     <tr>
                         <td class="col-lg-2">
                             <label>Supplier</label>
                         </td>
                         <td class="col-lg-4" >
-                            {{-- <input type="text" name="supplier" class="form-control" data-supplierid="{{$po_master->supplier_id}}" value="{{$po_master->supplier}}" required> --}}
-                            {{$po_master->supplier}}
+                            {{-- <input type="text" name="supplier" class="form-control" data-supplierid="{{$so_master->supplier_id}}" value="{{$so_master->supplier}}" required> --}}
+                            {{$so_master->customer}}
                         </td>
                         <td class="col-lg-2" ></td>
                         <td class="col-lg-2" >
-                            <label>Order Date</label>
+                            <label>Bill Date</label>
                         </td>
                         <td class="col-lg-2" >
-                            {{-- <input type="text" name="tanggal" class="input-tanggal form-control" value="{{$po_master->tgl_formatted}}" required> --}}
-                            {{$po_master->tgl_formatted}}
+                            {{-- <input type="text" name="tanggal" class="input-tanggal form-control" value="{{$so_master->tgl_formatted}}" required> --}}
+                            {{$cust_inv->invoice_date_formatted}}
                         </td>
                     </tr>
                     <tr>
                         <td class="col-lg-2">
-                            <label>Supplier Reference</label>
+                            <label>Source Document</label>
                         </td>
                         <td class="col-lg-4" >
-                            {{-- <input type="text" name="no_inv" class="form-control" value="{{$po_master->no_inv}}" > --}}
-                            {{$po_master->no_inv}}
+                            {{-- <input type="text" name="no_inv" class="form-control" value="{{$so_master->no_inv}}" > --}}
+                            <a href="sales/order/edit/{{$so_master->id}}" >{{$so_master->so_no}}</a> 
                         </td>
                         <td class="col-lg-2" ></td>
-                        <td class="col-lg-2 hide" >
-                            <label>Jatuh Tempo</label>
+                        <td class="col-lg-2" >
+                            <label>Due Date</label>
                         </td>
-                        <td class="col-lg-2 hide" >
-                            {{-- <input type="text" name="jatuh_tempo"  class="input-tanggal form-control" value="{{$po_master->jatuh_tempo_formatted}}" > --}}
-                            {{$po_master->jatuh_tempo_formatted}}
+                        <td class="col-lg-2" >
+                            {{-- <input type="text" name="jatuh_tempo"  class="input-tanggal form-control" value="{{$so_master->jatuh_temso_formatted}}" > --}}
+                            {{-- {{$so_master->jatuh_temso_formatted}} --}}
+                            {{$cust_inv->due_date_formatted}}
                         </td>
                     </tr>
                 </tbody>
             </table>
-                </div>
-                <div class="col-lg-2" >
-                     {{-- modul invoices --}}
-                    <a class="btn btn-app pull-right" href="purchase/order/invoice/{{$po_master->id}}" >
-                        <span class="badge bg-green">1</span>
-                        <i class="fa fa-newspaper-o"></i> Invoices
-                    </a>
-                </div>
-            </div>
-            
-           
-
-            {{-- <label>Purchase Order</label> --}}
-            {{-- <h3 style="margin-top:0;" ><label>{{$po_master->po_num}}<label></h3> --}}
-
-            
 
             <h4 class="page-header" style="font-size:14px;color:#3C8DBC"><strong>PRODUCT DETAILS</strong></h4>
 
@@ -127,6 +134,8 @@
                         <th style="width:25px;" >NO</th>
                         <th class="col-lg-4" >PRODUCT</th>
                         <th class="col-lg-1" >QUANTITY</th>
+                        <th class="col-lg-1" >SATUAN</th>
+                        <th class="col-lg-1" >BERAT</th>
                         <th>UNIT PRICE</th>
                         <th>SUBTOTAL</th>
                         {{-- <th style="width:50px;" ></th> --}}
@@ -134,52 +143,33 @@
                 </thead>
                 <tbody>
                     <?php $rownum=1; ?>
-                    @foreach($po_barang as $dt)
-                        <tr class="row-product"  >
-                            <td class="text-right" >{{$rownum++}}</td>
+                    @foreach($barang as $dt)
+                        <tr>
+                            <td>{{$rownum++}}</td>
                             <td>
-                                {{-- <input autocomplete="off" type="text"  data-barangid="{{$dt->barang_id}}" data-kode="" class="text-uppercase form-control input-product input-sm input-clear"  value="{{$dt->nama_barang_full}}" readonly > --}}
-                                {{$dt->nama_barang_full}}
+                                {{$dt->nama}}
                             </td>
                             <td class="text-right" >
-                                {{-- <input type="number" autocomplete="off" min="1" class="form-control text-right input-quantity input-sm input-clear" value="{{$dt->qty}}" > --}}
                                 {{$dt->qty}}
                             </td>
+                            <td>{{$dt->satuan}}</td>
+                            <td class="text-right" >{{$dt->berat}}</td>
                             <td class="text-right" >
-                                {{-- <input autocomplete="off" type="text" class="text-right form-control input-unit-price input-sm input-clear" value="{{$dt->harga}}" > --}}
-                                {{number_format($dt->harga,0,'.',',')}}
+                                {{number_format($dt->harga_salesman,0,'.',',')}}
                             </td>
                             <td class="text-right" >
-                                {{-- <input autocomplete="off" type="text" readonly  class="text-right form-control input-subtotal input-sm input-clear" value="{{$dt->subtotal}}" > --}}
                                 {{number_format($dt->subtotal,0,'.',',')}}
                             </td>
-                            {{-- <td class="text-center" >
-                                <a href="#" class="btn-delete-row-product" ><i class="fa fa-trash" ></i></a>
-                            </td> --}}
                         </tr>
                     @endforeach
-                    {{-- <tr id="row-btn-add-item">
-                        <td></td>
-                        <td colspan="5" >
-                            <a id="btn-add-item" href="#">Add an item</a>
-                        </td>
-                    </tr> --}}
-                    {{-- <tr>
-                        <td></td>
-                        <td colspan="5" >
-                            <button type="submit" class="btn btn-primary" id="btn-save" >Save</button>
-                            <a class="btn btn-danger" id="btn-cancel-save" >Cancel</a>
-                        </td>
-                    </tr> --}}
-                    
                 </tbody>
             </table>
 
             <div class="row" >
                 <div class="col-lg-8" >
-                    {{-- <textarea name="note" class="form-control" rows="4" style="margin-top:5px;" placeholder="Note" >{{$po_master->note}}</textarea> --}}
-                    <br/>
-                    <label>Note :</label> <i>{{$po_master->note}}</i>
+                    {{-- <textarea name="note" class="form-control" rows="4" style="margin-top:5px;" placeholder="Note" >{{$so_master->note}}</textarea> --}}
+                    {{-- <br/>
+                    <label>Note :</label> <i>{{$so_master->note}}</i> --}}
                 </div>
                 <div class="col-lg-4" >
                     <table class="table table-condensed" >
@@ -189,7 +179,7 @@
                                     <label>Subtotal :</label>
                                 </td>
                                 <td id="label-total-subtotal" class=" text-right" >
-                                    {{$po_master->total}}
+                                    {{$cust_inv->subtotal}}
                                 </td>
                             </tr>
                             <tr>
@@ -197,8 +187,8 @@
                                     <label>Disc :</label>
                                 </td>
                                 <td class="text-right" id="label-disc" >
-                                   {{-- <input style="font-size:14px;" type="text" name="disc" class="input-sm form-control text-right input-clear" value="{{$po_master->disc}}" >  --}}
-                                   {{$po_master->disc}}
+                                   {{-- <input style="font-size:14px;" type="text" name="disc" class="input-sm form-control text-right input-clear" value="{{$so_master->disc}}" >  --}}
+                                   {{$cust_inv->disc}}
                                 </td>
                             </tr>
                             <tr>
@@ -206,21 +196,41 @@
                                     Total :
                                 </td>
                                 <td id="label-total" class=" text-right" style="font-size:18px;font-weight:bold;border-top:solid darkgray 1px;" >
-                                    {{$po_master->grand_total}}
+                                    {{$cust_inv->total}}
+                                </td>
+                            </tr>
+                            @if(count($payments) > 0)
+                            @foreach($payments as $dt)
+                                <tr style="background-color:#EEF0F0;" >
+                                    <td class="text-right" >
+                                        <a class="btn-delete-payment" data-paymentid="{{$dt->id}}" href="#" ><i class="fa fa-trash-o pull-left" ></i></a>
+                                        <i>Paid on {{$dt->payment_date_formatted}}</i>
+                                    </td>
+                                    <td class="text-right" >
+                                        <i>{{number_format($dt->payment_amount,0,'.',',')}}</i>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            @endif
+                            <tr>
+                                <td class="text-right" style="border-top:solid darkgray 1px;" >
+                                    Amount Due :
+                                </td>
+                                <td id="label-amount-due" class=" text-right" style="font-size:18px;font-weight:bold;border-top:solid darkgray 1px;" >
+                                    {{$cust_inv->amount_due}}
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="col-lg-12" >
-                    {{-- <button type="submit" class="btn btn-primary" id="btn-save" >Save</button> --}}
-                            <a class="btn btn-danger" href="purchase/order" >Close</a>
+                    @if($multi_invoice)
+                    <a class="btn btn-danger" href="sales/order/invoice/{{$so_master->id}}" >Close</a>
+                    @else
+                        <a class="btn btn-danger" href="sales/order/edit/{{$so_master->id}}" >Close</a>
+                    @endif
                 </div>
             </div>
-
-            {{-- <a id="btn-test" href="#" >TEST</a> --}}
-
-
         </div><!-- /.box-body -->
     </div><!-- /.box -->
 
@@ -248,7 +258,7 @@
 
     // SET AUTOCOMPLETE SUPPLIER
     $('input[name=supplier]').autocomplete({
-        serviceUrl: 'purchase/order/get-supplier',
+        serviceUrl: 'sales/order/get-supplier',
         params: {  'nama': function() {
                         return $('input[name=supplier]').val();
                     }
@@ -283,7 +293,7 @@
         vMax:'9999999999'
     });
 
-    $('#label-total-subtotal, #label-total, #label-disc').autoNumeric('init',{
+    $('#label-total-subtotal, #label-total, #label-disc, #label-amount-due').autoNumeric('init',{
             vMin:'0',
             vMax:'9999999999'
         });
@@ -291,6 +301,7 @@
     $('#label-total-subtotal').autoNumeric('set', Number($('#label-total-subtotal').autoNumeric('get')));
     $('#label-total').autoNumeric('set', Number($('#label-total').autoNumeric('get')));
     $('#label-disc').autoNumeric('set', Number($('#label-disc').autoNumeric('get')));
+    $('#label-amount-due').autoNumeric('set', Number($('#label-amount-due').autoNumeric('get')));
     // END OF AUTONUMERIC
 
     function getExceptionData(){
@@ -328,7 +339,7 @@
        
         // format autocomplete
         input_product.autocomplete({
-            serviceUrl: 'purchase/order/get-product',
+            serviceUrl: 'sales/order/get-product',
             params: {  
                         'nama' : function() {
                                     return input_product.val();
@@ -414,7 +425,7 @@
     // BTN CANCEL SAVE
     $('#btn-cancel-save').click(function(){
         if(confirm('Anda akan membabtalkan transaksi ini?')){
-            location.href = "purchase/order";
+            location.href = "sales/order";
         }else
         {
 
@@ -427,21 +438,21 @@
     // BTN SAVE UPDATE TRANSACTION
     $('#btn-save').click(function(){
         // cek kelengkapan data
-        var po_master = {"id":"","supplier_id":"","no_inv":"","tanggal":"","jatuh_tempo":""};
-        // set po_master data
-        po_master.id = $('input[name=po_master_id]').val();
-        po_master.supplier_id = $('input[name=supplier]').data('supplierid');
-        po_master.no_inv = $('input[name=no_inv]').val();
-        po_master.tanggal = $('input[name=tanggal]').val();
-        po_master.jatuh_tempo = $('input[name=jatuh_tempo]').val();
-        po_master.note = $('textarea[name=note]').val();
-        po_master.subtotal = $('#label-total-subtotal').autoNumeric('get');
-        po_master.total = $('#label-total').autoNumeric('get');
-        po_master.disc = $('input[name=disc]').autoNumeric('get');
+        var so_master = {"id":"","supplier_id":"","no_inv":"","tanggal":"","jatuh_tempo":""};
+        // set so_master data
+        so_master.id = $('input[name=so_master_id]').val();
+        so_master.supplier_id = $('input[name=supplier]').data('supplierid');
+        so_master.no_inv = $('input[name=no_inv]').val();
+        so_master.tanggal = $('input[name=tanggal]').val();
+        so_master.jatuh_tempo = $('input[name=jatuh_tempo]').val();
+        so_master.note = $('textarea[name=note]').val();
+        so_master.subtotal = $('#label-total-subtotal').autoNumeric('get');
+        so_master.total = $('#label-total').autoNumeric('get');
+        so_master.disc = $('input[name=disc]').autoNumeric('get');
 
         // get data barang
         // alert('btn-save');
-        var po_barang = JSON.parse('{"barang" : [] }');
+        var so_barang = JSON.parse('{"barang" : [] }');
         // alert('set barang');
 
         $('#table-product > tbody > tr.row-product').each(function(){
@@ -457,7 +468,7 @@
 
             if(barang_id != "" && barang_qty != "" && Number(barang_qty) > 0 && barang_unit_price != "" && Number(barang_unit_price) > 0 && barang_subtotal != "" && Number(barang_subtotal) > 0 ){
 
-                po_barang.barang.push({
+                so_barang.barang.push({
                     id:barang_id,
                     qty:barang_qty,
                     unit_price:barang_unit_price,
@@ -466,14 +477,14 @@
             }
         });
 
-        // alert(po_barang.barang.length);
+        // alert(so_barang.barang.length);
 
-        if(po_master.supplier_id != "" && po_master.no_inv != "" && po_master.tanggal != "" && po_barang.barang.length > 0){
-            // posting purchase order to database
+        if(so_master.supplier_id != "" && so_master.no_inv != "" && so_master.tanggal != "" && so_barang.barang.length > 0){
+            // posting sales order to database
             // alert('insert ke database');
-            var newform = $('<form>').attr('method','POST').attr('action','purchase/order/update');
-                newform.append($('<input>').attr('type','hidden').attr('name','po_master').val(JSON.stringify(po_master)));
-                newform.append($('<input>').attr('type','hidden').attr('name','po_barang').val(JSON.stringify(po_barang)));
+            var newform = $('<form>').attr('method','POST').attr('action','sales/order/update');
+                newform.append($('<input>').attr('type','hidden').attr('name','so_master').val(JSON.stringify(so_master)));
+                newform.append($('<input>').attr('type','hidden').attr('name','so_barang').val(JSON.stringify(so_barang)));
                 newform.submit();
         }else{
             alert('Lengkapi data yang kosong.');
@@ -522,11 +533,27 @@
     // VALIDATE PO
     $('#btn-validate-po').click(function(){
         // create form for validate po
-        var validateForm = $('<form>').attr('method','POST').attr('action','purchase/order/validate');
-        validateForm.append($('<input>').attr('type','hidden').attr('name','po_master_id').val($('input[name=po_master_id]').val()));
+        var validateForm = $('<form>').attr('method','POST').attr('action','sales/order/validate');
+        validateForm.append($('<input>').attr('type','hidden').attr('name','so_master_id').val($('input[name=so_master_id]').val()));
         validateForm.submit();
     });
     // END OF VALIDATE PO
+
+    // DELETE PAYMENT 
+    $('.btn-delete-payment').click(function(){
+        if(confirm('Anda akan menghapus data ini?')){
+            // delete payment
+            var payment_id = $(this).data('paymentid');
+            var deleteform = $('<form>').attr('method','POST').attr('action','sales/order/delete-payment');
+            deleteform.append($('<input>').attr('type','hidden').attr('name','payment_id').val(payment_id));
+            deleteform.submit();
+
+            // posting delete payment
+        }
+
+        return false;
+    });
+    // END OF DELETE PAYMENT
 
 })(jQuery);
 </script>

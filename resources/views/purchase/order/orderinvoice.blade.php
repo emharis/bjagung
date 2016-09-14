@@ -49,7 +49,12 @@
     <!-- Default box -->
     <div class="box box-solid">
         <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;" >
+            
+        @if($sup_bill->status == "O")
             <a class="btn btn-primary" style="margin-top:0;" id="btn-reg-payment" href="purchase/order/reg-payment/{{$po_master->id}}" >Register Payment</a>
+        @else
+            <label> <small>Invoice</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$sup_bill->bill_no}}</h4></label>
+        @endif
 
             <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
             <a class="btn  btn-arrow-right pull-right disabled {{$sup_bill->status == 'P' ? 'bg-blue' : 'bg-gray'}}" >Paid</a>
@@ -73,8 +78,9 @@
 
             {{-- <label>Purchase Order</label> --}}
             {{-- <h3 style="margin-top:0;" ><label>{{$po_master->po_num}}<label></h3> --}}
-
+            @if($sup_bill->status == "O")
             <label> <small>Invoice</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$sup_bill->bill_no}}</h4></label>
+            @endif
 
             <table class="table" >
                 <tbody>
@@ -185,6 +191,19 @@
                                     {{$sup_bill->total}}
                                 </td>
                             </tr>
+                            @if(count($payments) > 0)
+                            @foreach($payments as $dt)
+                                <tr style="background-color:#EEF0F0;" >
+                                    <td class="text-right" >
+                                        <a class="btn-delete-payment" data-paymentid="{{$dt->id}}" href="#" ><i class="fa fa-trash-o pull-left" ></i></a>
+                                        <i>Paid on {{$dt->payment_date_formatted}}</i>
+                                    </td>
+                                    <td class="text-right" >
+                                        <i>{{number_format($dt->total,0,'.',',')}}</i>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            @endif
                             <tr>
                                 <td class="text-right" style="border-top:solid darkgray 1px;" >
                                     Amount Due :
@@ -512,6 +531,22 @@
         validateForm.submit();
     });
     // END OF VALIDATE PO
+
+    // DELETE PAYMENT 
+    $('.btn-delete-payment').click(function(){
+        if(confirm('Anda akan menghapus data ini?')){
+            // delete payment
+            var payment_id = $(this).data('paymentid');
+            var deleteform = $('<form>').attr('method','POST').attr('action','purchase/order/delete-payment');
+            deleteform.append($('<input>').attr('type','hidden').attr('name','payment_id').val(payment_id));
+            deleteform.submit();
+
+            // posting delete payment
+        }
+
+        return false;
+    });
+    // END OF DELETE PAYMENT
 
 })(jQuery);
 </script>

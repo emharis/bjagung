@@ -33,43 +33,43 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="purchase/order" >Purchase Order</a> 
+        <a href="invoice/supplier-bill" >Supplier Bills</a> 
         <i class="fa fa-angle-double-right" ></i> 
-        <a href="purchase/order/edit/{{$po_master->id}}" >{{$po_master->po_num}}</a> 
+        <a href="invoice/supplier-bill/show/{{$data->id}}" >{{$data->bill_no}}</a> 
         <i class="fa fa-angle-double-right" ></i> 
-        {{$sup_bill->bill_no}}
+        Register Payment
     </h1>
 </section>
 
 <!-- Main content -->
 <section class="content">
     {{-- data hidden  --}}
-    <input type="hidden" name="supplier_bill_id" value="{{$sup_bill->id}}">
-
+    <input type="hidden" name="supplier_bill_id" value="{{$data->id}}">
+    {{-- <input type="hidden" name="so_master_id" value="{{$so_master->id}}"> --}}
     <!-- Default box -->
     <div class="box box-solid">
         <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;" >
-            {{-- <a class="btn btn-primary" style="margin-top:0;" id="btn-reg-payment" href="purchase/order/reg-payment/{{$po_master->id}}" >Register Payment</a> --}}
+            {{-- <a class="btn btn-primary" style="margin-top:0;" id="btn-reg-payment" href="sales/order/reg-payment/{{$so_master->id}}" >Register Payment</a> --}}
 
             <label> 
                 <small>Register Payment</small> 
-                <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$sup_bill->bill_no}}</h4>
+                <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$data->bill_no}}</h4>
             </label>
 
             {{-- <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label> --}}
-            {{-- <a class="btn  btn-arrow-right pull-right disabled {{$sup_bill->status == 'P' ? 'bg-blue' : 'bg-gray'}}" >Paid</a> --}}
+            {{-- <a class="btn  btn-arrow-right pull-right disabled {{$data->status == 'P' ? 'bg-blue' : 'bg-gray'}}" >Paid</a> --}}
 
             {{-- <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label> --}}
 
-            {{-- <a class="btn btn-arrow-right pull-right disabled {{$sup_bill->status == 'O' ? 'bg-blue' : 'bg-gray'}}" >Open</a> --}}
+            {{-- <a class="btn btn-arrow-right pull-right disabled {{$data->status == 'O' ? 'bg-blue' : 'bg-gray'}}" >Open</a> --}}
 
             {{-- <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
 
             <a class="btn btn-arrow-right pull-right disabled bg-gray" >Draft PO</a> --}}
         </div>
         <div class="box-body">
-            {{-- <form method="POST" action="purchase/order/save-payment" > --}}
-                <input type="hidden" name="po_master_id" value="{{$po_master->id}}">
+            {{-- <form method="POST" action="sales/order/save-payment" > --}}
+                
                 <table class="table" >
                     <tbody>
                         <tr>
@@ -77,7 +77,7 @@
                                 <label>Source Document</label>
                             </td>
                             <td class="col-lg-3" >
-                                {{$sup_bill->bill_no}}
+                                {{$data->po_num}}
                             </td>
                             <td class="col-lg-2" ></td>
                             <td class="col-lg-2">
@@ -89,24 +89,40 @@
                         </tr>
                         <tr>
                             <td >
+                                <label>Supplier Reference</label>
+                            </td>
+                            <td  >
+                                {{-- <input type="text" name="supplier_reference" class="form-control text-right" value="{{$data->no_inv}}" readonly> --}}
+                                {{$data->no_inv}}
+                            </td>
+                            <td  ></td>
+                            <td >
+                                {{-- <label>Payment Amount</label> --}}
+                            </td>
+                            <td >
+                                {{-- <input type="text" name="payment_amount" class="form-control text-right" value="{{$data->amount_due}}" autofocus required> --}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td >
                                 <label>Amount Due</label>
                             </td>
                             <td  >
-                                <input type="text" name="amount_due" class="form-control text-right" value="{{$sup_bill->amount_due}}" readonly>
+                                <input type="text" name="amount_due" class="form-control text-right" value="{{$data->amount_due}}" readonly>
                             </td>
                             <td  ></td>
                             <td >
                                 <label>Payment Amount</label>
                             </td>
                             <td >
-                                <input type="text" name="payment_amount" class="form-control text-right" value="{{$sup_bill->amount_due}}" autofocus required>
+                                <input type="text" name="payment_amount" class="form-control text-right" value="{{$data->amount_due}}" autofocus required>
                             </td>
                         </tr>
 
                         <tr>
                             <td colspan="5" >
                                 <button type="submit" class="btn btn-primary" id="btn-save" >Save</button>
-                                <a class="btn btn-danger" id="btn-cancel" href="purchase/order/invoice/{{$po_master->id}}" >Cancel</a>
+                                <a class="btn btn-danger" id="btn-cancel" href="invoice/supplier-bill/show/{{$data->id}}" >Cancel</a>
                             </td>
                         </tr>
                         
@@ -153,19 +169,31 @@
     $('#btn-save').click(function(){
         var amount_due = $('input[name=amount_due]').autoNumeric('get');
         var payment_amount = $('input[name=payment_amount]').autoNumeric('get');
-        var po_master_id = $('input[name=po_master_id]').val();
+        // var so_master_id = $('input[name=so_master_id]').val();
         var payment_date = $('input[name=payment_date]').val();
+        var supplier_bill_id = $('input[name=supplier_bill_id]').val();
         
         if(Number(payment_amount) > Number(amount_due)){
-            alert('Payment amount lebih besar dari amount due.');
+            alert('Payment amount melebihi amount due.');
             // fokuskan
             $('input[name=payment_amount]').select();
         }else{
-            var newform = $('<form>').attr('method','POST').attr('action','purchase/order/save-payment');
-            newform.append($('<input>').attr('type','hidden').attr('name','payment_amount').val(payment_amount));
-            newform.append($('<input>').attr('type','hidden').attr('name','po_master_id').val(po_master_id));
-            newform.append($('<input>').attr('type','hidden').attr('name','payment_date').val(payment_date));
-            newform.submit();
+
+            // var newform = $('<form>').attr('method','POST').attr('action','api/reg-supplier-payment');
+            // newform.append($('<input>').attr('type','hidden').attr('name','payment_amount').val(payment_amount));
+            // newform.append($('<input>').attr('type','hidden').attr('name','payment_date').val(payment_date));
+            // newform.append($('<input>').attr('type','hidden').attr('name','supplier_bill_id').val(supplier_bill_id));
+            // newform.submit();
+
+            // newform.append($('<input>').attr('type','hidden').attr('name','so_master_id').val(so_master_id));
+
+            $.post('api/reg-supplier-payment',{
+                'payment_amount' : payment_amount,
+                'payment_date' : payment_date,
+                'supplier_bill_id' : supplier_bill_id
+            },function(){
+                location.href = "invoice/supplier-bill/show/" + supplier_bill_id;
+            });
         }
 
         return false;

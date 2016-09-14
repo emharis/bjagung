@@ -17,7 +17,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="sales/salesman" >Salesman</a> <i class="fa fa-angle-double-right" ></i> Edit
+        <a href="sales/salesman" >Salesperson</a> <i class="fa fa-angle-double-right" ></i> Edit
     </h1>
 </section>
 
@@ -28,8 +28,8 @@
     <div class="box box-primary" >
       <div class="box-body" >
         <div class="form-group">
-            <label >Nama Salesman</label>
-            <input autofocus autocomplete="off" required type="text" class="form-control input-lg" placeholder="Nama Salesman" name="nama" value="{{$data->nama}}">
+            <label >Nama Salesperson</label>
+            <input autofocus autocomplete="off" required type="text" class="form-control input-lg" placeholder="Nama Salesperson" name="nama" value="{{$data->nama}}">
         </div>  
         <div class="form-group">
             <label >Kode</label>
