@@ -15,10 +15,10 @@
     }
 
     input.input-clear {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
@@ -33,13 +33,13 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="sales/order" >Sales Order</a> 
-        <i class="fa fa-angle-double-right" ></i> 
-        <a href="sales/order/edit/{{$so_master->id}}" >{{$so_master->so_no}}</a> 
-        <i class="fa fa-angle-double-right" ></i> 
+        <a href="sales/order" >Sales Order</a>
+        <i class="fa fa-angle-double-right" ></i>
+        <a href="sales/order/edit/{{$so_master->id}}" >{{$so_master->so_no}}</a>
+        <i class="fa fa-angle-double-right" ></i>
         @if($multi_invoice)
-        <a href="sales/order/invoice/{{$so_master->id}}" >Customer Invoices</a> 
-        <i class="fa fa-angle-double-right" ></i> 
+        <a href="sales/order/invoice/{{$so_master->id}}" >Customer Invoices</a>
+        <i class="fa fa-angle-double-right" ></i>
         @endif
         {{$cust_inv->no_inv}}
     </h1>
@@ -53,12 +53,15 @@
     <!-- Default box -->
     <div class="box box-solid">
         <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;" >
-            
-        @if($cust_inv->status == "O")
+
+        {{-- @if($cust_inv->status == "O")
             <a class="btn btn-primary" style="margin-top:0;" id="btn-reg-payment" href="sales/order/reg-payment/{{$cust_inv->id}}" >Register Payment</a>
         @else
             <label> <small>Invoice</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$cust_inv->no_inv}}</h4></label>
-        @endif
+
+        @endif --}}
+
+        <label><h3 style="margin:0;padding:0;font-weight:bold;" >{{$cust_inv->no_inv}}</h3></label>
 
             <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
             <a class="btn  btn-arrow-right pull-right disabled {{$cust_inv->status == 'P' ? 'bg-blue' : 'bg-gray'}}" >Paid</a>
@@ -73,7 +76,7 @@
         </div>
         <div class="box-body">
             {{-- header --}}
-            
+
             {{-- modul invoices --}}
             {{-- <a class="btn btn-app pull-right" href="sales/order/invoice/{{$so_master->id}}" > --}}
                     {{-- <span class="badge bg-green">1</span> --}}
@@ -82,9 +85,9 @@
 
             {{-- <label>Purchase Order</label> --}}
             {{-- <h3 style="margin-top:0;" ><label>{{$so_master->no_inv}}<label></h3> --}}
-            @if($cust_inv->status == "O")
+            {{-- @if($cust_inv->status == "O")
             <label> <small>Invoice</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$cust_inv->no_inv}}</h4></label>
-            @endif
+            @endif --}}
 
             <table class="table" >
                 <tbody>
@@ -204,7 +207,7 @@
                             @foreach($payments as $dt)
                                 <tr style="background-color:#EEF0F0;" >
                                     <td class="text-right" >
-                                        <a class="btn-delete-payment" data-paymentid="{{$dt->id}}" href="#" ><i class="fa fa-trash-o pull-left" ></i></a>
+                                        {{-- <a class="btn-delete-payment" data-paymentid="{{$dt->id}}" href="#" ><i class="fa fa-trash-o pull-left" ></i></a> --}}
                                         <i>Paid on {{$dt->payment_date_formatted}}</i>
                                     </td>
                                     <td class="text-right" >
@@ -337,11 +340,11 @@
 
         // Tampilkan & Reorder Row Number
         rownumReorder();
-       
+
         // format autocomplete
         input_product.autocomplete({
             serviceUrl: 'sales/order/get-product',
-            params: {  
+            params: {
                         'nama' : function() {
                                     return input_product.val();
                                 },
@@ -394,7 +397,7 @@
 
     // CANCEL ADD ITEM
     // $('#btn-cancel-add').click(function(){
-    //     // clear input 
+    //     // clear input
     //     $('input[name=product]').val('');
     //     $('input[name=quantity]').val('');
 
@@ -422,7 +425,7 @@
     });
     // END OF DELETE ROW PRODUCT
 
-    
+
     // BTN CANCEL SAVE
     $('#btn-cancel-save').click(function(){
         if(confirm('Anda akan membabtalkan transaksi ini?')){
@@ -474,7 +477,7 @@
                     qty:barang_qty,
                     unit_price:barang_unit_price,
                     subtotal:barang_subtotal
-                });    
+                });
             }
         });
 
@@ -514,7 +517,7 @@
             var first_col = $(this).children('td:first');
             subtotal += Number(first_col.next().next().next().next().children('input').autoNumeric('get'));
         });
-        
+
         $('#label-total-subtotal, #label-total').text('');
         // format autonumeric
         $('#label-total-subtotal, #label-total').autoNumeric('init',{
@@ -540,7 +543,7 @@
     });
     // END OF VALIDATE PO
 
-    // DELETE PAYMENT 
+    // DELETE PAYMENT
     $('.btn-delete-payment').click(function(){
         if(confirm('Anda akan menghapus data ini?')){
             // delete payment

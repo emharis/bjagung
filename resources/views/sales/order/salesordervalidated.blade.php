@@ -15,10 +15,10 @@
     }
 
     input.input-clear {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
@@ -46,8 +46,21 @@
             {{-- button VALIDATE --}}
             {{-- <a class="btn btn-primary" style="margin-top:0;" id="btn-validate-so" href="sales/order/validate/{{$so_master->id}}" >Validate</a> --}}
             {{-- sales order title --}}
-            <label> <small>Sales Order</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$so_master->so_no}}</h4></label>
-            
+            {{-- <label> <small>Sales Order</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$so_master->so_no}}</h4></label> --}}
+
+            {{-- Button Cancel Order  --}}
+            <button class="btn btn-danger" id="btn-cancel-order" data-orderid="{{$so_master->id}}" >Cancel Order</button>
+            {{-- Button Print --}}
+            <div class="btn-group">
+              <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Print <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a href="#">Direct Print</a></li>
+                <li><a href="#">PDF</a></li>
+              </ul>
+            </div>
+
             <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
             <a class="btn  btn-arrow-right pull-right disabled bg-blue"" >Validated</a>
 
@@ -60,7 +73,7 @@
             <a class="btn btn-arrow-right pull-right disabled bg-gray" >Draft</a>
         </div>
         <div class="box-body">
-            
+          <label><h3 style="margin:0;padding:0;font-weight:bold;" >{{$so_master->so_no}}</h3></label>
 
             {{-- Data Hidden --}}
             <input type="hidden" name="so_master_id" value="{{$so_master->id}}">
@@ -85,7 +98,7 @@
                             {{-- <input type="text" name="tanggal" class="input-tanggal form-control" value="{{$so_master->tgl_formatted}}" required> --}}
                             {{$so_master->tgl_formatted}}
                         </td>
-                        
+
                     </tr>
                     <tr>
                         <td class="">
@@ -103,7 +116,7 @@
                             {{-- <input type="text" name="no_inv"  class="input-tanggal form-control" value="{{$so_master->no_inv}}"  readonly> --}}
                             {{$so_master->no_inv}}
                         </td>
-                        
+
                     </tr>
                 </tbody>
             </table>
@@ -175,8 +188,8 @@
                             <a id="btn-add-item" href="#">Add an item</a>
                         </td>
                     </tr> --}}
-                    
-                    
+
+
                 </tbody>
             </table>
 
@@ -245,9 +258,16 @@
 <script src="plugins/autocomplete/jquery.autocomplete.min.js" type="text/javascript"></script>
 <script src="plugins/autonumeric/autoNumeric-min.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-(function ($) {
-
-})(jQuery);
+<script type="text/javascript" >
+  (function($){
+    $('#btn-cancel-order').click(function(){
+      if(confirm('Anda akan membatalkan transaksi ini? \nData yang telah dibatalakan tidak dapat dikembalikan.')){
+        var orderid = $(this).data('orderid');
+          var newform = $('<form>').attr('method','POST').attr('action','sales/order/cancel-order');
+            newform.append($('<input>').attr('type','hidden').attr('name','sales_order_id').val(orderid));
+            newform.submit();
+      }
+    });
+  })(jQuery);
 </script>
 @append

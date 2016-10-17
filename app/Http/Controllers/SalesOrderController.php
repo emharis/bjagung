@@ -12,7 +12,7 @@ class SalesOrderController extends Controller {
     // fungsi tampilkan halaman sales order
     public function index() {
         $data = \DB::table('VIEW_SALES_ORDER')
-                ->orderBy(\DB::raw('tgl,created_at'),'desc')->get();
+                ->orderBy(\DB::raw('tgl'),'desc')->get();
         return view('sales.order.salesorder', [
             'data' => $data,
         ]);
@@ -23,39 +23,39 @@ class SalesOrderController extends Controller {
         return view('sales.order.salesorderadd',[
 
             ]);
-    } 
+    }
     // END OF TAMPILKAN FORM ADD SALES ORDER
 
     // GET DATA CUSTOMER
     public function getCustomer(Request $req){
-        $data = \DB::select('select id as data,nama as value 
+        $data = \DB::select('select id as data,nama as value
                 from customer
                 where nama like "%'.$req->get('nama').'%"');
-        
+
         $data_res = ['query'=>'Unit','suggestions' => $data];
-        echo json_encode($data_res);   
+        echo json_encode($data_res);
     }
     // END OF GET DATA CUSTOMER
 
     // GET DATA SALESPERSON
     public function getSalesperson(Request $req){
-        $data = \DB::select('select id as data,nama , kode, concat("[",kode,"] - ",nama) as value 
+        $data = \DB::select('select id as data,nama , kode, concat("[",kode,"] - ",nama) as value
                 from salesman
                 where nama like "%'.$req->get('nama').'%"');
-        
+
         $data_res = ['query'=>'Unit','suggestions' => $data];
-        echo json_encode($data_res);   
+        echo json_encode($data_res);
     }
     // END OF GET DATA SALESPERSON
 
     // GET DATA PRODUCT
     public function getProduct(Request $req){
 
-         $data = \DB::select('select id as data,nama_full as value,kode, harga_jual, stok 
+         $data = \DB::select('select id as data,nama_full as value,kode, harga_jual, stok
                 from VIEW_STOK_BARANG
                 where stok > 0 and harga_jual > 0 and nama_full like "%'. $req->get('nama') .'%"' ) ;
-        
-        
+
+
         $data_res = ['query'=>'Unit','suggestions' => $data];
         echo json_encode($data_res);
     }
@@ -85,13 +85,13 @@ class SalesOrderController extends Controller {
                             ->whereName('so_counter')
                             ->update([
                                     'value' => \DB::raw('value + 1')
-                                ]);   
+                                ]);
 
             // generate tanggal
             $order_date = $so_master->order_date;
             $arr_tgl = explode('-',$order_date);
             $fix_order_date = new \DateTime();
-            $fix_order_date->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);     
+            $fix_order_date->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);
 
             // insert into table jual
             $so_id = \DB::table('jual')->insertGetId([
@@ -127,6 +127,46 @@ class SalesOrderController extends Controller {
     }
     // END OF INSERT SALES ORDER
 
+    // CANCEL VALIDATED SALEES ORDER
+    public function cancelOrder(Request $req){
+      return \DB::transaction(function()use($req){
+        $jual = \DB::table('jual')
+                ->find($req->sales_order_id);
+        $jual_barang = \DB::table('jual_barang')
+                        ->where('jual_id',$jual->id)->get();
+        $stok_moving = \DB::table('stok_moving')
+                        ->where('jual_id',$jual->id)
+                        ->get();
+        // restore stock
+        foreach($stok_moving as $dt){
+          \DB::table('stok')
+                ->where('id',$dt->stok_id)
+                ->update([
+                  'current_stok' => \DB::raw('current_stok + ' . $dt->jumlah)
+                ]);
+        }
+
+        // delete stok moving
+        \DB::table('stok_moving')
+            ->where('jual_id',$jual->id)
+            ->delete();
+
+        // delete customer invoice
+        \DB::table('customer_invoice')
+            ->where('jual_id',$jual->id)
+            ->delete();
+
+        // delete jual
+        \DB::table('jual')
+            ->delete($jual->id);
+
+        return redirect('sales/order');
+
+        // $stok_moving = \DB::table('stok_moving')->where()
+      });
+    }
+    // END OF CANCEL VALIDATED SALEES ORDER
+
     // TAMPILKAN FORM EDIT SALES ORDER
     public function edit($id){
         $so_master = \DB::table('VIEW_SALES_ORDER')->find($id);
@@ -139,7 +179,7 @@ class SalesOrderController extends Controller {
             return view('sales/order/salesorderedit',[
                 'so_master' => $so_master,
                 'so_barang' => $so_barang,
-            ]);    
+            ]);
         }
         else{
             // open view validate
@@ -150,7 +190,7 @@ class SalesOrderController extends Controller {
                 ]);
         }
 
-        
+
     }
     // END OF TAMPILKAN FORM EDIT SALES ORDER
 
@@ -167,7 +207,7 @@ class SalesOrderController extends Controller {
             $order_date = $so_master->order_date;
             $arr_tgl = explode('-',$order_date);
             $fix_order_date = new \DateTime();
-            $fix_order_date->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);  
+            $fix_order_date->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);
 
             // Update Po Master / table Beli
             \DB::table('jual')
@@ -230,6 +270,7 @@ class SalesOrderController extends Controller {
                     ->get();
 
                 $qty_for_sell = $dt->qty;
+                $jual_barang_id = $dt->id;
                 foreach($stok as $st){
                     if($st->current_stok >= $qty_for_sell){
                         // inputkan ke tabel stok moving
@@ -239,6 +280,7 @@ class SalesOrderController extends Controller {
                                     'jumlah' => $qty_for_sell,
                                     'tipe' => 'O',
                                     'jual_id' => $req->so_master_id,
+                                    'jual_barang_id' => $jual_barang_id,
                                     'user_id' => \Auth::user()->id
                                 ]);
 
@@ -249,7 +291,7 @@ class SalesOrderController extends Controller {
                                     'current_stok' => \DB::raw('current_stok - ' . $qty_for_sell)
                                 ]);
 
-                        break;    
+                        break;
                     }else{
                         $stok_qty_on_db = $st->current_stok;
                         // kurangi table stok
@@ -270,12 +312,12 @@ class SalesOrderController extends Controller {
                         // kurangi qty_for_sell
                         $qty_for_sell = $qty_for_sell - $stok_qty_on_db;
                     }
-                }                           
+                }
             }
 
             // CREATE INVOICE FROM SALES ORDER
             $invoice = $this->createInvoice($so_master->id);
-            
+
 
             // get invoice item number
             $invoice_item_num = \DB::table('appsetting')
@@ -296,7 +338,7 @@ class SalesOrderController extends Controller {
             //                 ->whereName('inv_counter')
             //                 ->update([
             //                         'value' => \DB::raw('value + 1')
-            //                     ]); 
+            //                     ]);
 
             // if(count($so_barang) > $invoice_item_num){
                 // // create invoice awal
@@ -348,7 +390,7 @@ class SalesOrderController extends Controller {
                                 ]);
 
                         // create invoice baru
-                        $invoice = $this->createInvoice($so_master->id);   
+                        $invoice = $this->createInvoice($so_master->id);
 
                         // input data ke detil invoice
                         \DB::table('customer_invoice_detail')
@@ -372,7 +414,7 @@ class SalesOrderController extends Controller {
                                     'disc' => $so_master->disc,
                                     'total' => $subtotal -  $so_master->disc,
                                     'amount_due' => $subtotal -  $so_master->disc,
-                                    
+
                                 ]);
                 }
             // }else{
@@ -494,7 +536,7 @@ class SalesOrderController extends Controller {
 
         // // =======================================================================================
 
-        
+
     }
     // END OF OPEN INVOICE
 
@@ -524,7 +566,7 @@ class SalesOrderController extends Controller {
     }
 
     // PRIVATE FUNCTION SHOW INVOICE
-    public function showInvoice($so_master,$cust_invoice,$barang,$payments,$multi_invoice = false){   
+    public function showInvoice($so_master,$cust_invoice,$barang,$payments,$multi_invoice = false){
         return view('sales/order/salesorderinvoice',[
                     'so_master' => $so_master,
                     'barang' => $barang,
@@ -535,7 +577,7 @@ class SalesOrderController extends Controller {
     }
     // END OF PRIVATE FUNCTION SHOW INVOICE
 
-    
+
     // REGISTER PAYMENT
     public function regPayment($cust_inv_id){
         // echo 'Register Payment SO';
@@ -569,7 +611,7 @@ class SalesOrderController extends Controller {
             $payment_date = $req->payment_date;
             $arr_tgl = explode('-',$payment_date);
             $fix_payment_date = new \DateTime();
-            $fix_payment_date->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);     
+            $fix_payment_date->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);
 
             // input payment
             \DB::table('customer_invoice_payment')
@@ -578,7 +620,7 @@ class SalesOrderController extends Controller {
                     'payment_amount' => $req->payment_amount,
                     'payment_date' => $fix_payment_date,
                     'payment_number' => $payment_number,
-                ]);    
+                ]);
 
             // Update Status Invoice
             \DB::table('customer_invoice')
@@ -602,13 +644,13 @@ class SalesOrderController extends Controller {
                 if($invoice_doc_num > 1){
                     return redirect('sales/order/show-invoice-multi/' . $req->customer_inv_id);
                 }else{
-                    return redirect('sales/order/invoice/' . $req->so_master_id);        
+                    return redirect('sales/order/invoice/' . $req->so_master_id);
                 }
 
-            
+
             // return redirect()->back();
         });
-        
+
     }
     // END OF SAVE PAYMENT
 

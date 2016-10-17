@@ -69,7 +69,8 @@
             <a class="btn btn-arrow-right pull-right disabled bg-gray" >Draft</a>
         </div>
         <div class="box-body">
-            <label> <small>Purchase Order</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$po_master->po_num}}</h4></label>
+            {{-- <label> <small>Purchase Order</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$po_master->po_num}}</h4></label> --}}
+            <label><h3 style="margin:0;padding:0;font-weight:bold;" >{{$po_master->po_num}}</h3></label>
             {{-- <label>Purchase Order</label> --}}
             {{-- <h3 style="margin-top:0;" ><label>{{$po_master->po_num}}<label></h3> --}}
 

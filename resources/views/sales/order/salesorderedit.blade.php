@@ -15,10 +15,10 @@
     }
 
     input.input-clear {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
@@ -45,7 +45,7 @@
         <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;" >
             {{-- button edit --}}
             <a class="btn btn-primary" style="margin-top:0;" id="btn-validate-so" href="sales/order/validate/{{$so_master->id}}" >Validate</a>
-            
+
             <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
             <a class="btn  btn-arrow-right pull-right disabled bg-gray"" >Validated</a>
 
@@ -59,7 +59,8 @@
         </div>
         <div class="box-body">
             {{-- sales order title --}}
-            <label> <small>Sales Order</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$so_master->so_no}}</h4></label>
+            {{-- <label> <small>Sales Order</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$so_master->so_no}}</h4></label> --}}
+            <label><h3 style="margin:0;padding:0;font-weight:bold;" >{{$so_master->so_no}}</h3></label>
 
             {{-- Data Hidden --}}
             <input type="hidden" name="so_master_id" value="{{$so_master->id}}">
@@ -172,8 +173,8 @@
                             <a id="btn-add-item" href="#">Add an item</a>
                         </td>
                     </tr>
-                    
-                    
+
+
                 </tbody>
             </table>
 
@@ -200,7 +201,7 @@
                                     <label>Disc :</label>
                                 </td>
                                 <td >
-                                   <input style="font-size:14px;" type="text" name="disc" class="input-sm form-control text-right input-clear" value="{{$so_master->disc}}" > 
+                                   <input style="font-size:14px;" type="text" name="disc" class="input-sm form-control text-right input-clear" value="{{$so_master->disc}}" >
                                 </td>
                             </tr>
                             <tr>
@@ -341,15 +342,15 @@
         // $('.input-subtotal').autoNumeric('init',{
             vMin:'0',
             vMax:'9999999999'
-        });       
+        });
 
         // Tampilkan & Reorder Row Number
         rownumReorder();
-       
+
         // format autocomplete
         input_product.autocomplete({
             serviceUrl: 'sales/order/get-product',
-            params: {  
+            params: {
                         'nama' : function() {
                                     return input_product.val();
                                 },
@@ -358,7 +359,7 @@
             onSelect:function(suggestions){
                 input_product.data('barangid',suggestions.data);
                 input_product.data('kode',suggestions.kode);
-                
+
                 // disable input_product
                 input_product.attr('readonly','readonly');
 
@@ -383,7 +384,7 @@
             }
         });
 
-        
+
 
         // fokuskan ke input product
         input_product.focus();
@@ -405,7 +406,7 @@
         }else{
             calcSubtotal($(this));
         }
-        
+
     });
     $(document).on('input','.input-quantity',function(){
         calcSubtotal($(this));
@@ -443,7 +444,7 @@
             if($(this).parent().parent().hasClass('row-product')){
                 subtotal += Number($(this).autoNumeric('get'));
             }
-        });        
+        });
         // tampilkan subtotal dan total
         $('.label-total-subtotal').autoNumeric('set',subtotal);
         $('.label-total').autoNumeric('set',Number(subtotal) - Number(disc));
@@ -471,7 +472,7 @@
     });
     // END OF DELETE ROW PRODUCT
 
-    
+
     // BTN CANCEL SAVE
     $('#btn-cancel-save').click(function(){
         if(confirm('Anda akan membabtalkan transaksi ini?')){
@@ -527,7 +528,7 @@
                     });
 
                 }
-                
+
             }
         });
 

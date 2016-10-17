@@ -29,7 +29,7 @@
                 <thead>
                     <tr>
                         <th style="width:50px;" >NO</th>
-                        <th class="col-lg-1" >REFERENCE</th>
+                        <th class="col-lg-1" >REF#</th>
                         {{-- <th class="col-lg-1" >INV NO.</th> --}}
                         <th class="col-lg-1" >DATE</th>
                         <th>CUSTOMER</th>
@@ -153,7 +153,7 @@
     });
     // END OF DELETE DATA SALES ORDER
 
-   
+
 })(jQuery);
 </script>
 @append

@@ -204,6 +204,7 @@ Route::group(['middleware' => ['web','auth']], function () {
         Route::get('order/edit/{id}','SalesOrderController@edit');
         Route::post('order/update','SalesOrderController@update');
         Route::post('order/validate','SalesOrderController@validateSo');
+        Route::post('order/cancel-order','SalesOrderController@cancelOrder');
         Route::get('order/invoice/{id}','SalesOrderController@toInvoice');
         Route::get('order/reg-payment/{id}','SalesOrderController@regPayment');
         Route::post('order/save-payment','SalesOrderController@savePayment');
