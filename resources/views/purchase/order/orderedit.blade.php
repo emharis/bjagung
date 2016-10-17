@@ -15,20 +15,20 @@
     }
 
     /*#table-product > tbody > tr > td > input {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
     }*/
 
     input.input-clear {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
@@ -92,7 +92,7 @@
                     </tr>
                     <tr>
                         <td class="col-lg-2">
-                            <label>Supplier Reference</label>
+                            <label>Supplier Ref#</label>
                         </td>
                         <td class="col-lg-4" >
                             <input type="text" name="no_inv" class="form-control" value="{{$po_master->no_inv}}" >
@@ -174,7 +174,7 @@
                             <a class="btn btn-danger" id="btn-cancel-save" >Cancel</a>
                         </td>
                     </tr> --}}
-                    
+
                 </tbody>
             </table>
 
@@ -198,7 +198,7 @@
                                     <label>Disc :</label>
                                 </td>
                                 <td >
-                                   <input style="font-size:14px;" type="text" name="disc" class="input-sm form-control text-right input-clear" value="{{$po_master->disc}}" > 
+                                   <input style="font-size:14px;" type="text" name="disc" class="input-sm form-control text-right input-clear" value="{{$po_master->disc}}" >
                                 </td>
                             </tr>
                             <tr>
@@ -214,7 +214,7 @@
                 </div>
                 <div class="col-lg-12" >
                     <button type="submit" class="btn btn-primary" id="btn-save" >Save</button>
-                            <a class="btn btn-danger" id="btn-cancel-save" >Cancel</a>
+                    <a class="btn btn-danger"  href="purchase/order" >Close</a>
                 </div>
             </div>
 
@@ -324,11 +324,11 @@
 
         // Tampilkan & Reorder Row Number
         rownumReorder();
-       
+
         // format autocomplete
         input_product.autocomplete({
             serviceUrl: 'purchase/order/get-product',
-            params: {  
+            params: {
                         'nama' : function() {
                                     return input_product.val();
                                 },
@@ -381,7 +381,7 @@
 
     // CANCEL ADD ITEM
     // $('#btn-cancel-add').click(function(){
-    //     // clear input 
+    //     // clear input
     //     $('input[name=product]').val('');
     //     $('input[name=quantity]').val('');
 
@@ -409,7 +409,7 @@
     });
     // END OF DELETE ROW PRODUCT
 
-    
+
     // BTN CANCEL SAVE
     $('#btn-cancel-save').click(function(){
         if(confirm('Anda akan membabtalkan transaksi ini?')){
@@ -461,7 +461,7 @@
                     qty:barang_qty,
                     unit_price:barang_unit_price,
                     subtotal:barang_subtotal
-                });    
+                });
             }
         });
 
@@ -501,7 +501,7 @@
             var first_col = $(this).children('td:first');
             subtotal += Number(first_col.next().next().next().next().children('input').autoNumeric('get'));
         });
-        
+
         $('#label-total-subtotal, #label-total').text('');
         // format autonumeric
         $('#label-total-subtotal, #label-total').autoNumeric('init',{

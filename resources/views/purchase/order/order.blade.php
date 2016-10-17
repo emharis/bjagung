@@ -29,8 +29,8 @@
                 <thead>
                     <tr>
                         <th style="width:50px;" >No</th>
-                        <th  >REFERENCE</th>
-                        <th  >SUPPLIER REFERENCE</th>
+                        <th  >REF#</th>
+                        <th  >SUPPLIER REF#</th>
                         <th  >DATE</th>
                         <th>SUPPLIER</th>
                         <th>TOTAL</th>
@@ -57,10 +57,10 @@
                             @endif
                         </td>
                         <td>
-                            <a class="btn btn-success btn-xs btn-edit-order" href="purchase/order/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
-                            {{-- @if($dt->ref == 0)
-                            <a class="btn btn-danger btn-xs btn-delete-order" ><i class="fa fa-trash" ></i></a>
-                            @endif --}}
+                          <a class="btn btn-success btn-xs btn-edit-order" href="purchase/order/edit/{{$dt->id}}" ><i class="fa fa-edit" ></i></a>
+                          @if($dt->status == 'O')
+                            <a class="btn btn-danger btn-xs btn-delete-order" href="purchase/order/delete/{{$dt->id}}" ><i class="fa fa-trash" ></i></a>
+                          @endif
                         </td>
                     </tr>
                     @endforeach
@@ -132,11 +132,17 @@
         //set data rowid dan order id
         var rowid = $(this).parent().parent().data('rowid');
         var orderid = $(this).parent().parent().data('orderid');
-        
-        $('#btn-modal-delete-yes').data('rowid',rowid);
-        $('#btn-modal-delete-yes').data('orderid',orderid);
-        // tampilkan modal delete
-        $('#modal-delete').modal('show');
+
+        if(confirm('Anda akan menghapus data ini?')){
+          // alert('delete data');
+        }else{
+          return false;
+        }
+
+        // $('#btn-modal-delete-yes').data('rowid',rowid);
+        // $('#btn-modal-delete-yes').data('orderid',orderid);
+        // // tampilkan modal delete
+        // $('#modal-delete').modal('show');
     });
 
     // modal delete klik yes
@@ -158,7 +164,7 @@
                     this.cell(index,0).data(rownum++);
                     // this.invalidate();
                 } );
-                
+
                 TBL_KATEGORI.draw();
             });
         });

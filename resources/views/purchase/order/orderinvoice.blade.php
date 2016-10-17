@@ -15,10 +15,10 @@
     }
 
     input.input-clear {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
@@ -33,10 +33,10 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="purchase/order" >Purchase Order</a> 
-        <i class="fa fa-angle-double-right" ></i> 
-        <a href="purchase/order/edit/{{$po_master->id}}" >{{$po_master->po_num}}</a> 
-        <i class="fa fa-angle-double-right" ></i> 
+        <a href="purchase/order" >Purchase Order</a>
+        <i class="fa fa-angle-double-right" ></i>
+        <a href="purchase/order/edit/{{$po_master->id}}" >{{$po_master->po_num}}</a>
+        <i class="fa fa-angle-double-right" ></i>
         {{$sup_bill->bill_no}}
     </h1>
 </section>
@@ -49,12 +49,15 @@
     <!-- Default box -->
     <div class="box box-solid">
         <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;" >
-            
-        @if($sup_bill->status == "O")
-            <a class="btn btn-primary" style="margin-top:0;" id="btn-reg-payment" href="purchase/order/reg-payment/{{$po_master->id}}" >Register Payment</a>
-        @else
-            <label> <small>Invoice</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$sup_bill->bill_no}}</h4></label>
-        @endif
+
+        {{-- @if($sup_bill->status == "O") --}}
+            {{-- <a class="btn btn-primary" style="margin-top:0;" id="btn-reg-payment" href="purchase/order/reg-payment/{{$po_master->id}}" >Register Payment</a> --}}
+        {{-- @else --}}
+            {{-- <label> <small>Invoice</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$sup_bill->bill_no}}</h4></label> --}}
+            <label>
+              <h3 style="margin:0;padding:0;font-weight:bold;" >{{$sup_bill->bill_no}}</h3>
+            </label>
+        {{-- @endif --}}
 
             <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
             <a class="btn  btn-arrow-right pull-right disabled {{$sup_bill->status == 'P' ? 'bg-blue' : 'bg-gray'}}" >Paid</a>
@@ -69,7 +72,7 @@
         </div>
         <div class="box-body">
             {{-- header --}}
-            
+
             {{-- modul invoices --}}
             {{-- <a class="btn btn-app pull-right" href="purchase/order/invoice/{{$po_master->id}}" > --}}
                     {{-- <span class="badge bg-green">1</span> --}}
@@ -78,9 +81,9 @@
 
             {{-- <label>Purchase Order</label> --}}
             {{-- <h3 style="margin-top:0;" ><label>{{$po_master->po_num}}<label></h3> --}}
-            @if($sup_bill->status == "O")
+            {{-- @if($sup_bill->status == "O")
             <label> <small>Invoice</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$sup_bill->bill_no}}</h4></label>
-            @endif
+            @endif --}}
 
             <table class="table" >
                 <tbody>
@@ -107,7 +110,8 @@
                         </td>
                         <td class="col-lg-4" >
                             {{-- <input type="text" name="no_inv" class="form-control" value="{{$po_master->no_inv}}" > --}}
-                            <a href="purchase/order/edit/{{$po_master->id}}" >{{$po_master->po_num}}</a> 
+                            {{-- <a href="purchase/order/edit/{{$po_master->id}}" >{{$po_master->po_num}}</a> --}}
+                            {{$po_master->po_num}}
                         </td>
                         <td class="col-lg-2" ></td>
                         <td class="col-lg-2" >
@@ -195,7 +199,7 @@
                             @foreach($payments as $dt)
                                 <tr style="background-color:#EEF0F0;" >
                                     <td class="text-right" >
-                                        <a class="btn-delete-payment" data-paymentid="{{$dt->id}}" href="#" ><i class="fa fa-trash-o pull-left" ></i></a>
+                                        {{-- <a class="btn-delete-payment" data-paymentid="{{$dt->id}}" href="#" ><i class="fa fa-trash-o pull-left" ></i></a> --}}
                                         <i>Paid on {{$dt->payment_date_formatted}}</i>
                                     </td>
                                     <td class="text-right" >
@@ -329,11 +333,11 @@
 
         // Tampilkan & Reorder Row Number
         rownumReorder();
-       
+
         // format autocomplete
         input_product.autocomplete({
             serviceUrl: 'purchase/order/get-product',
-            params: {  
+            params: {
                         'nama' : function() {
                                     return input_product.val();
                                 },
@@ -386,7 +390,7 @@
 
     // CANCEL ADD ITEM
     // $('#btn-cancel-add').click(function(){
-    //     // clear input 
+    //     // clear input
     //     $('input[name=product]').val('');
     //     $('input[name=quantity]').val('');
 
@@ -414,7 +418,7 @@
     });
     // END OF DELETE ROW PRODUCT
 
-    
+
     // BTN CANCEL SAVE
     $('#btn-cancel-save').click(function(){
         if(confirm('Anda akan membabtalkan transaksi ini?')){
@@ -466,7 +470,7 @@
                     qty:barang_qty,
                     unit_price:barang_unit_price,
                     subtotal:barang_subtotal
-                });    
+                });
             }
         });
 
@@ -506,7 +510,7 @@
             var first_col = $(this).children('td:first');
             subtotal += Number(first_col.next().next().next().next().children('input').autoNumeric('get'));
         });
-        
+
         $('#label-total-subtotal, #label-total').text('');
         // format autonumeric
         $('#label-total-subtotal, #label-total').autoNumeric('init',{
@@ -532,7 +536,7 @@
     });
     // END OF VALIDATE PO
 
-    // DELETE PAYMENT 
+    // DELETE PAYMENT
     $('.btn-delete-payment').click(function(){
         if(confirm('Anda akan menghapus data ini?')){
             // delete payment

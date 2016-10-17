@@ -111,7 +111,8 @@
                         </td>
                         <td class="col-lg-4" >
                             {{-- <input type="text" name="no_inv" class="form-control" value="{{$so_master->no_inv}}" > --}}
-                            <a href="sales/order/edit/{{$so_master->id}}" >{{$so_master->so_no}}</a> 
+                            {{-- <a href="sales/order/edit/{{$so_master->id}}" >{{$so_master->so_no}}</a>  --}}
+                            {{$so_master->so_no}}
                         </td>
                         <td class="col-lg-2" ></td>
                         <td class="col-lg-2" >

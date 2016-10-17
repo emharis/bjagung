@@ -28,9 +28,9 @@ class PurchaseOrderController extends Controller {
         $data = \DB::select('select id as data,nama as value , jatuh_tempo
                 from supplier
                 where nama like "%'.$req->get('nama').'%"');
-        
+
         $data_res = ['query'=>'Unit','suggestions' => $data];
-        echo json_encode($data_res);   
+        echo json_encode($data_res);
     }
     // END OF GET DATA SUPPLIER
 
@@ -49,9 +49,9 @@ class PurchaseOrderController extends Controller {
                 if($i < count($exceptdata->barangid)-1 ){
                     $except_data_string = $except_data_string . ",";
                 }
-                
+
                 $except_data_string = $except_data_string .  $exceptdata->barangid[$i];
-                
+
             }
 
             // $data = \DB::select('select id as data,nama_full as value,kode
@@ -69,19 +69,19 @@ class PurchaseOrderController extends Controller {
         }else{
             $data = \DB::select('select id as data,nama_full as value,kode
                 from VIEW_STOK_BARANG
-                where nama_full like "%'.$req->get('nama').'%"');    
+                where nama_full like "%'.$req->get('nama').'%"');
 
             // $data = 'select id as data,nama_full as value,kode
             //     from VIEW_STOK_BARANG
-            //     where nama_full like "%'.$req->get('nama').'%"';    
+            //     where nama_full like "%'.$req->get('nama').'%"';
             // echo 'preketek';
         }
-        
-        
+
+
         $data_res = ['query'=>'Unit','suggestions' => $data];
         echo json_encode($data_res);
 
-        
+
 
         // substr_replace(",", "",  $except_data_string);
 
@@ -166,20 +166,44 @@ class PurchaseOrderController extends Controller {
         $po_barang = \DB::table('VIEW_BELI_BARANG')->where('beli_id',$id)->get();
 
         if($po_master->status == "V"){
+            // cek apakah bisa di hapus
+            $can_delete = true;
+            foreach($po_barang as $dt){
+              // get data stok
+              $stok = \DB::table('stok')
+                        ->where('beli_barang_id',$dt->id)
+                        ->first();
+
+              if($stok->current_stok < $stok->stok_awal){
+                $can_delete = false;
+              }
+            }
             return view('purchase.order.ordervalidated',[
                 'po_master' => $po_master,
                 'po_barang' => $po_barang,
+                'can_delete' => $can_delete
             ]);
         }else{
             return view('purchase.order.orderedit',[
                 'po_master' => $po_master,
                 'po_barang' => $po_barang,
-            ]);    
+            ]);
         }
 
-        
+
     }
     // END OF EDIT PURCHASE ORDER
+
+    // DELETE PURCHASE ORDER
+    public function deleteOrder($purchase_order_id){
+      return \DB::transaction(function()use($purchase_order_id){
+        // delete purchase order master
+        \DB::table('beli')
+            ->delete($purchase_order_id);
+
+            return redirect()->back();
+      });
+    }
 
 
     // UPDATE PURCHASE ORDER
@@ -213,7 +237,7 @@ class PurchaseOrderController extends Controller {
                     'no_inv' => $po_master->no_inv,
                     'tgl' => $fix_tgl,
                     'jatuh_tempo' => $fix_tgl_jatuh_tempo,
-                    'supplier_id' => $po_master->supplier_id, 
+                    'supplier_id' => $po_master->supplier_id,
                     'disc' => $po_master->disc,
                     'status' => 'O',
                     'note' => $po_master->note,
@@ -282,9 +306,9 @@ class PurchaseOrderController extends Controller {
                             'current_stok' => $dt->qty,
                             'tipe' => 'M',
                             'harga' => $dt->harga,
-                            'beli_id' => $dt->id,
+                            'beli_barang_id' => $dt->id,
                             'user_id' => \Auth::user()->id,
-                        ]);    
+                        ]);
                 // insert ke table stok_moving
                 \DB::table('stok_moving')
                     ->insert([
@@ -303,7 +327,7 @@ class PurchaseOrderController extends Controller {
                                 ->first();
             // generate bill number
             $bill_no = "BILL/" . date('Y') . "/000"  . $supplier_bill_counter->value++;
-            // insert into table supplier_bill as invoice data 
+            // insert into table supplier_bill as invoice data
 
             \DB::table('supplier_bill')
                 ->insert([
@@ -325,7 +349,7 @@ class PurchaseOrderController extends Controller {
                     ]);
 
             return redirect()->back();
-            
+
         });
     }
     // END OF VALIDATE PO
@@ -398,7 +422,7 @@ class PurchaseOrderController extends Controller {
                                 \DB::raw("date_format(`due_date`,'%d-%m-%Y') as due_date_formatted")
                             )
                     ->first();
-            
+
             // generate tanggal
             $tgl = $req->payment_date;
             $arr_tgl = explode('-',$tgl);
@@ -436,13 +460,13 @@ class PurchaseOrderController extends Controller {
                             'total' => $total,
                             'payment_number' => $payment_number_reference
                         ]);
-                        
+
                 // update amount due di table supplier_bill
                 \DB::table('supplier_bill')
                     ->where('id',$sup_bill->id)
                     ->update([
                             'amount_due' => ($sup_bill->amount_due - $total)
-                        ]);   
+                        ]);
 
                 // jika amount_due nya 0 maka set status ke paid
                 if(($sup_bill->amount_due - $total) == 0){
@@ -454,7 +478,7 @@ class PurchaseOrderController extends Controller {
                             ]);
                 }
 
-            }            
+            }
 
             return redirect('purchase/order/invoice/' . $po_master->id);
 
@@ -482,7 +506,7 @@ class PurchaseOrderController extends Controller {
                 ->where('id',$req->payment_id)
                 ->delete();
 
-            // 
+            //
 
 
             return redirect()->back();
@@ -490,5 +514,15 @@ class PurchaseOrderController extends Controller {
 
     }
     // END OF DELETE PAYMENT
+
+    public function cancelOrder($purchase_order_id){
+      return \DB::transaction(function()use($purchase_order_id){
+        // delete data beli 
+        // selebih nya sudah di hanle oleh trigger di database
+        \DB::table('beli')->delete($purchase_order_id);
+
+        return redirect('purchase/order');
+      });
+    }
 
 }

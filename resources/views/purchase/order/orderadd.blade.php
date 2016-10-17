@@ -15,10 +15,10 @@
     }
 
     input.input-clear {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
@@ -76,7 +76,7 @@
                     </tr>
                     <tr>
                         <td class="col-lg-2">
-                            <label>Supplier Reference</label>
+                            <label>Supplier Ref #</label>
                         </td>
                         <td class="col-lg-4" >
                             <input type="text" name="no_inv" class="form-control" >
@@ -130,8 +130,8 @@
                             <a id="btn-add-item" href="#">Add an item</a>
                         </td>
                     </tr>
-                    
-                    
+
+
                 </tbody>
             </table>
 
@@ -147,7 +147,7 @@
                                     <label>Subtotal :</label>
                                 </td>
                                 <td class="label-total-subtotal text-right" >
-                                    
+
                                 </td>
                             </tr>
                             <tr>
@@ -155,7 +155,7 @@
                                     <label>Disc :</label>
                                 </td>
                                 <td >
-                                   <input style="font-size:14px;" type="text" name="disc" class="input-sm form-control text-right input-clear"> 
+                                   <input style="font-size:14px;" type="text" name="disc" class="input-sm form-control text-right input-clear">
                                 </td>
                             </tr>
                             <tr>
@@ -163,7 +163,7 @@
                                     Total :
                                 </td>
                                 <td class="label-total text-right" style="font-size:18px;font-weight:bold;border-top:solid darkgray 1px;" >
-                                    
+
                                 </td>
                             </tr>
                         </tbody>
@@ -311,11 +311,11 @@
 
         // Tampilkan & Reorder Row Number
         rownumReorder();
-       
+
         // format autocomplete
         input_product.autocomplete({
             serviceUrl: 'purchase/order/get-product',
-            params: {  
+            params: {
                         'nama' : function() {
                                     return input_product.val();
                                 },
@@ -368,7 +368,7 @@
 
     // CANCEL ADD ITEM
     // $('#btn-cancel-add').click(function(){
-    //     // clear input 
+    //     // clear input
     //     $('input[name=product]').val('');
     //     $('input[name=quantity]').val('');
 
@@ -394,7 +394,7 @@
     });
     // END OF DELETE ROW PRODUCT
 
-    
+
     // BTN CANCEL SAVE
     $('#btn-cancel-save').click(function(){
         if(confirm('Anda akan membabtalkan transaksi ini?')){
@@ -453,17 +453,17 @@
                     qty:barang_qty,
                     unit_price:barang_unit_price,
                     subtotal:barang_subtotal
-                });    
+                });
             }
 
             // alert('almost to add barang to po_barang obj');
-            
+
             // alert('Barang has added');
         });
 
         // alert(po_barang.barang.length);
 
-        if(po_master.supplier_id != "" && po_master.no_inv != "" && po_master.tanggal != "" && po_barang.barang.length > 0){
+        if(po_master.supplier_id != "" && po_master.tanggal != "" && po_barang.barang.length > 0){
             // posting purchase order to database
             // alert('insert ke database');
             var newform = $('<form>').attr('method','POST').attr('action','purchase/order/insert');

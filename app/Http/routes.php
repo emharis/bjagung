@@ -24,13 +24,13 @@ Route::get('test',function(){
     $counter = 1;
     foreach($brg as $dt){
         if($counter++ < (8+1)){
-            echo $dt->nama . '<br>';    
+            echo $dt->nama . '<br>';
         }else{
             echo '================= <br>';
             $counter = 1;
         }
 
-        
+
     }
 
 });
@@ -79,7 +79,7 @@ Route::get('logout', function() {
 Route::group(['middleware' => ['web','auth']], function () {
 
 
-    // INVENTORY 
+    // INVENTORY
     Route::group(['prefix' => 'inventory'], function () {
 
         // BARANG
@@ -131,7 +131,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     });
     // END OF INVENTORY
 
-    // PURCHASE 
+    // PURCHASE
     Route::group(['prefix' => 'purchase'], function () {
 
         // SUPPLIER
@@ -153,11 +153,14 @@ Route::group(['middleware' => ['web','auth']], function () {
         Route::get('order/edit/{id}','PurchaseOrderController@edit');
         Route::post('order/update','PurchaseOrderController@update');
         Route::post('order/validate','PurchaseOrderController@validatePo');
+        Route::get('order/delete/{purchase_order_id}','PurchaseOrderController@deleteOrder');
+        Route::get('order/cancel-order/{purchase_order_id}','PurchaseOrderController@cancelOrder');
         // Route::get('order/validated','PurchaseOrderController@validated');
         Route::get('order/invoice/{id}','PurchaseOrderController@poInvoice');
         Route::get('order/reg-payment/{id}','PurchaseOrderController@regPayment');
         Route::post('order/save-payment','PurchaseOrderController@savePayment');
         Route::post('order/delete-payment','PurchaseOrderController@deletePayment');
+        Route::get('order/confirm-delete/{purchase_order_id}','PurchaseOrderController@confirmDelete');
 
         Route::get('order/test',function(){
             $date = new DateTime();
@@ -169,7 +172,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     });
     // END OF PURCHASE
 
-    // SALES 
+    // SALES
     Route::group(['prefix' => 'sales'], function () {
 
         // CUSTOMER
@@ -211,15 +214,27 @@ Route::group(['middleware' => ['web','auth']], function () {
     });
     // END OF SALES
 
-    // INVOICE 
+    // INVOICE
     Route::group(['prefix' => 'invoice'], function () {
 
         // CUSTOMER INVOICE
         Route::get('customer-invoice','CustomerInvoiceController@index');
         Route::get('customer-invoice/show/{id}','CustomerInvoiceController@show');
         Route::get('customer-invoice/delete-payment/{payment_id}','CustomerInvoiceController@deletePayment');
-        Route::get('customer-invoice/reg-payment/{invoice_id}','CustomerInvoiceController@registerPayment');        
+        Route::get('customer-invoice/reg-payment/{invoice_id}','CustomerInvoiceController@registerPayment');
         // END OF CUSTOMER INVOICE
+
+        // CUSTOMER PAYMENT
+        Route::get('customer/payment','CustomerPaymentController@index');
+        Route::get('customer/payment/create','CustomerPaymentController@create');
+        Route::get('customer/payment/get-customer','CustomerPaymentController@getCustomer');
+        Route::get('customer/payment/get-invoices/{customer_id}','CustomerPaymentController@getInvoices');
+        Route::post('customer/payment/insert','CustomerPaymentController@insert');
+        Route::get('customer/payment/edit/{payment_id}','CustomerPaymentController@edit');
+        Route::get('customer/payment/delete/{payment_id}','CustomerPaymentController@delete');
+        Route::get('customer/payment/show-source-document/{customer_invoice_id}/{customer_payment_id}','CustomerPaymentController@showSourceDocument');
+
+        // END OF CUSTOMER PAYMENT
 
         // SUPPLIER BILL
         Route::get('supplier-bill','SupplierBillController@index');
@@ -228,8 +243,43 @@ Route::group(['middleware' => ['web','auth']], function () {
         Route::get('supplier-bill/delete-payment/{payment_bill_id}','SupplierBillController@deletePayment');
         // END OF SUPPLIER BILL
 
+        // BILL PAYMENT
+        Route::get('supplier/bill-payment','BillPaymentController@index');
+        // END OF BILL PAYMENT
+
     });
     // END OF INVOICE
+
+    // EXPENSE
+    Route::group(['prefix' => 'cashbook'], function () {
+
+        // EXPENSE CONTROLLER
+        Route::get('expense','ExpenseController@index');
+        Route::get('expense/add','ExpenseController@add');
+        Route::post('expense/insert','ExpenseController@insert');
+        Route::post('expense/update','ExpenseController@update');
+        Route::get('expense/delete/{expense_id}','ExpenseController@delete');
+        Route::get('expense/edit/{expense_id}','ExpenseController@edit');
+        // Route::post('expense/filter','ExpenseController@filter');
+        Route::get('expense/filter','ExpenseController@filter');
+        // END OF EXPENSE CONTROLLER
+
+        // RECEIPT CONTROLLER
+        Route::get('receipt','ReceiptController@index');
+        Route::get('receipt/add','ReceiptController@add');
+        Route::post('receipt/insert','ReceiptController@insert');
+        Route::post('receipt/update','ReceiptController@update');
+        Route::get('receipt/delete/{receipt_id}','ReceiptController@delete');
+        Route::get('receipt/edit/{receipt_id}','ReceiptController@edit');
+        Route::get('receipt/filter','ReceiptController@filter');
+        // END OF RECEIPT CONTROLLER
+
+        // PETTY CASH CONTROLLER
+        Route::get('pettycash','PettyCashController@index');
+        // END OF PETTY CASH CONTROLLER
+
+    });
+    // END OF EXPENSE
 
     // GENERAL API
     Route::group(['prefix'=>'api'],function(){
@@ -246,7 +296,7 @@ Route::group(['middleware' => ['web','auth']], function () {
 
 
     Route::get('home', ['as' => 'home', 'uses' => 'HomeController@index']);
-    
+
     // Route::group(['prefix' => 'master'], function () {
     //     // Users
     //     Route::get('users', ['as' => 'master.users', 'uses' => 'UserController@index']);
@@ -294,7 +344,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     //     Route::post('sales/update-sales', ['as' => 'master.sales.update-sales', 'uses' => 'SalesController@updateSales']);
     // });
 
-    // Route::group(['prefix' => 'setbar'], function () {        
+    // Route::group(['prefix' => 'setbar'], function () {
     //     //Manual Stok
     //     Route::get('manstok', ['as' => 'setbar.manstok', 'uses' => 'ManstokController@index']);
     //     Route::get('manstok/set-stok/{id}', ['as' => 'setbar.manstok.set-stok', 'uses' => 'ManstokController@setStok']);
@@ -304,8 +354,8 @@ Route::group(['middleware' => ['web','auth']], function () {
     //     Route::post('manstok/update-harga', ['as' => 'setbar.manstok.update-harga', 'uses' => 'ManstokController@updateHarga']);
     //     Route::get('manstok/delete-harga/{id}', ['as' => 'setbar.manstok.delete-harga', 'uses' => 'ManstokController@deleteHarga']);
     // });
-    
-    Route::group(['prefix' => 'pembelian'], function () {        
+
+    Route::group(['prefix' => 'pembelian'], function () {
         //Pembelian
         Route::get('beli', ['as' => 'pembelian.beli', 'uses' => 'BeliController@index']);
         Route::get('beli/show/{id}', ['as' => 'pembelian.beli.show', 'uses' => 'BeliController@show']);
@@ -318,7 +368,7 @@ Route::group(['middleware' => ['web','auth']], function () {
         Route::get('beli/get-barang-by-kode', ['as' => 'pembelian.beli.get-barang-by-kode', 'uses' => 'BeliController@getBarangByKode']);
     });
 
-    Route::group(['prefix' => 'penjualan'], function () {        
+    Route::group(['prefix' => 'penjualan'], function () {
         //PENJUALAN
         Route::get('jual', ['as' => 'penjualan.jual', 'uses' => 'JualController@index']);
         Route::get('clear-jual', ['as' => 'penjualan.clear-jual', 'uses' => 'JualController@getClearJual']);
@@ -338,6 +388,6 @@ Route::group(['middleware' => ['web','auth']], function () {
 
     // Pengaturan Stok Manual
     Route::get('stok', ['as' => 'stok', 'uses' => 'StokController@index']);
-    
-    
+
+
 });

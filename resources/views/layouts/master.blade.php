@@ -77,13 +77,18 @@
             }
 
             /*ganti warna button-primary hover di header box*/
-            .box .box-header > a.btn.btn-primary:hover {
+            .box .box-header .btn.btn-primary:hover {
                 background-color: #367fa9;
                 /*background-color: red;*/
             }
 
+            .box .box-header > a.btn.btn-success:hover, .box .box-header div > a.btn.btn-success:hover, .box .box-header .btn.btn-success:hover {
+                background-color: #008D4C;
+                /*background-color: red;*/
+            }
+
             /*ganti warna button-danger hover di header box*/
-            .box .box-header > a.btn.btn-danger:hover {
+            .box .box-header .btn.btn-danger:hover {
                 background-color: #d73925;
                 /*background-color: red;*/
             }

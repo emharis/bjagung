@@ -48,14 +48,15 @@ class ApiController extends Controller {
                 ->find($req->payment_id);
 
             // update status customer_invoice
-            \DB::table('customer_invoice')
-                ->where('id',$payment->customer_invoice_id)
-                ->update([
-                        'status' => 'O',
-                        'amount_due' => \DB::raw('amount_due + ' . $payment->payment_amount)
-                    ]);
+            // \DB::table('customer_invoice')
+            //     ->where('id',$payment->customer_invoice_id)
+            //     ->update([
+            //             'status' => 'O',
+            //             'amount_due' => \DB::raw('amount_due + ' . $payment->payment_amount)
+            //         ]);
 
-             \DB::table('customer_invoice_payment')->delete($req->payment_id);
+            // delete datta payment customer
+            \DB::table('customer_invoice_payment')->delete($req->payment_id);
         });
         
     }

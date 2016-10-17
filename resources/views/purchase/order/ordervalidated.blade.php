@@ -15,10 +15,10 @@
     }
 
     input.input-clear {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
@@ -47,7 +47,14 @@
         <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;" >
             {{-- <a class="btn btn-primary" style="margin-top:0;" id="btn-validate-po" >Validate</a> --}}
             {{-- header --}}
-            <label> <small>Purchase Order</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$po_master->po_num}}</h4></label>
+            {{-- <label> <small>Purchase Order</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$po_master->po_num}}</h4></label> --}}
+            @if($can_delete)
+            <button class="btn btn-danger" id="btn-cancel-order" data-href="purchase/order/cancel-order/{{$po_master->id}}" >Cancel Order</button>
+            @else
+              <label>
+                <h3 style="margin:0;padding:0;font-weight:bold;" >{{$po_master->po_num}}</h3>
+              </label>
+            @endif
 
             <label class="pull-right" >&nbsp;&nbsp;&nbsp;</label>
             <a class="btn  btn-arrow-right pull-right disabled {{$po_master->status == 'V' ? 'bg-blue' : 'bg-gray'}}" >Validated</a>
@@ -61,6 +68,13 @@
             <a class="btn btn-arrow-right pull-right disabled bg-gray" >Draft</a>
         </div>
         <div class="box-body">
+          @if($can_delete)
+          <label>
+            <h3 style="margin:0;padding:0;font-weight:bold;" >{{$po_master->po_num}}</h3>
+          </label>
+          @endif
+
+          {{-- <label> <small>Purchase Order</small> <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$po_master->po_num}}</h4></label> --}}
 
             <div class="row" >
                 <div class="col-lg-10" >
@@ -85,7 +99,7 @@
                     </tr>
                     <tr>
                         <td class="col-lg-2">
-                            <label>Supplier Reference</label>
+                            <label>Supplier Ref#</label>
                         </td>
                         <td class="col-lg-4" >
                             {{-- <input type="text" name="no_inv" class="form-control" value="{{$po_master->no_inv}}" > --}}
@@ -111,13 +125,13 @@
                     </a>
                 </div>
             </div>
-            
-           
+
+
 
             {{-- <label>Purchase Order</label> --}}
             {{-- <h3 style="margin-top:0;" ><label>{{$po_master->po_num}}<label></h3> --}}
 
-            
+
 
             <h4 class="page-header" style="font-size:14px;color:#3C8DBC"><strong>PRODUCT DETAILS</strong></h4>
 
@@ -171,7 +185,7 @@
                             <a class="btn btn-danger" id="btn-cancel-save" >Cancel</a>
                         </td>
                     </tr> --}}
-                    
+
                 </tbody>
             </table>
 
@@ -325,11 +339,11 @@
 
         // Tampilkan & Reorder Row Number
         rownumReorder();
-       
+
         // format autocomplete
         input_product.autocomplete({
             serviceUrl: 'purchase/order/get-product',
-            params: {  
+            params: {
                         'nama' : function() {
                                     return input_product.val();
                                 },
@@ -382,7 +396,7 @@
 
     // CANCEL ADD ITEM
     // $('#btn-cancel-add').click(function(){
-    //     // clear input 
+    //     // clear input
     //     $('input[name=product]').val('');
     //     $('input[name=quantity]').val('');
 
@@ -410,7 +424,7 @@
     });
     // END OF DELETE ROW PRODUCT
 
-    
+
     // BTN CANCEL SAVE
     $('#btn-cancel-save').click(function(){
         if(confirm('Anda akan membabtalkan transaksi ini?')){
@@ -462,7 +476,7 @@
                     qty:barang_qty,
                     unit_price:barang_unit_price,
                     subtotal:barang_subtotal
-                });    
+                });
             }
         });
 
@@ -502,7 +516,7 @@
             var first_col = $(this).children('td:first');
             subtotal += Number(first_col.next().next().next().next().children('input').autoNumeric('get'));
         });
-        
+
         $('#label-total-subtotal, #label-total').text('');
         // format autonumeric
         $('#label-total-subtotal, #label-total').autoNumeric('init',{
@@ -527,6 +541,13 @@
         validateForm.submit();
     });
     // END OF VALIDATE PO
+
+    // CANCEL PURCHASE ORDER
+    $('#btn-cancel-order').click(function(){
+      if(confirm('Anda akan membatalkan transaksi ini? \nData yang telah dibatalkan tidak dapat dikembalikan.')){
+        location.href = $(this).data('href');
+      }
+    });
 
 })(jQuery);
 </script>

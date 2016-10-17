@@ -34,7 +34,7 @@
                     <tr>
                         <th style="width:30px;" >NO</th>
                         <th>CUSTOMER</th>
-                        <th>NUMBER</th>
+                        <th>REFERENCE</th>
                         <th>INVOICE DATE</th>                        
                         <th>DUE DATE</th>
                         <th>SOURCE DOCUMENT</th>

@@ -10,7 +10,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Supplier Bills
+        Customer Payments
     </h1>
 </section>
 
@@ -19,22 +19,22 @@
 
     <!-- Default box -->
     <div class="box box-solid">
+        <div class="box-header" >
+            <a class="btn btn-sm btn-primary" href="invoice/customer/payment/create" >Register Payment</a>
+        </div>
         <div class="box-body">
+
             <?php $rownum=1; ?>
             <table class="table table-bordered table-condensed table-striped table-hover" id="table-order" >
                 <thead>
                     <tr>
                         <th style="width:30px;" >NO</th>
-                        <th>SUPPLIER</th>
-                        <th>BILL DATE</th>
-                        <th>REF#</th>
-                        <th>SUPPLIER REF#</th>
-                        <th>DUE DATE</th>
+                        <th>PAYMENT DATE</th>
+                        <th>REFERENCE</th>
+                        <th>CUSTOMER</th>                        
                         <th>SOURCE DOCUMENT</th>
-                        <th>TOTAL</th>
-                        <th>TO PAY</th>
-                        <th>STATUS</th>
-                        <th style="width:30px;" ></th>
+                        <th>PAYMENT AMOUNT</th>
+                        <th class="col-sm-1 col-md-1 col-lg-1" ></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,45 +45,31 @@
                                 {{$rownum++}}
                             </td>
                             <td>
-                                {{$dt->supplier}}
+                                {{$dt->payment_date_formatted}}
                             </td>
                             <td>
-                                {{$dt->bill_date_formatted}}
+                                {{$dt->payment_number}}
                             </td>
                             <td>
-                                {{$dt->bill_no}}
+                                {{$dt->customer}}
                             </td>
                             <td>
-                                {{$dt->no_inv}}
-                            </td>
-                            <td>
-                                {{$dt->due_date_formatted}}
-                            </td>
-                            <td  >
-                                {{$dt->po_num}}
+                                <a href="invoice/customer/payment/show-source-document/{{$dt->customer_invoice_id}}/{{$dt->id}}" >{{$dt->source_document}}</a>
+                                
                             </td>
                             <td class="text-right" >
-                                {{number_format($dt->total,0,'.',',')}}
-                            </td>
-                            <td class="text-right" >
-                                {{number_format($dt->amount_due,0,'.',',')}}
+                                {{number_format($dt->payment_amount,0,'.',',')}}
                             </td>
                             <td>
-                                @if($dt->status == 'O')
-                                    Open
-                                @else
-                                    Paid
-                                @endif
-                            </td>
-                            <td>
-                                <a class="btn btn-success btn-xs" href="invoice/supplier-bill/show/{{$dt->id }}" ><i class="fa fa-edit" ></i></a>
+                                <a class="btn btn-success btn-xs" href="invoice/customer/payment/edit/{{$dt->id }}" ><i class="fa fa-edit" ></i></a>
+                                <a class="btn btn-danger btn-xs btn-delete-payment" href="invoice/customer/payment/delete/{{$dt->id}}" ><i class="fa fa-trash-o" ></i></a>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
 
-
+            {{-- <a class="btn btn-danger" href="sales/order/edit/{{$so_master->id}}" >Close</a> --}}
         </div><!-- /.box-body -->
     </div><!-- /.box -->
 
@@ -122,15 +108,6 @@
 
 <script type="text/javascript">
 (function ($) {
-    //required checkbox
-    var requiredCheckboxes = $('.order_jual');
-    requiredCheckboxes.change(function () {
-        if (requiredCheckboxes.is(':checked')) {
-            requiredCheckboxes.removeAttr('required');
-        } else {
-            requiredCheckboxes.attr('required', 'required');
-        }
-    });
 
     var TBL_KATEGORI = $('#table-order').DataTable({
         "columns": [
@@ -139,16 +116,23 @@
             null,
             null,
             null,
-            null,
-            null,
-            null,
             {className: "text-right"},
-            null,
             {className: "text-center"}
         ]
     });
 
+    // DELETE PAYMENT
+    $('.btn-delete-payment').click(function(){
+        if(confirm('Anda akan menghapus data ini?')){
+            
+        }else{
 
+            return false;
+        }
+    });
+    // END OF DELETE PAYMENT
+
+   
 })(jQuery);
 </script>
 @append
