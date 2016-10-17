@@ -34,8 +34,8 @@
                     <tr>
                         <th style="width:30px;" >NO</th>
                         <th>CUSTOMER</th>
-                        <th>REFERENCE</th>
-                        <th>INVOICE DATE</th>                        
+                        <th>REF#</th>
+                        <th>INVOICE DATE</th>
                         <th>DUE DATE</th>
                         <th>SOURCE DOCUMENT</th>
                         <th>TOTAL</th>
@@ -151,7 +151,7 @@
         ]
     });
 
-   
+
 })(jQuery);
 </script>
 @append

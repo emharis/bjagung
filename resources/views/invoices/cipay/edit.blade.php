@@ -15,10 +15,10 @@
     }
 
     input.input-clear {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
@@ -42,13 +42,13 @@
       <ul class="dropdown-menu" role="menu">
         <li><a href="#" onclick="return false;">Printer</a></li>
         <li><a href="#" onclick="return false;" >PDF</a></li>
-        
+
       </ul>
     </div>
-    
+
     <h1>
-        <a href="invoice/customer/payment" >Customer Payments</a> 
-        <i class="fa fa-angle-double-right" ></i> 
+        <a href="invoice/customer/payment" >Customer Payments</a>
+        <i class="fa fa-angle-double-right" ></i>
         {{$data->payment_number}}
     </h1>
 
@@ -74,7 +74,7 @@
         </div>
         <div class="box-body">
             {{-- <form method="POST" action="sales/order/save-payment" > --}}
-                
+
                 <table class="table" >
                     <tbody>
                         <tr>
@@ -114,7 +114,7 @@
                                 <a class="btn btn-danger" id="btn-cancel" href="invoice/customer/payment" >Cancel</a>
                             </td>
                         </tr> --}}
-                        
+
                     </tbody>
                 </table>
             {{-- </form> --}}
@@ -123,14 +123,14 @@
             <table id="table-invoices" class="table table-bordered table-condensed" >
                 <thead>
                     <tr>
-                        <th>REFERENCE</th>
+                        <th>REF#</th>
                         <th>TOTAL</th>
                         <th>AMOUNT DUE</th>
                         <th>PAYMENT AMOUNT</th>
                     </tr>
                     <tbody></tbody>
             </table> --}}
-            
+
         </div><!-- /.box-body -->
         <div class="box-footer" >
             {{-- <button type="submit" class="btn btn-primary" id="btn-save" >Save</button> --}}
@@ -152,7 +152,7 @@
 
 <script type="text/javascript">
 (function ($) {
-     
+
     // -----------------------------------------------------
     // SET AUTO NUMERIC
     // =====================================================

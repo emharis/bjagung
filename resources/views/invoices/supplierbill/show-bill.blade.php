@@ -15,10 +15,10 @@
     }
 
     input.input-clear {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
@@ -33,8 +33,8 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="invoice/supplier-bill" >Supplier Bills</a> 
-        <i class="fa fa-angle-double-right" ></i> 
+        <a href="invoice/supplier-bill" >Supplier Bills</a>
+        <i class="fa fa-angle-double-right" ></i>
         {{$sup_bill->bill_no}}
     </h1>
 </section>
@@ -77,42 +77,39 @@
                             {{-- <input type="text" name="supplier" class="form-control" data-supplierid="{{$po_master->supplier_id}}" value="{{$po_master->supplier}}" required> --}}
                             {{$po_master->supplier}}
                         </td>
-                        <td class="col-lg-2" ></td>
                         <td class="col-lg-2" >
                             <label>Source Document</label>
                         </td>
-                        <td class="col-lg-2" >
+                        <td class="col-lg-4" >
                             {{$sup_bill->po_num}}
                         </td>
                     </tr>
                     <tr>
-                        <td class="col-lg-2">
-                            <label>Supplier Reference</label>
+                        <td >
+                            <label>Supplier Ref#</label>
                         </td>
-                        <td class="col-lg-4" >
+                        <td  >
                             {{$sup_bill->no_inv}}
                         </td>
-                        <td class="col-lg-2" ></td>
-                        <td class="col-lg-2" >
+                        <td  >
                             <label>Bill Date</label>
                         </td>
-                        <td class="col-lg-2" >
+                        <td  >
                             {{-- <input type="text" name="tanggal" class="input-tanggal form-control" value="{{$po_master->tgl_formatted}}" required> --}}
                             {{$sup_bill->bill_date_formatted}}
                         </td>
                     </tr>
                     <tr>
-                        <td class="col-lg-2">
+                        <td >
                             <label></label>
                         </td>
-                        <td class="col-lg-4" >
-                             
+                        <td  >
+
                         </td>
-                        <td class="col-lg-2" ></td>
-                        <td class="col-lg-2" >
+                        <td >
                             <label>Due Date</label>
                         </td>
-                        <td class="col-lg-2" >
+                        <td  >
                             {{-- <input type="text" name="jatuh_tempo"  class="input-tanggal form-control" value="{{$po_master->jatuh_tempo_formatted}}" > --}}
                             {{-- {{$po_master->jatuh_tempo_formatted}} --}}
                             {{$sup_bill->due_date_formatted}}
@@ -246,7 +243,7 @@
                     <?php $rownum=1; ?>
                     <?php $total_payment_amount=0; ?>
                     @foreach($payments as $dt)
-                        <tr  >  
+                        <tr  >
                             <td class="text-right" >{{$rownum++}}</td>
                             <td>{{$dt->payment_date_formatted}}</td>
                             <td>{{$dt->payment_number}}</td>
@@ -277,7 +274,7 @@
 
     <!-- Default box -->
     {{-- <div class="box box-solid">
-        
+
     </div> --}}<!-- /.box -->
 
 </section><!-- /.content -->
@@ -382,11 +379,11 @@
 
         // Tampilkan & Reorder Row Number
         rownumReorder();
-       
+
         // format autocomplete
         input_product.autocomplete({
             serviceUrl: 'purchase/order/get-product',
-            params: {  
+            params: {
                         'nama' : function() {
                                     return input_product.val();
                                 },
@@ -439,7 +436,7 @@
 
     // CANCEL ADD ITEM
     // $('#btn-cancel-add').click(function(){
-    //     // clear input 
+    //     // clear input
     //     $('input[name=product]').val('');
     //     $('input[name=quantity]').val('');
 
@@ -467,7 +464,7 @@
     });
     // END OF DELETE ROW PRODUCT
 
-    
+
     // BTN CANCEL SAVE
     $('#btn-cancel-save').click(function(){
         if(confirm('Anda akan membabtalkan transaksi ini?')){
@@ -519,7 +516,7 @@
                     qty:barang_qty,
                     unit_price:barang_unit_price,
                     subtotal:barang_subtotal
-                });    
+                });
             }
         });
 
@@ -559,7 +556,7 @@
             var first_col = $(this).children('td:first');
             subtotal += Number(first_col.next().next().next().next().children('input').autoNumeric('get'));
         });
-        
+
         $('#label-total-subtotal, #label-total').text('');
         // format autonumeric
         $('#label-total-subtotal, #label-total').autoNumeric('init',{
@@ -585,7 +582,7 @@
     });
     // END OF VALIDATE PO
 
-    // DELETE PAYMENT 
+    // DELETE PAYMENT
     $('.btn-delete-payment').click(function(){
         if(confirm('Anda akan menghapus data ini?')){
             // delete payment

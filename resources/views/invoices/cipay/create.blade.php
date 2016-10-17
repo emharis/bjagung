@@ -15,10 +15,10 @@
     }
 
     input.input-clear {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
@@ -33,8 +33,8 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="invoice/customer/payment" >Customer Payments</a> 
-        <i class="fa fa-angle-double-right" ></i> 
+        <a href="invoice/customer/payment" >Customer Payments</a>
+        <i class="fa fa-angle-double-right" ></i>
         Register Payment
     </h1>
 </section>
@@ -58,7 +58,7 @@
         </div>
         <div class="box-body">
             {{-- <form method="POST" action="sales/order/save-payment" > --}}
-                
+
                 <table class="table" >
                     <tbody>
                         <tr>
@@ -99,7 +99,7 @@
                                 <a class="btn btn-danger" id="btn-cancel" href="invoice/customer/payment" >Cancel</a>
                             </td>
                         </tr> --}}
-                        
+
                     </tbody>
                 </table>
             {{-- </form> --}}
@@ -108,14 +108,14 @@
             <table id="table-invoices" class="table table-bordered table-condensed" >
                 <thead>
                     <tr>
-                        <th>REFERENCE</th>
+                        <th>REF#</th>
                         <th>TOTAL</th>
                         <th>AMOUNT DUE</th>
                         <th>PAYMENT AMOUNT</th>
                     </tr>
                     <tbody></tbody>
             </table>
-            
+
         </div><!-- /.box-body -->
         <div class="box-footer" >
             <button type="submit" class="btn btn-primary" id="btn-save" >Save</button>
@@ -158,8 +158,8 @@
             $('input[name=customer_id]').val(suggestions.data);
 
             $('input[name=amount_due]').autoNumeric('set',suggestions.amount_due);
-            $('input[name=payment_amount]').autoNumeric('set',suggestions.amount_due);                  
-            
+            $('input[name=payment_amount]').autoNumeric('set',suggestions.amount_due);
+
             // cek amount due
             if(suggestions.amount_due > 0){
                 $('input[name=payment_amount]').removeAttr('disabled');
@@ -170,7 +170,7 @@
                 // alert('invoice/customer/payment/get-invoice/' + suggestions.data);
                 // get customer invoice
                 $.get('invoice/customer/payment/get-invoices/' + suggestions.data,null,function(data_invoice){
-                    
+
                     var dataInvoice = JSON.parse(data_invoice);
                     $.each(dataInvoice,function(i,data){
                         // add data invoice ke table
@@ -277,7 +277,7 @@
             if(Number(payment_amount) > Number(amount_due)){
                 alert('Payment amount melebihi amount due.');
             }else{
-                 // generate data detail payment   
+                 // generate data detail payment
                 var payment_detail = JSON.parse('{"payment" : [] }');
 
                 $('#table-invoices tbody tr').each(function(i,data){
@@ -286,9 +286,9 @@
                         payment_detail.payment.push({
                             invoice_id:$(this).data('soid'),
                             payment_amount:payment_amount_on_row
-                        });    
+                        });
                     }
-                        
+
                 });
 
                 // save data ke database
@@ -300,10 +300,10 @@
                 postform.append($('<input>').attr('type','hidden').attr('name','amount_due').val(amount_due));
                 postform.append($('<input>').attr('type','hidden').attr('name','payment_detail').val(JSON.stringify(payment_detail)));
 
-                
+
 
                 // generate detail payment
-                 
+
 
                 postform.submit();
             }
@@ -321,7 +321,7 @@
     //     // var so_master_id = $('input[name=so_master_id]').val();
     //     var payment_date = $('input[name=payment_date]').val();
     //     var customer_inv_id = $('input[name=customer_inv_id]').val();
-        
+
     //     if(Number(payment_amount) > Number(amount_due)){
     //         alert('Payment amount lebih besar dari amount due.');
     //         // fokuskan

@@ -30,8 +30,8 @@
                     <tr>
                         <th style="width:30px;" >NO</th>
                         <th>PAYMENT DATE</th>
-                        <th>REFERENCE</th>
-                        <th>CUSTOMER</th>                        
+                        <th>REF#</th>
+                        <th>CUSTOMER</th>
                         <th>SOURCE DOCUMENT</th>
                         <th>PAYMENT AMOUNT</th>
                         <th class="col-sm-1 col-md-1 col-lg-1" ></th>
@@ -55,7 +55,7 @@
                             </td>
                             <td>
                                 <a href="invoice/customer/payment/show-source-document/{{$dt->customer_invoice_id}}/{{$dt->id}}" >{{$dt->source_document}}</a>
-                                
+
                             </td>
                             <td class="text-right" >
                                 {{number_format($dt->payment_amount,0,'.',',')}}
@@ -124,7 +124,7 @@
     // DELETE PAYMENT
     $('.btn-delete-payment').click(function(){
         if(confirm('Anda akan menghapus data ini?')){
-            
+
         }else{
 
             return false;
@@ -132,7 +132,7 @@
     });
     // END OF DELETE PAYMENT
 
-   
+
 })(jQuery);
 </script>
 @append

@@ -15,10 +15,10 @@
     }
 
     input.input-clear {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
@@ -33,8 +33,8 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="invoice/customer-invoice" >Customer Invoices</a> 
-        <i class="fa fa-angle-double-right" ></i> 
+        <a href="invoice/customer-invoice" >Customer Invoices</a>
+        <i class="fa fa-angle-double-right" ></i>
         {{$data->no_inv}}
     </h1>
 </section>
@@ -53,9 +53,9 @@
           </li>
         </ul>
         <div class="tab-content">
-          <div class="tab-pane active" id="tab_data">                    
+          <div class="tab-pane active" id="tab_data">
             <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;" >
-                
+
             {{-- @if($data->status == "O")
                 <a class="btn btn-primary" style="margin-top:0;" id="btn-reg-payment" href="sales/order/reg-payment/{{$data->id}}" >Register Payment</a>
             @else
@@ -100,7 +100,7 @@
                             </td>
                             <td class="col-lg-4" >
                                 {{-- <input type="text" name="no_inv" class="form-control" value="{{$so_master->no_inv}}" > --}}
-                                <a href="#" >{{$data->so_no}}</a> 
+                                <a href="#" >{{$data->so_no}}</a>
                             </td>
                             <td class="col-lg-2" ></td>
                             <td class="col-lg-2" >
@@ -182,7 +182,7 @@
                                     <td class="text-right" id="label-disc" >
                                         {{number_format($data->disc,0,'.',',')}}
                                        {{-- <input style="font-size:14px;" type="text" name="disc" class="input-sm form-control text-right input-clear" value="{{$so_master->disc}}" >  --}}
-                                       
+
                                     </td>
                                 </tr>
                                 <tr>
@@ -237,20 +237,20 @@
             &nbsp;
             @endif
 
-            
+
             <table class="table table-bordered table-condensed table-striped" >
                 <thead>
                     <tr>
                         <th style="width:30px;" >NO</th>
                         <th class="col-lg-2" >PAYMENT DATE</th>
-                        <th class="col-lg-2" >REFERENCE</th>
+                        <th class="col-lg-2" >REF#</th>
                         <th>PAYMENT AMOUNT</th>
                         <th style="width:30px;" ></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php $rownum=1; ?>
-                    <?php $payment_paid = 0; ?> 
+                    <?php $payment_paid = 0; ?>
                     @foreach($payments as $pay)
                         <tr>
                             <td class="text-right" >{{$rownum++}}</td>
@@ -260,8 +260,8 @@
                             <td  >
                                 <a class="btn btn-danger btn-xs btn-delete-payment" href="#" data-paymentid="{{$dt->id}}" ><i class="fa fa-trash-o" ></i></a>
                             </td>
-                        </tr>          
-                        <?php $payment_paid += $pay->payment_amount; ?>  
+                        </tr>
+                        <?php $payment_paid += $pay->payment_amount; ?>
                     @endforeach
                 </tbody>
                 <tfoot>
@@ -277,8 +277,8 @@
             </table>
 
             <a class="btn btn-danger" href="invoice/customer-invoice" >Close</a>
-            
-          </div><!-- /.tab-pane -->          
+
+          </div><!-- /.tab-pane -->
         </div><!-- /.tab-content -->
       </div>
 
@@ -316,7 +316,7 @@
             $.post('api/delete-customer-payment',{
                 "payment_id" : payment_id
             },function(){
-                location.reload();                
+                location.reload();
             });
         }
 

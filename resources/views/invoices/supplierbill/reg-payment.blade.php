@@ -15,10 +15,10 @@
     }
 
     input.input-clear {
-        display: block; 
-        padding: 0; 
-        margin: 0; 
-        border: 0; 
+        display: block;
+        padding: 0;
+        margin: 0;
+        border: 0;
         width: 100%;
         background-color:#EEF0F0;
         float:right;
@@ -33,10 +33,10 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        <a href="invoice/supplier-bill" >Supplier Bills</a> 
-        <i class="fa fa-angle-double-right" ></i> 
-        <a href="invoice/supplier-bill/show/{{$data->id}}" >{{$data->bill_no}}</a> 
-        <i class="fa fa-angle-double-right" ></i> 
+        <a href="invoice/supplier-bill" >Supplier Bills</a>
+        <i class="fa fa-angle-double-right" ></i>
+        <a href="invoice/supplier-bill/show/{{$data->id}}" >{{$data->bill_no}}</a>
+        <i class="fa fa-angle-double-right" ></i>
         Register Payment
     </h1>
 </section>
@@ -51,8 +51,8 @@
         <div class="box-header with-border" style="padding-top:5px;padding-bottom:5px;" >
             {{-- <a class="btn btn-primary" style="margin-top:0;" id="btn-reg-payment" href="sales/order/reg-payment/{{$so_master->id}}" >Register Payment</a> --}}
 
-            <label> 
-                <small>Register Payment</small> 
+            <label>
+                <small>Register Payment</small>
                 <h4 style="font-weight: bolder;margin-top:0;padding-top:0;margin-bottom:0;padding-bottom:0;" >{{$data->bill_no}}</h4>
             </label>
 
@@ -69,7 +69,7 @@
         </div>
         <div class="box-body">
             {{-- <form method="POST" action="sales/order/save-payment" > --}}
-                
+
                 <table class="table" >
                     <tbody>
                         <tr>
@@ -89,7 +89,7 @@
                         </tr>
                         <tr>
                             <td >
-                                <label>Supplier Reference</label>
+                                <label>Supplier Ref#</label>
                             </td>
                             <td  >
                                 {{-- <input type="text" name="supplier_reference" class="form-control text-right" value="{{$data->no_inv}}" readonly> --}}
@@ -125,7 +125,7 @@
                                 <a class="btn btn-danger" id="btn-cancel" href="invoice/supplier-bill/show/{{$data->id}}" >Cancel</a>
                             </td>
                         </tr>
-                        
+
                     </tbody>
                 </table>
             {{-- </form> --}}
@@ -172,7 +172,7 @@
         // var so_master_id = $('input[name=so_master_id]').val();
         var payment_date = $('input[name=payment_date]').val();
         var supplier_bill_id = $('input[name=supplier_bill_id]').val();
-        
+
         if(Number(payment_amount) > Number(amount_due)){
             alert('Payment amount melebihi amount due.');
             // fokuskan
