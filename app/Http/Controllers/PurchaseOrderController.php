@@ -11,10 +11,75 @@ class PurchaseOrderController extends Controller {
 
     // fungsi tampilkan halaman purchase order
     public function index() {
-        $data = \DB::table('VIEW_BELI')->orderBy('tgl','desc')->get();
+        $data = \DB::table('VIEW_BELI')
+                ->orderBy('tgl','desc')
+                ->get();
+
+        // create select data supplier
+        $supplier = \DB::table('supplier')->get();
+        $select_supplier = [];
+        foreach($supplier as $dt ){
+          $select_supplier[$dt->id] = $dt->nama;
+        }
+
         return view('purchase.order.order', [
             'data' => $data,
+            'select_supplier' => $select_supplier,
         ]);
+    }
+
+    public function filter(Request $req){
+      // create select data supplier
+      $supplier = \DB::table('supplier')->get();
+      $select_supplier = [];
+      foreach($supplier as $dt ){
+        $select_supplier[$dt->id] = $dt->nama;
+      }
+
+      // get data by filter
+      if ($req->filter_by == 'order_date'){
+        // filter by order date
+        // generate date
+        $awal = $req->filter_date_start;
+        $arr_tgl = explode('-',$awal);
+        $awal = new \DateTime();
+        $awal->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);
+        $awal_str = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
+
+        $akhir = $req->filter_date_end;
+        $arr_tgl = explode('-',$akhir);
+        $akhir = new \DateTime();
+        $akhir->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);
+        $akhir_str = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
+
+        $data = \DB::table('VIEW_BELI')
+                  ->whereBetween('tgl',[$awal_str,$akhir_str])
+                  // ->where('tgls','>=',$awal_str)
+                  // ->where('tgl','<=',$akhir)
+                  ->orderBy('tgl','desc')
+                  ->get();
+
+      }else if($req->filter_by =='supplier'){
+        $data = \DB::table('VIEW_BELI')
+                  ->where('supplier_id',$req->filter_select_supplier)
+                  ->orderBy('tgl','desc')
+                  ->get();
+      }else if($req->filter_by =='open'){
+        $data = \DB::table('VIEW_BELI')
+                  ->whereStatus('O')
+                  ->orderBy('tgl','desc')
+                  ->get();
+      }else if($req->filter_by =='validated'){
+        $data = \DB::table('VIEW_BELI')
+                  ->whereStatus('V')
+                  ->orderBy('tgl','desc')
+                  ->get();
+      }
+
+      return view('purchase.order.filter', [
+          'data' => $data,
+          'select_supplier' => $select_supplier,
+      ])->with($req->all());
     }
 
     // TAMPILKAN HALAMAN ADD PURCHASE ORDER
@@ -517,7 +582,7 @@ class PurchaseOrderController extends Controller {
 
     public function cancelOrder($purchase_order_id){
       return \DB::transaction(function()use($purchase_order_id){
-        // delete data beli 
+        // delete data beli
         // selebih nya sudah di hanle oleh trigger di database
         \DB::table('beli')->delete($purchase_order_id);
 

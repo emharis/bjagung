@@ -105,6 +105,12 @@
             .content-header > h1{
                 font-size: 18px;
             }
+
+            /*// disable color of datepicker*/
+            .datepicker table tr td.disabled, .datepicker table tr td.disabled:hover{
+              background-color: #F1F1F1!important;
+              color:#878D95!important;
+            }
         </style>
 
         @yield('styles')
@@ -149,7 +155,7 @@
         <!-- AdminLTE for demo purposes -->
         <!--<script src="js/demo.js"></script>-->
         @yield('scripts')
-        
+
         <script>
             (function ($) {
                 $('a.sidebar-toggle').click(function () {
@@ -158,7 +164,7 @@
                 });
             })(jQuery);
         </script>
-        
+
 
     </body>
 </html>

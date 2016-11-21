@@ -145,6 +145,7 @@ Route::group(['middleware' => ['web','auth']], function () {
 
         // PURCHASE ORDER
         Route::get('order','PurchaseOrderController@index');
+        Route::post('order/filter','PurchaseOrderController@filter');
         Route::get('order/add','PurchaseOrderController@add');
         Route::get('order/get-barang','PurchaseOrderController@getBarang');
         Route::get('order/get-supplier','PurchaseOrderController@getSupplier');
@@ -168,6 +169,15 @@ Route::group(['middleware' => ['web','auth']], function () {
             echo $date->format('d-m-Y');
         });
         // END OF PURCHASE ORDER
+
+        // PURCHASE REPORT
+        Route::group(['prefix' => 'report'], function () {
+          Route::get('/','PurchaseReportController@index');
+          Route::post('show-report','PurchaseReportController@showReport');
+          Route::post('report-by-date','PurchaseReportController@reportByDate');
+        });
+
+        // END OF PURCHASE REPORT
 
     });
     // END OF PURCHASE
@@ -195,6 +205,7 @@ Route::group(['middleware' => ['web','auth']], function () {
 
         // SALES ORDER
         Route::get('order','SalesOrderController@index');
+        Route::post('order/filter','SalesOrderController@filter');
         Route::get('order/delete/{id}','SalesOrderController@delete');
         Route::get('order/add','SalesOrderController@add');
         Route::get('order/get-customer','SalesOrderController@getCustomer');

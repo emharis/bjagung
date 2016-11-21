@@ -34,6 +34,7 @@
                     <li class="{{Request::is('purchase/order/add') ? 'active':''}}" ><a href="purchase/order/add"><i class="fa fa-circle-o"></i> Add Purchase Orders</a></li>
                     <li class="{{Request::is('purchase/order*') ? 'active':''}}" ><a href="purchase/order"><i class="fa fa-circle-o"></i> Purchase Orders</a></li>
                     <li class="{{Request::is('purchase/supplier*') ? 'active':''}}" ><a href="purchase/supplier"><i class="fa fa-circle-o"></i> Supplier</a></li>
+                    <li class="{{Request::is('purchase/report*') ? 'active':''}}" ><a href="purchase/report"><i class="fa fa-circle-o"></i> Reports</a></li>
 
                 </ul>
             </li>

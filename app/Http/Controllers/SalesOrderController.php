@@ -13,9 +13,73 @@ class SalesOrderController extends Controller {
     public function index() {
         $data = \DB::table('VIEW_SALES_ORDER')
                 ->orderBy(\DB::raw('tgl'),'desc')->get();
+        
+        // create select data customer
+        $customer = \DB::table('customer')->get();
+        $select_customer = [];
+        foreach($customer as $dt ){
+          $select_customer[$dt->id] = $dt->nama;
+        }
+        
+        
         return view('sales.order.salesorder', [
             'data' => $data,
+            'select_customer' => $select_customer
         ]);
+    }
+
+    public function filter(Request $req){
+      // create select data customer
+      $customer = \DB::table('customer')->get();
+      $select_customer = [];
+      foreach($customer as $dt ){
+        $select_customer[$dt->id] = $dt->nama;
+      }
+
+      // get data by filter
+      if ($req->filter_by == 'order_date'){
+        // filter by order date
+        // generate date
+        $awal = $req->filter_date_start;
+        $arr_tgl = explode('-',$awal);
+        $awal = new \DateTime();
+        $awal->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);
+        $awal_str = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
+
+        $akhir = $req->filter_date_end;
+        $arr_tgl = explode('-',$akhir);
+        $akhir = new \DateTime();
+        $akhir->setDate($arr_tgl[2],$arr_tgl[1],$arr_tgl[0]);
+        $akhir_str = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
+
+        $data = \DB::table('VIEW_SALES_ORDER')
+                  ->whereBetween('tgl',[$awal_str,$akhir_str])
+                  // ->where('tgls','>=',$awal_str)
+                  // ->where('tgl','<=',$akhir)
+                  ->orderBy('tgl','desc')
+                  ->get();
+
+      }else if($req->filter_by =='customer'){
+        $data = \DB::table('VIEW_SALES_ORDER')
+                  ->where('customer_id',$req->filter_select_customer)
+                  ->orderBy('tgl','desc')
+                  ->get();
+      }else if($req->filter_by =='open'){
+        $data = \DB::table('VIEW_SALES_ORDER')
+                  ->whereStatus('O')
+                  ->orderBy('tgl','desc')
+                  ->get();
+      }else if($req->filter_by =='validated'){
+        $data = \DB::table('VIEW_SALES_ORDER')
+                  ->whereStatus('V')
+                  ->orderBy('tgl','desc')
+                  ->get();
+      }
+
+      return view('sales.order.filter', [
+          'data' => $data,
+          'select_customer' => $select_customer,
+      ])->with($req->all());
     }
 
     // TAMPILKAN FORM ADD SALES ORDER\

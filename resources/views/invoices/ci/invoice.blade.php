@@ -148,7 +148,8 @@
             {className: "text-right"},
             null,
             {className: "text-center"}
-        ]
+        ],
+         "bSortClasses": false
     });
 
 
